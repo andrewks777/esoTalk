@@ -22,7 +22,7 @@ $member = $data["member"];
 // Online indicator.
 if (empty($member["preferences"]["hideOnline"])):
 	$lastAction = ET::memberModel()->getLastActionInfo($member["lastActionTime"], $member["lastActionDetail"]);
-	if ($lastAction) echo "<".(!empty($lastAction[1]) ? "a href='{$lastAction[1]}'" : "span")." class='online' title='".T("Online").($lastAction[0] ? " (".sanitizeHTML($lastAction[0]).")" : "")."'>".T("Online")."</".(!empty($lastAction[1]) ? "a" : "span").">";
+	if ($lastAction) echo "<".(!empty($lastAction[1]) ? "a href='{$lastAction[1]}'" : "span")." class='online' title='".T("Online").($lastAction[0] ? " (".sanitizeHTML($lastAction[0]).")" : "")."'><i class='icon-circle'></i></".(!empty($lastAction[1]) ? "a" : "span").">";
 endif;
 ?>
 
@@ -32,9 +32,21 @@ endif;
 </div>
 
 <div class='col-lastActive'>
-<span class='subText'><?php printf(T("Last active %s"), empty($member["preferences"]["hideOnline"])
+<span class='subText'>
+<?php
+/* - andrewks {
+	printf(T("Last active %s"), empty($member["preferences"]["hideOnline"])
 	? "<span title='".date(T("date.full"), $member["lastActionTime"])."'>".relativeTime($member["lastActionTime"], true)."</span>"
-	: "[".T("hidden")."]"); ?></span>
+	: "[".T("hidden")."]");
+- andrewks } */
+// + andrewks {
+	if (ET::$session->user) {
+		printf(T("Last active %s"), (empty($member["preferences"]["hideOnline"]) or ET::$session->isAdmin())
+		? "<span title='".date(T("date.full"), $member["lastActionTime"])."'>".relativeTime($member["lastActionTime"], true)."</span>"
+		: "[".T("hidden")."]");
+	}
+// + andrewks }
+?></span>
 </div>
 
 <div class='col-replies'>

@@ -19,15 +19,30 @@ $post = $data["post"];
 <?php
 
 // Using the provided form object, construct a textarea and buttons.
+/* - andrewks {
 $body = $form->input("content", "textarea", array("cols" => "200", "rows" => "20"))."
 	<div id='p".$post["postId"]."-preview' class='preview'></div>
 	<div class='editButtons'>".
 	$form->saveButton()." ".
 	$form->cancelButton()."</div>";
+- andrewks } */
+// + andrewks {
+$relativePostIdShortURL = postURL($post["postId"], $post["conversationId"], $post["relativePostId"], false);
+$body = $form->input("content", "textarea", array("cols" => "200", "rows" => "20"))."
+	<div id='p".$relativePostIdShortURL."-preview' class='preview'></div>
+	<div class='editButtons'>".
+	$form->saveButton()." ".
+	$form->cancelButton()."</div>";
+// + andrewks }
 
 // Construct an array for use in the conversation/post view.
 $formatted = array(
+/* - andrewks {
 	"id" => "p".$post["postId"],
+- andrewks } */
+// + andrewks {
+	"id" => "p".$relativePostIdShortURL,
+// + andrewks }
 	"title" => name($post["username"]),
 	"controls" => $data["controls"],
 	"class" => "edit",

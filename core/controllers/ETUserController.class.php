@@ -55,13 +55,18 @@ public function login()
 
 		// If the login was successful, redirect or set a json flag, depending on the response type.
 		if (ET::$session->login($form->getValue("username"), $form->getValue("password"), $form->getValue("remember")))
+/* - andrewks {
 			$this->redirect(URL(R("return")));
+- andrewks } */
+// + andrewks {
+			$this->redirect(URL(R("return"), false, false));
+// + andrewks }
 
 		// Otherwise, get the errors that occurred and pass them to the form.
 		else {
 			$errors = ET::$session->errors();
 			if (in_array("emailNotYetConfirmed", $errors)) {
-				$this->renderMessage("Error", sprintf(T("message.emailNotYetConfirmed"), URL("user/sendConfirmation/".$form->getValue("username"))));
+				$this->renderMessage(T("Error"), sprintf(T("message.emailNotYetConfirmed"), URL("user/sendConfirmation/".$form->getValue("username"))));
 				return;
 			}
 			$form->errors($errors);
@@ -145,7 +150,7 @@ public function join()
 				// If we require the user to confirm their email, send them an email and show a message.
 				if (C("esoTalk.registration.requireEmailConfirmation")) {
 					$this->sendConfirmationEmail($data["email"], $data["username"], $memberId.$data["resetPassword"]);
-					$this->renderMessage("Success!", T("message.confirmEmail"));
+					$this->renderMessage(T("Success!"), T("message.confirmEmail"));
 				}
 
 				else {
@@ -200,17 +205,36 @@ public function confirm($hash = "")
 
 	// See if there is an unconfirmed user with this ID and password hash. If there is, confirm them and log them in.
 	$result = ET::SQL()
+/* - andrewks {
 		->select("1")
 		->from("member")
 		->where("memberId", $memberId)
 		->where("resetPassword", md5($hash))
 		->where("confirmedEmail=0")
+- andrewks } */
+// + andrewks {
+		->select("email, joinTimeEmail")
+		->from("member")
+		->where("memberId", $memberId)
+		->where("resetPassword", $hash)
+		->where("confirmedEmail=0")
+// + andrewks }
 		->exec();
+
 	if ($result->numRows()) {
 
 		// Mark the member as confirmed.
+// + andrewks {
+		list($email, $joinTimeEmail) = array_values($result->firstRow());
+		if (empty($joinTimeEmail)) {
+			$joinTimeEmail = $email;
+		}
+// + andrewks }
 		ET::memberModel()->updateById($memberId, array(
 			"resetPassword" => null,
+// + andrewks {
+			"joinTimeEmail" => $joinTimeEmail,
+// + andrewks }
 			"confirmedEmail" => true
 		));
 

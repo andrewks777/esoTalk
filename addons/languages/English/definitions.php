@@ -410,7 +410,7 @@ $definitions["message.newSearchResults"] = "There has been new activity that has
 $definitions["message.noActivity"] = "%s hasn't done anything on this forum yet!";
 $definitions["message.noMembersOnline"] = "No members are currently online.";
 $definitions["message.noNotifications"] = "You have no notifications.";
-$definitions["message.noPermission"] = "Bad user! You do not have permisssion to perform this action.";
+$definitions["message.noPermission"] = "You do not have permisssion to perform this action.";
 $definitions["message.noPermissionToReplyInChannel"] = "You don't have permission to reply to conversations in this channel.";
 $definitions["message.noPluginsInstalled"] = "No plugins are currently installed.";
 $definitions["message.noSearchResults"] = "No conversations matching your search were found.";
@@ -533,3 +533,10 @@ $definitions["gambit.active last ? days"] = "{$definitions["gambit.active"]} {$d
 // This is similar to the regular expression for the active gambit, but for the "has n reply(s)" gambit.
 // Usually you just need to change the "has" and "repl".
 $definitions["gambit.gambitHasNReplies"] = "/^has *(?<a>>|<|>=|<=)? *(?<b>\d+) *repl/";
+
+// + andrewks {
+$definitions["conversations.replies"] = "replies";
+$definitions["conversations.newreplies"] = "new";
+$definitions["conversation.replies"] = "Replies: ";
+$definitions["message.close"] = "Close";
+// + andrewks }

@@ -114,6 +114,9 @@ public function create($type, $member, $fromMember = null, $data = null, $emailD
 		"fromMemberId" => $fromMember ? $fromMember["memberId"] : null,
 		"conversationId" => isset($data["conversationId"]) ? $data["conversationId"] : null,
 		"postId" => isset($data["postId"]) ? $data["postId"] : null,
+// + andrewks {
+		"relativePostId" => isset($data["relativePostId"]) ? $data["relativePostId"] : null,
+// + andrewks }
 		"time" => time()
 	);
 	$activityId = null;
@@ -143,7 +146,9 @@ public function create($type, $member, $fromMember = null, $data = null, $emailD
 		list($subject, $body) = call_user_func($projections[self::PROJECTION_EMAIL], $activity, $member);
 
 		// Send the email, prepending/appending a common email header/footer.
+/* - andrewks {
 		sendEmail($member["email"], $subject, sprintf(T("email.header"), $member["username"]).$body.sprintf(T("email.footer"), URL("settings", true)));
+- andrewks } */
 
 		// Revert back to esoTalk's old language definitions.
 		ET::revertLanguageState();
@@ -202,6 +207,10 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		->select("type")
 		->select("data")
 		->select("NULL", "postId")
+// + andrewks {
+		->select("NULL", "conversationId")
+		->select("NULL", "relativePostId")
+// + andrewks }
 		->select("NULL", "title")
 		->select("NULL", "content")
 		->select("NULL", "start")
@@ -226,6 +235,10 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		->select("'postActivity'", "type")
 		->select("NULL", "data")
 		->select("postId")
+// + andrewks {
+		->select("p.conversationId","conversationId")
+		->select("p.relativePostId","relativePostId")
+// + andrewks }
 		->select("c.title", "title")
 		->select("content")
 		->select("c.startMemberId=p.memberId AND c.startTime=p.time", "start")
@@ -292,6 +305,9 @@ public function getNotifications($limit = 5)
 		->select("a.data")
 		->select("a.type")
 		->select("a.postId")
+// + andrewks {
+		->select("a.relativePostId")
+// + andrewks }
 		->select("a.conversationId")
 		->select("a.read")
 		->from("activity a")
@@ -364,8 +380,14 @@ public function markNotificationsAsRead($conversationId = false)
 public static function postActivity($item, $member)
 {
 	return array(
+/* - andrewks {
 		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), name($member["username"]), "<a href='".URL(postURL($item["postId"]))."'>".sanitizeHTML($item["title"])."</a>"),
 		ET::formatter()->init($item["content"])->basic(true)->format()->get()
+- andrewks } */
+// + andrewks {
+		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), name($member["username"]), "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML($item["title"])."</a>"),
+		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->basic(true)->format()->get()
+// + andrewks }
 	);
 }
 
@@ -380,8 +402,13 @@ public static function postActivity($item, $member)
 public static function postNotification(&$item)
 {
 	return array(
-		sprintf(T("%s posted in %s."), name($item["fromMemberName"]), "<span class='star starOn'>*</span> <strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
+		sprintf(T("%s posted in %s."), name($item["fromMemberName"]), "<i class='star icon-star'></i> <strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
+/* - andrewks {
 		URL(postURL($item["postId"]))
+- andrewks } */
+// + andrewks {
+		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
+// + andrewks }
 	);
 }
 
@@ -442,7 +469,12 @@ public static function mentionNotification($item)
 {
 	return array(
 		sprintf(T("%s tagged you in a post."), "<strong>".name($item["fromMemberName"])."</strong>"),
+/* - andrewks {
 		URL(postURL($item["data"]["postId"]))
+- andrewks } */
+// + andrewks {
+		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
+// + andrewks }
 	);
 }
 
@@ -457,9 +489,15 @@ public static function mentionNotification($item)
 public static function mentionEmail($item, $member)
 {
 	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+/* - andrewks {
+	$url = URL(postURL($item["data"]["postId"]), true);
+- andrewks } */
+// + andrewks {
+	$url = URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]), true);
+// + andrewks }
 	return array(
 		sprintf(T("email.mention.subject"), name($item["fromMemberName"], false)),
-		sprintf(T("email.mention.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, URL(postURL($item["data"]["postId"]), true))
+		sprintf(T("email.mention.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")
 	);
 }
 
@@ -488,9 +526,10 @@ public static function privateAddNotification(&$item)
 public static function privateAddEmail($item, $member)
 {
 	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+	$url = URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"]), true);
 	return array(
 		T("email.privateAdd.subject"),
-		sprintf(T("email.privateAdd.body"), sanitizeHTML($item["data"]["title"]), $content, URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"]), true))
+		sprintf(T("email.privateAdd.body"), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")
 	);
 }
 
@@ -503,9 +542,10 @@ public static function privateAddEmail($item, $member)
 public static function postEmail($item, $member)
 {
 	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+	$url = URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"])."/unread", true);
 	return array(
 		sprintf(T("email.post.subject"), $item["data"]["title"]),
-		sprintf(T("email.post.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"])."/unread", true))
+		sprintf(T("email.post.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")
 	);
 }
 

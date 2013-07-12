@@ -6,9 +6,16 @@ here if necessary.
 */
 
 /* Global */
+/*
 body {font-size:13px; margin:0; overflow-y:scroll; background:#D6D8E6; color:#555}
 body, input, textarea, select {font-family:open sans,lucida grande,lucida sans unicode,helvetica,arial,sans-serif}
 input, textarea, select {font-size:100%}
+*/
+/* + andrewks { */
+body {font-size:13px; margin:0; overflow-y:scroll; background:#D6D8E6; color:#111111}
+body, input, textarea, select {font-family:lucida grande,lucida sans unicode,helvetica,arial,sans-serif}
+input, textarea, select {font-size:100%}
+/* + andrewks } */
 
 
 /* Links */
@@ -41,25 +48,27 @@ p, ul, pre {line-height:1.6em}
 
 
 /* Header */
-#hdr {background:#364159; color:#fff; padding:20px 0 14px; position:fixed; width:100%; z-index:350}
-#hdr h1 {display:inline; font-size:120%; font-weight:bold; margin:0}
-#hdr h1 img {margin:-20px 0 -14px; display:inline; border:0}
-#hdr-content > a, #hdr-content > h1 a, #hdr-content > ul > li > a {color:#fff}
-#backButton {margin-right:10px; margin-left:-30px; font-size:20px; line-height:1px; vertical-align:-2px; text-decoration:none}
+#hdr {background:#364159; color:#fff; position:fixed; width:100%; z-index:350}
+#hdr-inner {padding-right:580px; white-space:nowrap}
+#hdr h1 {display:inline-block; max-width:100%; font-size:120%; padding:16px 0; margin:0; font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
+#hdr h1 img {margin:-9px 0; display:inline; vertical-align:bottom; border:0}
+#hdr-inner > a, #hdr-inner > h1 a, #hdr-inner > ul > li > a {color:#fff}
+#backButton {float:left; margin-right:10px; margin-left:-30px; font-size:20px; line-height:20px; margin-top:17px; text-decoration:none}
 
-#mainMenu {margin-left:30px; display:inline}
-#userMenu {text-align:right; margin-top:-20px !important; margin-left:250px}
+#mainMenu {margin-left:30px; display:inline; padding:18px 0}
+#userMenu {float:right; padding:18px 0; margin-right:-580px; margin-left:-18px;}
 #userMenu .item-user {font-weight:bold}
 #userMenu .item-user .avatar {vertical-align:middle; margin:-5px 8px -5px 0}
 #userMenu.menu > li {margin-left:18px; text-align:left}
 
-#hdr .button {border:1px solid #333; border-color:rgba(0, 0, 0, 0.5); border-radius:3px; color:#fff; text-shadow:0 -1px rgba(0, 0, 0, 0.5); font-size:100%; padding:7px 10px; -webkit-box-shadow:0 1px 0 rgba(255, 255, 255, 0.08); box-shadow:0 1px 0 rgba(255, 255, 255, 0.08); background:url(hdr-button.png) repeat-x; margin:-5px 0}
-#hdr .button:active {background-position:0 -30px}
+#hdr .button {background:rgba(0, 0, 0, 0.3); border:1px solid transparent; border-radius:4px; color:#fff; font-size:100%; padding:9px 12px; margin:-7px 0; text-shadow:none}
+#hdr .button:active {background:rgba(0, 0, 0, 0.5)}
+#hdr .button i {color:#fff}
 
 
 /* If a light header color is chosen, make the header text dark. */
-.lightHdr #hdr .button {text-shadow:rgba(255, 255, 255, 0.3) 0 1px}
-.lightHdr #hdr .button {border-color:rgba(0, 0, 0, 0.3)}
+.lightHdr #hdr .button {background:rgba(0, 0, 0, 0.1);}
+.lightHdr #hdr .button:active {background:rgba(0, 0, 0, 0.3);}
 .lightHdr #hdr, .lightHdr #hdr a {color:rgba(0, 0, 0, 0.7)}
 .lightHdr #hdr .popupButton, .lightHdr #hdr #notifications {background-color:rgba(0, 0, 0, .1); color:rgba(0, 0, 0, 0.3)}
 
@@ -80,7 +89,52 @@ input[type=text]:focus, input[type=password]:focus, textarea:focus {border-color
 
 
 /* Buttons */
-.button {background:#e0e0e0 url(button.png) repeat-x; text-shadow:#fff 0 1px; color:#333; font-weight:bold; border:1px solid #ccc; box-shadow:0 1px 0 rgba(0, 0, 0, 0.04); margin-bottom:1px}
+.button {background:#e0e0e0 url(button.png) repeat-x; text-shadow:#fff 0 1px; color:#333; font-weight:bold; border:1px solid #ccc; box-shadow:0 1px 0 rgba(0, 0, 0, 0.04); margin-bottom:1px; -webkit-appearance:none}
 .button:hover, .button:active {border-color:#ccc}
 .button:active {background-color:#d3d3d3; background-position:0 -40px; color:#333}
 .button.disabled {border-color:#ccc !important; background:#f2f2f2 !important; color:#999 !important; box-shadow:none !important}
+
+/* + andrewks { */
+.postHeader {margin-bottom:1px; padding:2px 2px 2px 12px}
+.postHeader h3 {display:inline; font-size:90%; margin:0}
+.postHeader h3 a {color:#444444}
+.postBody a.link-member {color:#444444; font-weight:bold}
+/*.post {margin-bottom:0px; margin-top:0px; padding-bottom:0px; padding-top:0px}*/
+.post {margin-bottom:0px; margin-top:0px; padding-bottom:3px; padding-top:3px}
+/*.postBody {font-size:14px}*/
+.timeMarker {padding:5px 10px; margin:1px 0px}
+.conversationList .title a:visited {color:#333333}
+#hdr-inner {padding-right:760px}
+#userMenu {margin-right:-730px}
+#conversationBody .scrubberContent .button {width:110px}
+.postHeader .controls {margin:0px; padding:0px}
+/*.postContent .postReplies {color:#888; font-size:85%; margin:0px 0px 4px 0px; padding:1px 8px; float:right; list-style-type:none; border:1px dotted rgba(0, 0, 0, 0.15); border-radius:3px}*/
+/*.postContent .postReplies {color:#888; font-size:85%; margin:-18px 0px 0px 0px; padding:1px 8px; float:right; list-style-type:none}*/
+.postContent .postReplies {color:#888; font-size:85%; margin:0px; padding:0px 8px; list-style-type:none; text-align:right}
+.postContent .postReplies a {color:#888}
+.postContent .postReplies a:hover {color:rgb(18, 96, 238)}
+[class*=control-] {padding:6px; margin:0px}
+.postHeader .controls > span a {color:#888}
+#hdr h1 {padding:6px 0px 0px 0px; margin:0; max-width:120%}
+.avatar {width:45px; height:45px}
+.postBody p {line-height:1.5em; margin:0px 0px 3px}
+.postBody p + p  {margin:1em 0px 3px}
+#body-content {padding-left:15px; padding-top:0px}
+.post div.avatar {margin-left:-56px}
+.post {padding-left:56px}
+.bodyHeader {padding:5px 0px 5px}
+#userMenu {padding:10px 0px}
+#backButton {margin-top:8px}
+#conversationPrivacy {margin:0px; padding:5px 15px} 
+#conversationReply {margin:30px 0px 20px}
+.post .editButtons {padding: 0px 0px 0px}
+.conversationList > li {padding-top:4px; padding-bottom:4px}
+.channelList .unsubscribed {background:#ececec}
+.channelList .unsubscribed .channel {opacity:0.5}
+.memberList > li {padding-top:4px; padding-bottom:4px}
+.memberList .col-member {width:50%}
+.memberList .col-lastActive {width:35%}
+.memberList .col-replies {width:12%}
+.autoCompletePopup .popupMenu li > a {padding:3px 10px 3px 10px}
+div.video {text-align:center}
+/* + andrewks } */

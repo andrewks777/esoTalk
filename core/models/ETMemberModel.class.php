@@ -54,6 +54,10 @@ public function create(&$values)
 	// Hash the password and set the join time.
 	$values["password"] = $this->hashPassword($values["password"]);
 	$values["joinTime"] = time();
+// + andrewks {
+	$ip = getUserIP();
+	$values["joinTimeIP"] = $ip;
+// + andrewks }
 
 	// MD5 the "reset password" hash for storage (for extra safety).
 	$oldHash = isset($values["resetPassword"]) ? $values["resetPassword"] : null;
@@ -101,7 +105,9 @@ public function create(&$values)
 	}
 
 	// Revert the "reset password" hash to what it was before we MD5'd it.
+/* - andrewks {
 	$values["resetPassword"] = $oldHash;
+- andrewks } */
 
 	return $memberId;
 }
@@ -277,7 +283,14 @@ public function validateUsername($username, $checkForDuplicate = true)
 	if (in_array(strtolower($username), self::$reservedNames)) return "nameTaken";
 
 	// Make sure the username is not too small or large, and only contains word characters.
+/* - andrewks {
 	if (strlen($username) < 3 or strlen($username) > 20 or preg_match("/\W/", $username)) return "invalidUsername";
+- andrewks } */
+// + andrewks {
+	$use_unicode = C("esoTalk.useUnicodeLettersInUserName");
+	$namelen = mb_strlen($username, "utf8");
+	if ($namelen < C("esoTalk.minUserName") or $namelen > C("esoTalk.maxUserName") or !preg_match("/^[\w]{1,1}(?:\w|-| )*[\w]{1,1}$/".($use_unicode ? "u" : "" ), $username)) return "invalidUsername";
+// + andrewks }
 
 	// Make sure there's no other member with the same username.
 	if ($checkForDuplicate and ET::SQL()->select("1")->from("member")->where("username=:username")->where("confirmedEmail=1")->bind(":username", $username)->exec()->numRows())

@@ -57,6 +57,9 @@ protected function structure($drop = false)
 		->column("data", "tinyblob")
 		->column("conversationId", "int(11) unsigned")
 		->column("postId", "int(11) unsigned")
+// + andrewks {
+		->column("relativePostId", "int(15) unsigned")
+// + andrewks }
 		->column("time", "int(11) unsigned")
 		->column("read", "tinyint(1)", 0)
 		->key("activityId", "primary")
@@ -151,6 +154,10 @@ protected function structure($drop = false)
 		->column("preferences", "mediumblob")
 		->column("countPosts", "int(11) unsigned", 0)
 		->column("countConversations", "int(11) unsigned", 0)
+// + andrewks {
+		->column("joinTimeIP", "int(11)", 0)
+		->column("joinTimeEmail", "varchar(63)", "")
+// + andrewks }
 		->key("memberId", "primary")
 		->key("username", "unique")
 		->key("email", "unique")
@@ -211,14 +218,72 @@ protected function structure($drop = false)
 		->column("editTime", "int(11) unsigned")
 		->column("deleteMemberId", "int(11) unsigned")
 		->column("deleteTime", "int(11) unsigned")
-		->column("title", "varchar(63)", false)
+		->column("title", "varchar(100)", false)
 		->column("content", "text", false)
 		->column("attributes", "mediumblob")
+// + andrewks {
+		->column("relativePostId", "int(11) unsigned", false)
+		->column("memberIP", "int(11)", 0)
+		->column("editMemberIP", "int(11)", 0)
+		->column("deleteMemberIP", "int(11)", 0)
+// + andrewks }
 		->key("postId", "primary")
 		->key("memberId")
 		->key(array("conversationId", "time"))
 		->key(array("title", "content"), "fulltext")
+// + andrewks {
+		->key(array("conversationId", "relativePostId"))
+// + andrewks }
 		->exec($drop);
+
+// + andrewks {
+	// Post-cites table.
+	$structure
+		->table("post_citing")
+		->column("conversationId", "int(15) unsigned", false)
+		->column("relativePostId", "int(15) unsigned", false)
+		->column("citingConversationId", "int(15) unsigned", false)
+		->column("citingRelativePostId", "int(15) unsigned", false)
+		//->key(array("conversationId", "relativePostId", "citingConversationId", "citingRelativePostId"), "primary")
+		->key(array("conversationId", "relativePostId"))
+		->key(array("citingConversationId", "citingRelativePostId"))
+		->exec($drop);
+		
+	// Administrative actions log table.
+	$structure
+		->table("adm_actions", "MyISAM")
+		->column("actionId", "int(15) unsigned", false)
+		->column("actionType", "enum('none','lockMember','unlockMember','editPermissionsMember','renameMember','deleteMember','changeChannelConversation','renameConversation','editPermissionsConversation','lockConversation','unlockConversation','deleteConversation','deletePost','restorePost','editPost')", "none")
+		->column("objectId", "int(15) unsigned", false) // member, conversation, post Id
+		->column("time", "int(11) unsigned", false)
+		->column("adminId", "int(15) unsigned", false) // memberId
+		->column("adminIP", "int(11)", 0)
+		->column("adminUserAgent", "varchar(60)", "")
+		->column("titleOld", "varchar(100)")
+		->column("titleNew", "varchar(100)")
+		->key("actionId", "primary")
+		->key("objectId")
+		->key("adminId")
+		->key("time")
+		->exec($drop);
+		
+	// Post editing log table.
+	$structure
+		->table("post_editing", "MyISAM")
+		->column("postId", "int(15) unsigned", false)
+		->column("conversationId", "int(15) unsigned", false)
+		->column("relativePostId", "int(15) unsigned", false)
+		->column("editMemberId", "int(15) unsigned", false)
+		->column("editTime", "int(11) unsigned", false)
+		->column("editMemberIP", "int(11)", 0)
+		->column("contentOld", "text")
+		->column("contentNew", "text")
+		->key("postId", "primary")
+		->key("editMemberId")
+		->key("editTime")
+		->exec($drop);
+		
+// + andrewks }
 
 	// Search table.
 	$structure

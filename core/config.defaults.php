@@ -36,6 +36,7 @@ define("ACCOUNT_PENDING", "pending");
 // Installed version of esoTalk.
 $config["esoTalk.installed"] = false;
 $config["esoTalk.version"] = "";
+$config["esoTalk.admin.needUpgradeDB"] = false;
 
 // MySQL database details.
 $config["esoTalk.database.host"] = "";
@@ -54,7 +55,6 @@ $config["esoTalk.database.connectionOptions"] = array(
 // Basic forum details.
 $config["esoTalk.forumTitle"] = "";
 $config["esoTalk.forumLogo"] = false; // Path to an image file to replace the title (don't make it too big or it'll stretch the header!)
-$config["esoTalk.includeFaviconTag"] = "<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\">"; // Include favicon tag. Set to empty if it isn't used.
 $config["esoTalk.language"] = "English";
 $config["esoTalk.baseURL"] = "";
 $config["esoTalk.resourceURL"] = ""; // URL used for all resources (CSS+JS+images, including those from plugins and skins.) If blank, the base URL will be used.
@@ -66,6 +66,8 @@ $config["esoTalk.aggregateJS"] = true;
 $config["esoTalk.gzipOutput"] = true; // Whether or not to compress the page output with gzip.
 $config["esoTalk.https"] = false; // Whether or not to force HTTPS.
 $config["esoTalk.cache"] = false; // What type of cache to use.
+$config["esoTalk.includeFaviconTag"] = ""; // Include favicon tag. Set to empty if it isn't used.
+$config["esoTalk.hostName"] = "http://127.0.0.1";
 
 // Meta information.
 $config["esoTalk.meta.keywords"] = null;
@@ -123,7 +125,7 @@ $config["esoTalk.members.membersPerPage"] = 30;
 // Post formatting settings.
 $config["esoTalk.format.youtube"] = true; // Automatically convert YouTube links to embeds?
 $config["esoTalk.format.mentions"] = true; // Allow @mentioning of members?
-$config["esoTalk.format.PCRE.UseUnicode"] = 1; // Allow to use Unicode in PCRE patterns.
+$config["esoTalk.format.PCRE.UseUnicode"] = true; // Allow to use Unicode in PCRE patterns.
 
 // Misc. settings.
 $config["esoTalk.defaultRoute"] = "conversations";
@@ -145,3 +147,8 @@ $config["esoTalk.avatars.width"] = 64;
 $config["esoTalk.avatars.height"] = 64;
 $config["esoTalk.avatars.thumbWidth"] = 20;
 $config["esoTalk.avatars.thumbHeight"] = 20;
+
+// Mentions names settings
+$config["esoTalk.minUserName"] = 2;
+$config["esoTalk.maxUserName"] = 20;
+$config["esoTalk.useUnicodeLettersInUserName"] = true; // Allow to use Unicode letters in users names.

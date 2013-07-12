@@ -29,14 +29,23 @@ public function init()
 	$this->defaultMenu = ETFactory::make("menu");
 	$this->menu = ETFactory::make("menu");
 
-	$this->defaultMenu->add("dashboard", "<a href='".URL("admin/dashboard")."'>".T("Dashboard")."</a>");
-	$this->defaultMenu->add("settings", "<a href='".URL("admin/settings")."'>".T("Forum Settings")."</a>");
-	$this->defaultMenu->add("appearance", "<a href='".URL("admin/appearance")."'>".T("Appearance")."</a>");
-	$this->defaultMenu->add("channels", "<a href='".URL("admin/channels")."'>".T("Channels")."</a>");
-	$this->defaultMenu->add("plugins", "<a href='".URL("admin/plugins")."'>".T("Plugins")."</a>");
+	$this->defaultMenu->add("dashboard", "<a href='".URL("admin/dashboard")."'><i class='icon-dashboard'></i> ".T("Dashboard")."</a>");
+	$this->defaultMenu->add("settings", "<a href='".URL("admin/settings")."'><i class='icon-cog'></i> ".T("Forum Settings")."</a>");
+	$this->defaultMenu->add("appearance", "<a href='".URL("admin/appearance")."'><i class='icon-eye-open'></i> ".T("Appearance")."</a>");
+	$this->defaultMenu->add("channels", "<a href='".URL("admin/channels")."'><i class='icon-tags'></i> ".T("Channels")."</a>");
+	$this->defaultMenu->add("members", "<a href='".URL("members")."'><i class='icon-group'></i> ".T("Members")."</a>");
+	$this->defaultMenu->add("plugins", "<a href='".URL("admin/plugins")."'><i class='icon-puzzle-piece'></i> ".T("Plugins")."</a>");
 
 	$this->defaultMenu->highlight(ET::$controllerName);
 	$this->menu->highlight(ET::$controllerName);
+
+	if ($this->responseType === RESPONSE_TYPE_DEFAULT)
+/* - andrewks {
+		$this->pushNavigation("admin", "administration", URL($this->selfURL));
+- andrewks } */
+// + andrewks {
+		$this->pushNavigation("admin", "administration", URL($this->selfURL, false, false));
+// + andrewks }
 
 	$this->addJSFile("core/js/admin.js");
 	$this->addCSSFile("core/skin/admin.css");

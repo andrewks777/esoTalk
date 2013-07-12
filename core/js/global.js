@@ -231,7 +231,7 @@ $(function() {
 	$(document).bind("ajaxStart", function(){
 		$("#loading").show();
 		$(window).bind("beforeunload.ajax", function() {
-			return T("ajaxRequestPending");
+			return T("message.ajaxRequestPending");
 		});
 	 })
 	 .bind("ajaxStop", function(){
@@ -327,7 +327,7 @@ showMessage: function(text, options) {
 
 	// If the message is dismissable, add an 'x' control to close it.
 	if (!message.find(".message").hasClass("undismissable")) {
-		var close = $("<a href='#' class='control-delete dismiss'>X</a>").click(function(e) {
+		var close = $("<a href='#' class='control-delete dismiss'><i class='icon-remove'></i></a>").click(function(e) {
 			e.preventDefault();
 			ETMessages.hideMessage(key);
 		});
@@ -398,7 +398,7 @@ showSheet: function(id, content, callback) {
 	// Append the sheet html to the body, add a close button to it.
 	$("body").append(content);
 	var sheet = $("#" + content.attr("id"));
-	sheet.prepend("<a href='javascript:ETSheet.hideSheet(\"" + id + "\")' class='control-delete close'>Close</a>");
+	sheet.prepend("<a href='javascript:ETSheet.hideSheet(\"" + id + "\")' class='control-delete close'><i class='icon-remove'></i></a>");
 
 	// Add an overlay div to dim the rest of the content. Clicking on it will hide all open sheets.
 	if (!ETSheet.sheetStack.length)
@@ -426,6 +426,14 @@ showSheet: function(id, content, callback) {
 		e.preventDefault();
 		ETSheet.hideSheet(id);
 	});
+
+	// Monitor the scroll event to apply a shadow to the sheet body.
+	var top = $('h3', sheet);
+	var bottom = $('.buttons', sheet);
+	$('.sheetBody', sheet).scroll(function() {
+		top.toggleClass('scrollShadowTop', $(this).scrollTop() > 0);
+		bottom.toggleClass('scrollShadowBottom', $(this).scrollTop() + $(this).height() < $(this)[0].scrollHeight);
+	}).scroll();
 
 	// Focus on the first errorous input, or otherwise just the first input.
 	var inputs = $("input, select, textarea", sheet).not(":hidden");
@@ -571,6 +579,7 @@ hideAllPopups: function() {
 $.fn.popup = function(options) {
 
 	options = options || {};
+	options.content = options.content || "<i class='icon-cog'></i> <i class='icon-caret-down'></i>";
 
 	// Get the element to use as the popup contents.
 	var popup = $(this).first();
@@ -578,7 +587,7 @@ $.fn.popup = function(options) {
 
 	// Construct the popup wrapper and button.
 	var wrapper = $("<div class='popupWrapper'></div>");
-	var button = $("<a href='#' class='popupButton button' id='"+popup.attr("id")+"-button'><span class='icon-settings'></span> <span class='text'>Controls</span> <span class='icon-dropdown'></span></a>");
+	var button = $("<a href='#' class='popupButton button' id='"+popup.attr("id")+"-button'>"+options.content+"</a>");
 	wrapper.append(button).append(popup);
 
 	// Remove whatever class is on the popup contents and make it into a popup menu.
@@ -779,50 +788,33 @@ var ETMembersAllowedTooltip = {
 
 $(function() {
 
-	// Add scrolling handlers to automatically float the "go to top" and "back to search" links.
-	$(window).scroll(function() {
-		if ($(document).scrollTop() > $("#hdr").outerHeight() && !ETSheet.sheetStack.length && !ET.disableFixedPositions) {
-			$("#goToTop a").addClass("floatingLink");
-			$("#goToTop").show().css("position", "absolute");
-		} else {
-			$("#goToTop a").removeClass("floatingLink");
-			$("#goToTop").hide();
-		}
-	});
-
 	$("#backButton").tooltip({alignment: "left", offset: [25, 25]});
-
-	// Start off with the "go to top" link hidden, and add a click handler.
-	$("#goToTop a").click(function(e) {
-		e.preventDefault();
-		setTimeout(function(){ $.scrollTo(0, "fast"); }, 1);
-	}).parent().hide();
 
 	// Initialize page history.
 	$.history.init();
 
 	// Add click handlers to any login, forgot password, new conversation, and sign up links.
-	$(".link-login").live("click", function(e) {
-		e.preventDefault();
-		showLoginSheet();
-	});
+	// $(".link-login").live("click", function(e) {
+	// 	e.preventDefault();
+	// 	showLoginSheet();
+	// });
 
 	$(".link-forgot").live("click", function(e) {
 		e.preventDefault();
 		showForgotSheet();
 	});
 
-	$(".link-newConversation").live("click", function(e) {
-		if (!ET.userId) {
-			e.preventDefault();
-			showLoginSheet(true);
-		}
-	});
+	// $(".link-newConversation").live("click", function(e) {
+	// 	if (!ET.userId) {
+	// 		e.preventDefault();
+	// 		showLoginSheet(true);
+	// 	}
+	// });
 
-	$(".link-join").live("click", function(e) {
-		e.preventDefault();
-		showJoinSheet();
-	});
+	// $(".link-join").live("click", function(e) {
+	// 	e.preventDefault();
+	// 	showJoinSheet();
+	// });
 
 	$(".link-membersOnline").live("click", function(e) {
 		e.preventDefault();
@@ -830,12 +822,86 @@ $(function() {
 	});
 
 	// Add click handlers to stars.
-	$("a.star, .starButton").live("click", function(e) {
+	$(".starButton").live("click", function(e) {
 		toggleStar($(this).data("id"));
 		e.preventDefault();
 	});
+	
+	var miniQuoteId = "#conversationPosts .postReplies .postRef, #conversationPosts .postBody .postRef, #conversationPosts .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
+	$(miniQuoteId).live("mouseenter", function(e) {
+		$("#postToolTip").remove();
+		var e = $(this);
+		var em = e.parent().parent();
+		if (em.prop("class") == "col-conversation") {
+			var postId = em.parent().prop("id").substr(1) + "-0";
+			var delayTime = 3000;
+		} else {
+			var postId = e.data("id");
+			var delayTime = 2000;
+		}
+		e.delay(delayTime);
+		e.queue(function(){
+			showPostTooltip(postId);
+			e.dequeue();
+		}, 'qsp');
+		e.preventDefault();
+	});
+	
+	$(miniQuoteId).live("mouseleave", function(e) {
+		var e = $(this);
+		e.queue('qsp', []);
+		e.stop(true, true);
+		/*var em = e.parent().parent();
+		if (em.prop("class") == "col-conversation") {
+			$("#postToolTip").remove();
+		}*/
+		e.preventDefault();
+	});
+	
+	$(miniQuoteId).live("click", function(e) {
+		var e = $(this);
+		e.queue('qsp', []);
+		e.stop(true, true);
+		$("#postToolTip").remove();
+		e.preventDefault();
+	});
+	
+	$("#postToolTip .controls .control-closeToolTip").live("click", function(e) {
+		$("#postToolTip").remove();
+		e.preventDefault();
+	});
+	
+	// Register the Esc hotkey.
+	$(document).keydown(function(e) { 
+		if (e.which == 27) {
+			$("#postToolTip").remove();
+		}
+	});
 
 });
+
+function showPostTooltip(postId)
+{
+	if (!postId) return;
+	$("#postToolTip").remove();
+	$.hideToolTip();
+	
+	$.ETAjax({
+		url: "conversation/showPost.ajax/" + postId,
+		type: "get",
+		beforeSend: function() {
+			createLoadingOverlay("showPostTooltip", "hdr");
+		},
+		complete: function() {
+			hideLoadingOverlay("showPostTooltip", true);
+		},
+		success: function(data) {
+			if (data.messages || data.modalMessage) return;
+			$("#hdr").after(data.view);
+		}
+	});
+	
+}
 
 // Show the join sheet.
 function showJoinSheet(formData)
@@ -868,15 +934,22 @@ function showOnlineSheet()
 }
 
 // Toggle the state of a star.
-function toggleStar(conversationId) {
-	$.ETAjax({url: "conversation/star.json/" + conversationId});
-	var star = $(".star[data-id=" + conversationId + "], .starButton[data-id=" + conversationId + "] .star");
-	var text = star.parent().is(".starButton") ? star.parent().find("span:not(.star)") : star;
-	var on = !star.hasClass("starOn");
-	star.toggleClass("starOn", on);
+function toggleStar(conversationId)
+{
+	$.ETAjax({url: "conversation/star.json/"+conversationId});
+	var star = $(".starButton[data-id="+conversationId+"] .star");
+	var on = !star.hasClass("icon-star");
+	toggleStarState(conversationId, on);
+}
+
+function toggleStarState(conversationId, on)
+{
+	var star = $(".starButton[data-id="+conversationId+"] .star");
+	var text = star.parent().find("span:not(.star)");
+	star.toggleClass("icon-star", on).toggleClass("icon-star-empty", !on);
 	text.html(T(on ? "Following" : "Follow"));
-	$("#c" + conversationId).toggleClass("starred", on);
-};
+	$("#c"+conversationId).toggleClass("starred", on);
+}
 
 
 

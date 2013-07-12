@@ -41,6 +41,7 @@ public function index()
 		ET::upgradeModel()->upgrade(C("esoTalk.version"));
 
 		// Update the version and serial in the config file.
+/* - andrewks {
 		ET::writeConfig(array(
 			"esoTalk.version" => ESOTALK_VERSION
 		));
@@ -48,6 +49,16 @@ public function index()
 		// Show a success message and redirect.
 		$this->message(T("message.upgradeSuccessful"), "success");
 		$this->redirect(URL(""));
+- andrewks } */
+// + andrewks {
+		ET::writeConfig(array(
+			"esoTalk.version" => ESOTALK_VERSION,
+			"esoTalk.admin.needUpgradeDB" => false
+		));
+
+		// Show a success message and redirect.
+		$this->renderMessage(T("Success!"), T("message.upgradeSuccessful"));
+// + andrewks }
 
 	} catch (Exception $e) {
 		$this->fatalError($e->getMessage());

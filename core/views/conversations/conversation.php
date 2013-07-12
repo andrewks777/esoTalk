@@ -27,7 +27,13 @@ if ($conversation["startMemberId"] == ET::$session->user) $className .= " mine";
 $conversationURL = conversationURL($conversation["conversationId"], $conversation["title"]);
 
 // Output the conversation title, highlighting search keywords.
+/* - andrewks {
 echo "<strong class='title'><a href='".URL($conversationURL.((ET::$session->user and $conversation["unread"]) ? "/unread" : ""))."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
+- andrewks } */
+// + andrewks {
+$convToolTip = $conversation["startMember"].", ".relativeTime($conversation["startTime"], true);
+echo "<strong class='title'><a href='".URL($conversationURL.((ET::$session->user and $conversation["unread"]) ? "/unread" : ""))."' title='".$convToolTip."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
+// + andrewks }
 
 // Output the conversation's labels.
 echo "<span class='labels'>";
@@ -39,25 +45,33 @@ foreach ($conversation["labels"] as $label) {
 }
 echo "</span> ";
 
-// Output controls which apply to this conversation.
-echo "<span class='controls'>";
-
 // If we're highlighting search terms (i.e. if we did a fulltext search), then output a "show matching posts" link.
 if (ET::$session->get("highlight"))
-	echo " <a href='".URL($conversationURL."/?search=".urlencode($data["fulltextString"]))."' class='showMatchingPosts'>".T("Show matching posts")."</a>";
+	echo "<span class='controls'><a href='".URL($conversationURL."/?search=".urlencode($data["fulltextString"]))."' class='showMatchingPosts'>".T("Show matching posts")."</a></span>";
 
-echo "</span>";
 ?></div>
 <div class='col-channel'><?php
 $channel = $data["channelInfo"][$conversation["channelId"]];
 echo "<a href='".URL(searchURL("", $channel["slug"]))."' class='channel channel-{$conversation["channelId"]}' data-channel='{$channel["slug"]}'>{$channel["title"]}</a>";
 ?></div>
-<div class='col-replies'><?php
+<div class='col-replies'>
+<i class='icon-comment<?php if (!$conversation["replies"]) echo "-alt"; ?>'></i>
+<?php
+/* - andrewks {
 echo "<span>".Ts("%s reply", "%s replies", $conversation["replies"])."</span>";
 
 // Output an "unread indicator", showing the number of unread posts.
 if (ET::$session->user and $conversation["unread"])
-	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." new</a> ";
+	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
+- andrewks } */
+// + andrewks {
+echo "<span title='".T("conversations.replies")."'>".sprintf("%s", $conversation["replies"])."</span>";
+
+// Output an "unread indicator", showing the number of unread posts.
+if (ET::$session->user and $conversation["unread"])
+	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
+// + andrewks }
+
 
 ?></div>
 <div class='col-lastPost'><?php

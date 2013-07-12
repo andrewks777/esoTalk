@@ -37,8 +37,19 @@ endif; ?>>
 
 <?php if (!empty($post["body"])): ?>
 <div class='postBody'>
-<?php echo $post["body"]; ?>
+<?php
+echo $post["body"];
+?>
 </div>
+<?php
+// + andrewks {
+if (isset($post["repliesCount"]) && $post["repliesCount"]) {
+	echo '<div class="postReplies">';
+	echo $post["replies"];
+	echo '</div>';
+}
+// + andrewks }
+?>
 <?php endif; ?>
 
 </div>

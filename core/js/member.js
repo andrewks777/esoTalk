@@ -25,7 +25,10 @@ init: function() {
 	});
 
 	// Make the controls list into a popup.
-	$("#memberActions").before($("#memberControls").popup({alignment: "right"}));
+	$("#memberActions").before($("#memberControls").popup({
+		alignment: "right",
+		content: "<i class='icon-cog'></i> <span class='text'>"+T("Controls")+"</span> <i class='icon-caret-down'></i>"
+	}));
 
 	// Add a tooltip to the online indicator.
 	$("#memberProfile .online").tooltip({alignment: "left", className: "withArrow withArrowBottom", offset: [-9, 0]}).css("cursor", "pointer");

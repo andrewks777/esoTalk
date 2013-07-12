@@ -34,6 +34,9 @@ class ETPlugin_AboutMe extends ETPlugin {
 		$about = ET::formatter()->init($about)->format()->get();
 
 		$sender->data("about", $about);
+// + andrewks {
+		if (ET::$session->user) $sender->addJSLanguage("Controls");
+// + andrewks }
 		$sender->renderProfile($this->getView("about"));
 	}
 

@@ -45,6 +45,7 @@ public function handler_conversationController_renderBefore($sender)
  */
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
+/* - andrewks {
 	addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
 	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);
 	addToArrayString($controls, "link", "<a href='javascript:BBCode.link(\"$id\");void(0)' title='".T("Link")."' class='bbcode-link'><span>".T("Link")."</span></a>", 0);
@@ -52,6 +53,16 @@ public function handler_conversationController_getEditControls($sender, &$contro
 	addToArrayString($controls, "header", "<a href='javascript:BBCode.header(\"$id\");void(0)' title='".T("Header")."' class='bbcode-h'><span>".T("Header")."</span></a>", 0);
 	addToArrayString($controls, "italic", "<a href='javascript:BBCode.italic(\"$id\");void(0)' title='".T("Italic")."' class='bbcode-i'><span>".T("Italic")."</span></a>", 0);
 	addToArrayString($controls, "bold", "<a href='javascript:BBCode.bold(\"$id\");void(0)' title='".T("Bold")."' class='bbcode-b'><span>".T("Bold")."</span></a>", 0);
+- andrewks } */
+// + andrewks {
+	addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
+	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);
+	addToArrayString($controls, "link", "<a href='javascript:BBCode.link(\"$id\");void(0)' title='".T("Link")."' class='bbcode-link'><span>".T("Link")."</span></a>", 0);
+	addToArrayString($controls, "header", "<a href='javascript:BBCode.header(\"$id\");void(0)' title='".T("Header")."' class='bbcode-h'><span>".T("Header")."</span></a>", 0);
+	addToArrayString($controls, "strike", "<a href='javascript:BBCode.strikethrough(\"$id\");void(0)' title='".T("Strike")."' class='bbcode-s'><span>".T("Strike")."</span></a>", 0);
+	addToArrayString($controls, "italic", "<a href='javascript:BBCode.italic(\"$id\");void(0)' title='".T("Italic")."' class='bbcode-i'><span>".T("Italic")."</span></a>", 0);
+	addToArrayString($controls, "bold", "<a href='javascript:BBCode.bold(\"$id\");void(0)' title='".T("Bold")."' class='bbcode-b'><span>".T("Bold")."</span></a>", 0);
+// + andrewks }
 }
 
 
@@ -96,7 +107,7 @@ public function handler_format_format($sender)
 	if (!$sender->basic) $sender->content = preg_replace("/\[img\](.*?)\[\/img\]/i", "<img src='$1' alt='-image-'/>", $sender->content);
 
 	// Links with display text: [url=http://url]text[/url]
-	$sender->content = preg_replace("/\[url=(\w{2,6}:\/\/)?([^\]]*?)\](.*?)\[\/url\]/ie", "'<a href=\'' . ('$1' ? '$1' : 'http://') . '$2\' rel=\'nofollow external\' target=\'_blank\'>$3</a>'", $sender->content);
+	$sender->content = preg_replace_callback("/\[url=(\w{2,6}:\/\/)?([^\]]*?)\](.*?)\[\/url\]/i", array($this, "linksCallback"), $sender->content);
 
 	// Bold: [b]bold text[/b]
 	$sender->content = preg_replace("|\[b\](.*?)\[/b\]|si", "<b>$1</b>", $sender->content);
@@ -109,6 +120,26 @@ public function handler_format_format($sender)
 
 	// Headers: [h]header[/h]
 	$sender->content = preg_replace("/\[h\](.*?)\[\/h\]/", "</p><h4>$1</h4><p>", $sender->content);
+}
+
+
+/**
+ * The callback function used to replace URL BBCode with HTML anchor tags.
+ *
+ * @param array $matches An array of matches from the regular expression.
+ * @return string The replacement HTML anchor tag.
+ */
+public function linksCallback($matches)
+{
+	// If this is an internal link...
+	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
+	$baseURL = C("esoTalk.baseURL");
+	if (substr($url, 0, strlen($baseURL)) == $baseURL) {
+		return "<a href='".$url."' target='_blank' class='link-internal'>".$matches[3]."</a>";
+	}
+
+	// Otherwise, return an external HTML anchor tag.
+	return "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$matches[3]." <i class='icon-external-link'></i></a>";
 }
 
 

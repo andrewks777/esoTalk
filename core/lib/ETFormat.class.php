@@ -26,6 +26,10 @@ public $content = "";
  */
 public $basic = false;
 
+// + andrewks {
+public $conversationId = 0;
+public $relativePostId = 0;
+// + andrewks }
 
 /**
  * Initialize the formatter with a content string on which all subsequent operations will be performed.
@@ -34,6 +38,8 @@ public $basic = false;
  * @param bool $sanitize Whether or not to sanitize HTML in the content.
  * @return ETFormat
  */
+
+/* - andrewks {
 public function init($content, $sanitize = true)
 {
 	// Clean up newline characters - make sure the only ones we are using are \n!
@@ -44,6 +50,22 @@ public function init($content, $sanitize = true)
 
 	return $this;
 }
+- andrewks } */
+// + andrewks {
+public function init($content, $sanitize = true, $conversationId = 0, $relativePostId = 0)
+{
+	// Clean up newline characters - make sure the only ones we are using are \n!
+	$content = strtr($content, array("\r\n" => "\n", "\r" => "\n")) . "\n";
+
+	// Set the content, and sanitize if necessary.
+	$this->content = $sanitize ? sanitizeHTML($content) : $content;
+
+	$this->conversationId = $conversationId;
+	$this->relativePostId = $relativePostId;
+	
+	return $this;
+}
+// + andrewks }
 
 
 /**
@@ -191,18 +213,62 @@ public function links()
 {
 	// Convert normal links - http://www.example.com, www.example.com - using a callback function.
 
+// + andrewks {
 	$use_unicode = C("esoTalk.format.PCRE.UseUnicode");
+// + andrewks }
 
+/* - andrewks {
 	$this->content = preg_replace_callback(
-		"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:".($use_unicode ? "\pL" : "[a-z]" )."{2,4})[^\s<]*?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+		"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW)(?:[\.\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i",
 		array($this, "linksCallback"), $this->content);
+- andrewks } */
+// + andrewks {
+// http://jmrware.com/articles/2009/uri_regexp/URI_regex.html
+// http://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+		//"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:".($use_unicode ? "\pL" : "[a-z]" )."{2,4})[^\s<]*?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+		//"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ)(?:[\.\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+
+	$ipv4Pattern = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
+	$domainPattern = "(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ)";
+	$hostNamePattern = $use_unicode
+		? "(?:[\pL\d]\.|[\pL\d][\pL\d\-]*[\pL\d]\.)+".$domainPattern
+		: "(?:[a-z0-9]\.|[a-z0-9][a-z0-9\-]*[a-z0-9]\.)+".$domainPattern;
+	$portPattern = "(?::\d+)?";
+	$this->content = preg_replace_callback(
+		"/(?<=\s|^|>|\()((?:http|https|ftp|ftps):\/\/)?((?:".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+		array($this, "linksCallback"), $this->content);
+// + andrewks }
 
 	// Convert email links.
-	$this->content = preg_replace("/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/i", "<a href='mailto:$0'>$0</a>", $this->content);
+	$this->content = preg_replace("/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/i", "<a href='mailto:$0' class='link-email'>$0</a>", $this->content);
+	
+// + andrewks {
+	$this->content = preg_replace_callback(
+		"/\((0|[1-9]{1,1}\d*)\)/",
+		array($this, "linksCallback2"), $this->content);
+// + andrewks }
 
 	return $this;
 }
 
+// + andrewks {
+public function linksCallback2($matches)
+{
+	if ((int)$matches[1] < $this->relativePostId) {
+		$dataId = postURL($matches[1], $this->conversationId, $matches[1], false);
+		$url = URL(postURL($matches[1], $this->conversationId, $matches[1]), true);
+		//return "<a href='".$url."' rel='post' data-id='$dataId' class='control-search postRef'><i class='icon-search'></i>$matches[0]</a>";
+		return "<a href='".$url."' rel='post' data-id='$dataId' class='postRef'>$matches[0]</a>";
+	} else return $matches[0];
+}
+
+public function getMiniQuote($quote, $classname = 'postRef')
+{
+	$dataId = postURL(0, $quote["conversationId"], $quote["relativePostId"], false);
+	$url = URL(postURL(0, $quote["conversationId"], $quote["relativePostId"]), true);
+	return "<a href='".$url."' rel='post' data-id='$dataId' class='$classname'>(".$quote["relativePostId"].")</a>";
+}
+// + andrewks }
 
 /**
  * The callback function used to replace inline URLs with HTML anchor tags.
@@ -222,8 +288,38 @@ public function linksCallback($matches)
 		return "<div class='video'><object width='$width' height='$height'><param name='movie' value='http://www.youtube.com/v/$id'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/$id' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='$width' height='$height'></embed></object></div>";
 	}
 
-	// Otherwise, return an HTML anchor tag.
-	return "<a href='".($matches[1] ? $matches[1] : "http://").$matches[2]."' rel='nofollow external' target='_blank'>".$matches[0]."</a>";
+/* - andrewks {
+	// If this is an internal link...
+	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
+	$baseURL = C("esoTalk.baseURL");
+	if (substr($url, 0, strlen($baseURL)) == $baseURL) {
+		return "<a href='".$url."' target='_blank' class='link-internal'>".$matches[0]."</a>";
+	}
+- andrewks } */
+// + andrewks {
+	// If this is an internal link...
+	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
+	$baseURL = C("esoTalk.hostName").C("esoTalk.baseURL");
+	if (substr($url, 0, strlen($baseURL)) == $baseURL) {
+		$caption = $matches[0];
+		$shortURL = substr($url, strlen($baseURL) - 1);
+		$postId = "";
+		if (preg_match("/^\/(?:conversation\/post\/(\d+)-)?(\d+)/i", $shortURL, $conv)) {
+			if ($conv[1] === "") $conversationId = $conv[2]; else $conversationId = $conv[1];
+			$conversation = ET::conversationModel()->getById($conversationId);
+			if ($conversation) {
+				//if (!$conversation["private"]) $caption = $conversation["title"];
+				$caption = $conversation["title"];
+				$postId = ($conv[1] === "") ? "0" : $conv[2];
+				$postId = $conversationId."-".$postId;
+			}
+		}
+		return "<a href='".$url."' target='_blank' class='link-internal' data-id='$postId'>".$caption."</a>";
+	}
+// + andrewks }
+
+	// Otherwise, return an external HTML anchor tag.
+	return "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$matches[0]." <i class='icon-external-link'></i></a>";
 }
 
 
@@ -287,7 +383,7 @@ public function makeQuote($text, $citation = "")
 	$quote = "<blockquote><p>";
 
 	// If we extracted a post ID from the citation, add a "find this post" link.
-	if (!empty($postId)) $quote .= "<a href='".URL(postURL($postId), true)."' rel='post' data-id='$postId' class='control-search postRef'>".T("Find this post")."</a> ";
+	if (!empty($postId)) $quote .= "<a href='".URL(postURL($postId), true)."' rel='post' data-id='$postId' class='control-search postRef'><i class='icon-search'></i></a> ";
 
 	// If there is a citation, add it.
 	if (!empty($citation)) $quote .= "<cite>$citation</cite> ";
@@ -319,11 +415,20 @@ public function removeQuotes()
  */
 public function mentions()
 {
+/* - andrewks {
 	$this->content = preg_replace(
 		'/(^|[\s,\.:\]])@([\w&;]{3,20})\b/ieu',
-		"'$1<a href=\''.URL('member/name/'.urlencode(str_replace('&nbsp;', ' ', '$2')), true).'\'>$2</a>'",
+		"'$1<a href=\''.URL('member/name/'.urlencode(str_replace('&nbsp;', ' ', '$2')), true).'\' class=\'link-member\'>$2</a>'",
 		$this->content
 	);
+- andrewks } */
+// + andrewks {
+	$this->content = preg_replace(
+		'/(^|[\s,\.:\]])@(?:([\w]{1,1}(?:\w|-|&nbsp;){0,'.(C("esoTalk.maxUserName") - 2).'}[\w]{1,1})(?=$|[^\w])|{([\w]{1,1}(?:\w|-| |&nbsp;){0,'.(C("esoTalk.maxUserName") - 2).'}[\w]{1,1})})/ieu',
+		"'$1<a href=\''.URL('member/name/'.urlencode(str_replace('&nbsp;', ' ', '$2$3')), true).'\' class=\'link-member\'>$2$3</a>'",
+		$this->content
+	);
+// + andrewks }
 
 	return $this;
 }
@@ -337,13 +442,42 @@ public function mentions()
  */
 public function getMentions($content)
 {
+/* - andrewks {
 	preg_match_all('/(^|[\s,\.:\]])@([\w&;]{3,20})\b/iu', $content, $matches, PREG_SET_ORDER);
 	$names = array();
 	foreach ($matches as $k => $v) $names[] = str_replace("&nbsp;", " ", $v[2]);
+- andrewks } */
+// + andrewks {
+	$content = sanitizeHTML($content);
+	preg_match_all('/(^|[\s,\.:\]])@(?:([\w]{1,1}(?:\w|-|&nbsp;){0,'.(C("esoTalk.maxUserName") - 2).'}[\w]{1,1})(?=$|[^\w])|{([\w]{1,1}(?:\w|-| |&nbsp;){0,'.(C("esoTalk.maxUserName") - 2).'}[\w]{1,1})})/iu', $content, $matches, PREG_SET_ORDER);
+	$names = array();
+	foreach ($matches as $k => $v) $names[] = str_replace("&nbsp;", " ", (string)$v[2].((count($v) >= 4) ? $v[3] : ""));
+// + andrewks }
 
 	return $names;
 }
 
+// + andrewks {
+public function getQuotes($conversationId, $relativePostId, $content)
+{
+	$names = array();
+	
+	// quotes
+	preg_match_all('/(.*?)\n?\[quote(?:=(.*?)(]?))?\]\n?(.*?)\n?\[\/quote\]\n{0,2}/ise', $content, $matches, PREG_SET_ORDER);
+	foreach ($matches as $v) {
+		list($conversationId2, $relativePostId) = explodeRelativePostId($v[2]);
+		$names[] = array("conversationId" => (int)$conversationId2, "relativePostId" => (int)$relativePostId);
+	}
+	
+	// mini-quotes
+	preg_match_all('/\((0|[1-9]{1,1}\d*)\)/', $content, $matches, PREG_SET_ORDER);
+	foreach ($matches as $v) {
+		if ((int)$v[1] < $relativePostId) $names[] = array("conversationId" => (int)$conversationId, "relativePostId" => (int)$v[1]);
+	}
+
+	return $names;
+}
+// + andrewks }
 
 /**
  * Highlight a list of words in the content string.

@@ -65,7 +65,7 @@
 
 #pluginList > li .pluginControls {margin:-3px -2px 0; float:right; font-size:100%}
 #pluginList > li .pluginControls > a {display:inline-block}
-#pluginList .toggle {width:80px; text-align:center}
+#pluginList .toggle {width:90px; text-align:center}
 
 #pluginList > li .popupWrapper {display:none}
 #pluginList > li .popupButton .text {display:none}

@@ -98,11 +98,11 @@ init: function() {
 	// Add click and double click handlers to all the gambits.
 	$("#gambits a").click(function(e) {
 		e.preventDefault();
-		ETSearch.gambit(desanitize($(this).html()), e.shiftKey);
+		ETSearch.gambit(desanitize($(this).data("gambit")), e.shiftKey);
 		ETSearch.formInput.keyup();
 	}).dblclick(function(e) {
 		e.preventDefault();
-		ETSearch.search((e.shiftKey ? "!" : "") + "#" + desanitize($(this).html()));
+		ETSearch.search((e.shiftKey ? "!" : "") + "#" + desanitize($(this).data("gambit")));
 		ETSearch.formInput.blur().keyup();
 	})
 
@@ -301,7 +301,7 @@ search: function(query, customMethod) {
 	ETSearch.currentSearch = ETSearch.formInput.val(query).val();
 
 	// If the search input is blank, hide the reset 'x' button.
-	if (!ETSearch.currentSearch) ETSearch.formReset.css("visibility", "hidden");
+	ETSearch.formReset.css("visibility", ETSearch.currentSearch ? "visible" : "hidden");
 
 	// Get the channel slugs and join them together so we can put them in a URL.
 	var channelString = ETSearch.getCurrentChannelSlugs().join("+");

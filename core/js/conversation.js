@@ -31,7 +31,10 @@ init: function() {
 
 		// Make the controls into a popup button.
 		if ($("#conversationControls").length)
-			$("#conversationBody .scrubberContent").prepend($("#conversationControls").popup({alignment: "left"}).find(".button").addClass("big").end());
+			$("#conversationBody .scrubberContent").prepend($("#conversationControls").popup({
+				alignment: "left",
+				content: "<i class='icon-cog'></i> <span class='text'>"+T("Controls")+"</span> <i class='icon-caret-down'></i>"
+			}).find(".button").addClass("big").end());
 
 		// Set up the timeline scrubber.
 		ETScrubber.body = $("#conversation");
@@ -56,7 +59,8 @@ init: function() {
 				url: "conversation/index.ajax/"+ETConversation.id+"/"+position,
 				data: {search: ETConversation.searchString},
 				success: function(data) {
-					success(data);
+					var items = success(data);
+					ETConversation.collapseQuotes(items);
 					ETConversation.redisplayAvatars();
 				},
 				global: false
@@ -68,7 +72,7 @@ init: function() {
 			var position;
 			if (index == Infinity) position = "last";
 			else position = (""+index).substr(0, 4)+"/"+(""+index).substr(4, 2);
-			$.history.load(ETConversation.slug+"/"+position, true);
+			//$.history.load("index.php/"+ETConversation.slug+"/"+position, true);
 		}
 
 		// Initialize the scrubber.
@@ -129,7 +133,11 @@ init: function() {
 			var title = $("#forumTitle");
 			if (y > $("#hdr").height()) {
 				if (!title.data("old")) {
-					title.data("old", title.html()).html("<a href='#'>"+ETConversation.title+"</a>");
+					title.data("old", title.html()).html("<a href='#' title='"+ETConversation.title+"'>"+ETConversation.title+"</a>");
+					title.find("a").click(function(e) {
+						e.preventDefault();
+						$.scrollTo(0, "fast");
+					});
 				}
 			} else if (title.data("old")) {
 				title.html(title.data("old")).data("old", null);
@@ -149,9 +157,10 @@ init: function() {
 		}).trigger("update");
 
 		$("#membersAllowedSheet").parents("form").remove();
-
+				
 		// Show the "change channel" sheet straight away!
 		ETConversation.changeChannel();
+		
 	}
 
 	// Add click handlers to change the channel and members allowed.
@@ -211,7 +220,8 @@ initReply: function() {
 	// Add event handlers on the textarea to enable/disable buttons.
 	textarea.keyup(function(e) {
 		if (e.ctrlKey) return;
-		$("#reply .postReply, #reply .saveDraft")[$(this).val() ? "enable" : "disable"]();
+		//$("#reply .postReply, #reply .saveDraft")[$(this).val() ? "enable" : "disable"]();
+		if ($(this).val()) $("#reply .postReply, #reply .saveDraft").enable(); else $("#reply .postReply, #reply .saveDraft").disable();
 		ETConversation.editingReply = $(this).val() ? true : false;
 	});
 
@@ -262,7 +272,7 @@ initReply: function() {
 		// If there's something in the reply textarea, show it.
 		if ($("#reply textarea").val()) $("#reply").trigger("change");
 
-		$(document).click(function(e) { ETConversation.hideReply(); });
+		$(document).click(function(e) { if (!$("#reply").has(e.target).length) ETConversation.hideReply(); });
 
 	}
 
@@ -270,7 +280,7 @@ initReply: function() {
 
 	// Register the Ctrl+Enter shortcut.
 	textarea.keypress(function(e) {
-		if (e.ctrlKey && e.which == 13 && !$("#reply .postReply").prop("disabled")) {
+		if (e.ctrlKey && (e.which == 10 || e.which == 13) && !$("#reply .postReply").prop("disabled")) {
 			$("#reply .postReply").click();
 			e.preventDefault();
 		}
@@ -278,7 +288,8 @@ initReply: function() {
 },
 
 // Condense the reply box back into a placeholder.
-hideReply: function() {
+hideReply: function(hideReplyControls) {
+	if (hideReplyControls == undefined) hideReplyControls = true;
 	if (!ETConversation.replyShowing || $("#reply textarea").val()) return;
 
 	// Save the scroll top and height.
@@ -286,8 +297,9 @@ hideReply: function() {
 	var oldHeight = $("#reply .postContent").height();
 
 	// Condense it back into a placeholder.
+	if (hideReplyControls) {
 	ETConversation.replyShowing = false;
-	$("#reply").addClass("replyPlaceholder");
+	$("#reply").addClass("replyPlaceholder"); }
 
 	// Animate the change and scroll back to where we were before.
 	var newHeight = $("#reply .postContent").height();
@@ -296,13 +308,18 @@ hideReply: function() {
 	});
 	$.scrollTo(scrollTop);
 
-	ETConversation.editingReply = false;
+	if (hideReplyControls) ETConversation.editingReply = false;
 },
 
-resetReply: function() {
+resetReply: function(hideReplyControls) {
+	if (hideReplyControls == undefined) hideReplyControls = true;
 	$("#reply textarea").val("");
 	ETConversation.togglePreview("reply", false);
-	ETConversation.hideReply();
+	//if (hideReplyControls) ETConversation.hideReply(true);
+	ETConversation.hideReply(hideReplyControls);
+	$("#reply textarea").focus();
+	$("#reply .postHeader .controls .previewCheckbox #reply-previewCheckbox").prop("checked", false);
+	$("#reply .postReply, #reply .saveDraft").disable();
 },
 
 // Add a reply.
@@ -331,19 +348,20 @@ addReply: function() {
 
 			// Hide the draft label, clear the textarea, and initialize the reply area again.
 			$("#conversationHeader .labels .label-draft").remove();
-			ETConversation.resetReply();
+			ETConversation.resetReply(false);
 
 			ETConversation.postCount++;
 
 			// Create a dud "more" block and then add the new post to it.
 			var moreItem = $("<li></li>").appendTo("#conversationPosts");
 			ETScrubber.count = ETConversation.postCount;
-			ETScrubber.addItems(ETConversation.postCount - 1, data.view, moreItem, true);
+			var items = ETScrubber.addItems(ETConversation.postCount - 1, data.view, moreItem, true);
 			ETConversation.redisplayAvatars();
+			ETConversation.collapseQuotes(items);
 
 			// Star the conversation if the user has the "star on reply" option on.
 			if (data.starOnReply) {
-				$("#conversationHeader .star").addClass("starOn").html(T("Starred"));
+				toggleStarState(ETConversation.id, true);
 			}
 
 			// Reset the post-checking timeout.
@@ -528,6 +546,12 @@ initPosts: function() {
 		ETConversation.quotePost(postId, e.shiftKey);
 		e.preventDefault();
 	});
+	
+	$("#conversationPosts .post:not(.edit) .info #relativePostId").live("click", function(e) {
+		var postId = $(this).parents(".post").data("id");
+		ETConversation.miniQuotePost(postId, e.shiftKey);
+		e.preventDefault();
+	});
 
 	// Add a click handler to any "post links" to scroll back up to the right post, if it's loaded.
 	$("#conversationPosts .postBody a[rel=post]").live("click", function(e) {
@@ -542,17 +566,21 @@ initPosts: function() {
 			}
 		});
 	});
+	
+	ETConversation.collapseQuotes($("#conversationPosts"));
+},
 
-	// Collapse quotes and add expand buttons.
-	$("#conversationPosts .postBody blockquote:not(.collapsed)")
+// Collapse quotes and add expand buttons.
+collapseQuotes: function(items) {
+	$(".postBody blockquote:not(.collapsed)", items)
 		.addClass("collapsed")
 		.each(function() {
-			if ($(this)[0].scrollHeight <= $(this).innerHeight()) {
+			if ($(this)[0].scrollHeight <= $(this).innerHeight() + 20) {
 				$(this).removeClass("collapsed");
 				return;
 			}
 
-			var link = $("<a href='#' class='expand'>...</a>");
+			var link = $("<a href='#' class='expand'><i class='icon-ellipsis-horizontal'></i></a>");
 			link.click(function(e) {
 				e.preventDefault();
 				$(this).parents("blockquote").removeClass("collapsed");
@@ -626,6 +654,7 @@ restorePost: function(postId) {
 			if (data.messages) return;
 			$("#p"+postId).replaceWith(data.view);
 			ETConversation.redisplayAvatars();
+			ETConversation.collapseQuotes($("#p"+postId));
 
 		}
 	});
@@ -697,7 +726,7 @@ updateEditPost: function(postId, html) {
 
 	// Regsiter the Ctrl+Enter and Escape shortcuts on the post's textarea.
 	textarea.keydown(function(e) {
-		if (e.ctrlKey && e.which == 13) {
+		if (e.ctrlKey && (e.which == 10 || e.which == 13)) {
 			ETConversation.saveEditPost(postId, this.value);
 			e.preventDefault();
 		}
@@ -744,6 +773,7 @@ saveEditPost: function(postId, content) {
 
 			ETConversation.editingPosts--;
 			ETConversation.redisplayAvatars();
+			ETConversation.collapseQuotes(newPost);
 		}
 	});
 },
@@ -791,6 +821,23 @@ quotePost: function(postId, multi) {
 	});
 },
 
+miniQuotePost: function(postId, multi) {
+
+	var top = $(document).scrollTop();
+	var arr = postId.toString().split("-");
+	var relativePostId = arr[1];
+	ETConversation.miniQuote("reply", relativePostId, false);
+
+	// If we're "multi" quoting (i.e. shift is being held down), keep our scroll position static.
+	// Otherwise, scroll down to the reply area.
+	if (!multi) {
+		$("#jumpToReply").click();
+	} else {
+		$("#reply").change();
+		$.scrollTo(top);
+	}
+
+},
 
 //***** MEMBERS ALLOWED
 
@@ -889,16 +936,19 @@ changeChannel: function() {
 	ETSheet.loadSheet("changeChannelSheet", "conversation/changeChannel.view/"+ETConversation.id, function() {
 
 		// Highlight the currently selected channel.
-		$("#changeChannelSheet .channelList input:checked").parents("li").addClass("selected");
+		// $("#changeChannelSheet .channelList input:checked").parents("li").addClass("selected");
 
 		// Hide the radio buttons, and set up a handler for when they're changed.
-		$("#changeChannelSheet .channelList input").hide().change(function() {
-			$("#changeChannelSheet .channelList li").removeClass("selected");
-			$(this).parents("li").addClass("selected");
+		$("#changeChannelSheet .channelList input").hide().click(function() {
+			// $("#changeChannelSheet .channelList li").removeClass("selected");
+			// $(this).parents("li").addClass("selected");
+			$("#changeChannelSheet form").submit();
 		});
 
+		$("#changeChannelSheet .buttons").hide();
+
 		// Add tooltips to channels that cannot be changed to.
-		$("#changeChannelSheet .channelList li").tooltip({alignment: "left", offset: [20, 35], className: "hoverable"});
+		$("#changeChannelSheet .channelList li").tooltip({alignment: "left", offset: [0, 35], className: "hoverable"});
 
 		// Add a submit event to the form.
 		$("#changeChannelSheet form").submit(function(e) {
@@ -920,6 +970,7 @@ changeChannel: function() {
 					$("#conversationHeader .channels").replaceWith(data.channelPath);
 
 					ETSheet.hideSheet("changeChannelSheet");
+					if (!ET.conversation && !$("#conversationTitle input").val()) $("#conversationTitle input").focus();
 				}
 			})
 		});
@@ -978,7 +1029,9 @@ saveTitle: function(cancel) {
 
 // Toggle sticky.
 toggleSticky: function() {
-	$("#control-sticky").html(T($("#control-sticky").html() == T("Sticky") ? "Unsticky" : "Sticky"));
+	var e = $("#control-sticky").contents().last()[0];
+	var caption = e.nodeValue.toString().trim();
+	e.nodeValue = T(caption == T("Sticky") ? "Unsticky" : "Sticky");
 	$.ETAjax({
 		url: "conversation/sticky.ajax/" + ETConversation.id,
 		success: function(data) {
@@ -989,7 +1042,9 @@ toggleSticky: function() {
 
 // Toggle lock.
 toggleLock: function() {
-	$("#control-lock").html(T($("#control-lock").html() == T("Lock") ? "Unlock" : "Lock"));
+	var e = $("#control-lock").contents().last()[0];
+	var caption = e.nodeValue.toString().trim();
+	e.nodeValue = T(caption == T("Lock") ? "Unlock" : "Lock");
 	$.ETAjax({
 		url: "conversation/lock.ajax/" + ETConversation.id,
 		success: function(data) {
@@ -1000,7 +1055,9 @@ toggleLock: function() {
 
 // Toggle lock.
 toggleMute: function() {
-	$("#control-mute").html(T($("#control-mute").html() == T("Mute conversation") ? "Unmute conversation" : "Mute conversation"));
+	var e = $("#control-mute").contents().last()[0];
+	var caption = e.nodeValue.toString().trim();
+	e.nodeValue = T(caption == T("Mute conversation") ? "Unmute conversation" : "Mute conversation");
 	$.ETAjax({
 		url: "conversation/mute.ajax/" + ETConversation.id,
 		success: function(data) {
@@ -1028,6 +1085,15 @@ quote: function(id, quote, name, postId, insert) {
 
 	// Otherwise, wrap currently selected text with the quote.
 	else ETConversation.wrapText($("#" + id + " textarea"), startTag, endTag);
+},
+
+miniQuote: function(id, postId, insert) {
+	var quote = "(" + postId + ")";
+
+	if (insert) ETConversation.insertText($("#" + id + " textarea"), quote);
+
+	// Otherwise, wrap currently selected text with the quote.
+	else ETConversation.replaceText($("#" + id + " textarea"), quote);
 },
 
 // Add text to the reply area at the very end, and move the cursor to the very end.
@@ -1076,6 +1142,27 @@ wrapText: function(textarea, tagStart, tagEnd, selectArgument, defaultArgumentVa
 		var newEnd = newStart + selection.length;
 	}
 	textarea.selectRange(newStart, newEnd);
+
+	// Trigger the textarea's keyup to emulate typing.
+	textarea.trigger("keyup");
+},
+
+replaceText: function(textarea, text) {
+
+	textarea = $(textarea);
+
+	// Save the scroll position of the textarea.
+	var scrollTop = textarea.scrollTop();
+
+	// Work out what text is currently selected.
+	var selectionInfo = textarea.getSelection();
+
+	// Replace the textarea's value.
+	textarea.val(textarea.val().substr(0, selectionInfo.start) + text + textarea.val().substr(selectionInfo.end));
+
+	// Scroll back down and refocus on the textarea.
+	textarea.scrollTo(scrollTop);
+	textarea.focus();
 
 	// Trigger the textarea's keyup to emulate typing.
 	textarea.trigger("keyup");

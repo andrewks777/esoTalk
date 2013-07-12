@@ -65,6 +65,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		if ($year == "unread") {
 
 			// Fetch the post ID of the user's oldest unread post (according to $conversation["lastRead"].)
+/* - andrewks {
 			$id = ET::SQL()
 				->select("postId")
 				->from("post")
@@ -78,6 +79,25 @@ public function index($conversationId = false, $year = false, $month = false)
 			// If a post ID was found, redirect to its position within the conversation.
 			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage")));
 			if ($id) $this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+- andrewks } */
+// + andrewks {
+			$id = ET::SQL()
+				->select("relativePostId")
+				->from("post")
+				->where("conversationId=:conversationId")->bind(":conversationId", $conversation["conversationId"])
+				->orderBy("time ASC")
+				->offset((int)$conversation["lastRead"])
+				->limit(1)
+				->exec()
+				->result();
+
+			// If a post ID was found, redirect to its position within the conversation.
+			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage")));
+			if ($id) {
+				$id = $conversation["conversationId"]."-".$id;
+				$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+			}
+// + andrewks }
 
 		}
 
@@ -85,6 +105,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		if ($year == "unread" or $year == "last") {
 
 			// Fetch the post ID of the last post in the conversation.
+/* - andrewks {
 			$id = ET::SQL()
 				->select("postId")
 				->from("post")
@@ -97,8 +118,28 @@ public function index($conversationId = false, $year = false, $month = false)
 			// Redirect there.
 			$startFrom = max(0, $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"));
 			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+- andrewks } */
+// + andrewks {
+			$id = ET::SQL()
+				->select("relativePostId")
+				->from("post")
+				->where("conversationId=:conversationId")->bind(":conversationId", $conversation["conversationId"])
+				->orderBy("time DESC")
+				->limit(1)
+				->exec()
+				->result();
+
+			// Redirect there.
+			$startFrom = max(0, $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"));
+			$id = $conversation["conversationId"]."-".$id;
+			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+// + andrewks }
 
 		}
+
+// + andrewks {
+		elseif ($year == "all") $startFrom = 0;
+// + andrewks }
 
 		// If a month was specified, interpret the arguments as year/month.
 		elseif ($month and !$searchString) {
@@ -156,13 +197,30 @@ public function index($conversationId = false, $year = false, $month = false)
 	}
 
 	// Get the posts in the conversation.
+/* - andrewks {
 	$options = array(
 		"startFrom" => $startFrom,
 		"limit" => C("esoTalk.conversation.postsPerPage")
 	);
+- andrewks } */
+// + andrewks {
+	if ($year == "all") {
+		$options = array(
+			"startFrom" => $startFrom
+		);
+	} else {
+		$options = array(
+			"startFrom" => $startFrom,
+			"limit" => C("esoTalk.conversation.postsPerPage")
+		);
+	}
+// + andrewks }
+
 	if ($searchString) $options["search"] = $searchString;
 	if ($startFrom < $conversation["countPosts"]) $posts = ET::postModel()->getByConversation($conversation["conversationId"], $options);
 	else $posts = array();
+
+	$this->trigger("conversationIndex", array(&$conversation, &$posts, &$startFrom, &$searchString));
 
 	// Transport some data to the view.
 	$this->data("conversation", $conversation);
@@ -173,14 +231,29 @@ public function index($conversationId = false, $year = false, $month = false)
 	if ($this->responseType === RESPONSE_TYPE_DEFAULT) {
 
 		// Construct a canonical URL to this page.
+/* - andrewks {
 		$url = conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom".($searchString ? "?search=".urlencode($searchString) : "");
 		$this->canonicalURL = URL($url, true);
+- andrewks } */
+// + andrewks {
+		$url = conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom".($searchString ? "?search=".urlencode($searchString) : "");
+		$canonicalURL = URL(conversationURL($conversation["conversationId"], $conversation["title"])."/all", true);
+		if (!checkCanonicalURI($canonicalURL)) $this->canonicalURL = $canonicalURL;
+// + andrewks }
 
 		// If the slug in the URL is not the same as the actual slug, redirect.
+/* - andrewks {
 		$slug = slug($conversation["title"]);
 		if ($slug and (strpos($conversationId, "-") === false or substr($conversationId, strpos($conversationId, "-") + 1) != $slug)) {
 			redirect(URL($url), 301);
 		}
+- andrewks } */
+// + andrewks {
+		$slug = conversationURL($conversation["conversationId"], $conversation["title"]);
+		if ($slug != $conversationId) {
+			redirect(URL($url), 301);
+		}
+// + andrewks }
 
 		// Push onto the top of the naviagation stack.
 		$this->pushNavigation("conversation/".$conversation["conversationId"], "conversation", URL($url));
@@ -199,7 +272,12 @@ public function index($conversationId = false, $year = false, $month = false)
 		if ($conversation["canModerate"]) {
 			$this->addJSLanguage("Lock", "Unlock", "Sticky", "Unsticky", "message.confirmDelete");
 		}
+/* - andrewks {
 		if (ET::$session->user) $this->addJSLanguage("Starred", "Unstarred", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation");
+- andrewks } */
+// + andrewks {
+		if (ET::$session->user) $this->addJSLanguage("Controls", "Follow", "Following", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation", "Load more posts");
+// + andrewks }
 
 		$this->addJSVar("postsPerPage", C("esoTalk.conversation.postsPerPage"));
 		$this->addJSVar("conversationUpdateIntervalStart", C("esoTalk.conversation.updateIntervalStart"));
@@ -219,28 +297,28 @@ public function index($conversationId = false, $year = false, $month = false)
 
 		// Mute conversation control
 		if (ET::$session->user) {
-			$controls->add("mute", "<a href='".URL("conversation/mute/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-mute'>".T($conversation["muted"] ? "Unmute conversation" : "Mute conversation")."</a>");
+			$controls->add("mute", "<a href='".URL("conversation/mute/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-mute'><i class='icon-eye-close'></i> ".T($conversation["muted"] ? "Unmute conversation" : "Mute conversation")."</a>");
 		}
 
 		if ($conversation["canModerate"] or $conversation["startMemberId"] == ET::$session->userId) {
 			$controls->separator();
 
 			// Add the change channel control.
-			$controls->add("changeChannel", "<a href='".URL("conversation/changeChannel/".$conversation["conversationId"]."/?return=".urlencode($this->selfURL))."' id='control-changeChannel'>".T("Change channel")."</a>");
+			$controls->add("changeChannel", "<a href='".URL("conversation/changeChannel/".$conversation["conversationId"]."/?return=".urlencode($this->selfURL))."' id='control-changeChannel'><i class='icon-tag'></i> ".T("Change channel")."</a>");
 		}
 
 		// If the user has permission to moderate this conversation...
 		if ($conversation["canModerate"]) {
 			
 			// Add the sticky/unsticky control.
-			$controls->add("sticky", "<a href='".URL("conversation/sticky/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-sticky'>".T($conversation["sticky"] ? "Unsticky" : "Sticky")."</a>");
+			$controls->add("sticky", "<a href='".URL("conversation/sticky/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-sticky'><i class='icon-pushpin'></i> ".T($conversation["sticky"] ? "Unsticky" : "Sticky")."</a>");
 
 			// Add the lock/unlock control.
-			$controls->add("lock", "<a href='".URL("conversation/lock/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-lock'>".T($conversation["locked"] ? "Unlock" : "Lock")."</a>");
+			$controls->add("lock", "<a href='".URL("conversation/lock/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-lock'><i class='icon-lock'></i> ".T($conversation["locked"] ? "Unlock" : "Lock")."</a>");
 
 			// Add the delete conversation control.
 			$controls->separator();
-			$controls->add("delete", "<a href='".URL("conversation/delete/".$conversation["conversationId"]."/?token=".ET::$session->token)."' id='control-delete'>".T("Delete conversation")."</a>");
+			$controls->add("delete", "<a href='".URL("conversation/delete/".$conversation["conversationId"]."/?token=".ET::$session->token)."' id='control-delete'><i class='icon-remove'></i> ".T("Delete conversation")."</a>");
 		}
 
 		// Add the meta description tag to the head. It will contain an excerpt from the first post's content.
@@ -284,9 +362,11 @@ public function index($conversationId = false, $year = false, $month = false)
 		$replyForm = ETFactory::make("form");
 		$replyForm->action = URL("conversation/reply/".$conversation["conversationId"]);
 		$replyForm->setValue("content", $conversation["draft"]);
+
+		$this->trigger("conversationIndexDefault", array(&$conversation, &$controls, &$replyForm, &$replyControls));
+
 		$this->data("replyForm", $replyForm);
 		$this->data("replyControls", $this->getEditControls("reply"));
-
 		$this->data("conversation", $conversation);
 		$this->data("controlsMenu", $controls);
 
@@ -424,6 +504,7 @@ public function start($member = false)
  * @param int $postId The post ID to show.
  * @return void
  */
+/* - andrewks {
 public function post($postId = false)
 {
 	// Construct a subquery that will find the position of a post within its conversation.
@@ -456,7 +537,54 @@ public function post($postId = false)
 	$page = floor($pos / C("esoTalk.conversation.postsPerPage")) + 1;
 	$this->redirect(URL(conversationURL($conversationId, $title)."/p".$page."#p".$postId));
 }
+- andrewks } */
 
+// + andrewks {
+public function post($postId = false)
+{
+/*	$delimpos = strpos($postId, '-');
+	if (($delimpos !== false) and ($delimpos > 0)) {
+		$conversationId = substr($postId, 0, $delimpos);
+		$relativePostId = substr($postId, $delimpos + 1);
+	} else {
+		$conversationId = 0;
+		$relativePostId = 0;
+	}*/
+	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
+	
+	// Construct a subquery that will find the position of a post within its conversation.
+	$subquery = ET::SQL()
+		->select("COUNT(postId)")
+		->from("post p2")
+		->where("p2.conversationId=p.conversationId")
+		->where("p2.time<=p.time")
+		->where("IF(p2.time=p.time,p2.postId<p.postId,1)")
+		->get();
+
+	// Construct and run a query that will get the position of the post, the conversation ID, and the title.
+	$result = ET::SQL()
+		->select("($subquery) AS pos, c.conversationId, c.title")
+		->from("post p")
+		->from("conversation c", "c.conversationId=p.conversationId", "left")
+		->where("p.relativePostId=:relativePostId")
+		->where("p.conversationId=:conversationId")
+		->bind(":relativePostId", (int)$relativePostId)
+		->bind(":conversationId", (int)$conversationId)
+		->exec();
+
+	// If the post wasn't found, show a 404.
+	if (!$result->numRows()) {
+		$this->render404(T("message.postNotFound"));
+		return;
+	}
+
+	list($pos, $conversationId, $title) = array_values($result->firstRow());
+
+	// Work out which page of the conversation this post is on, and redirect there.
+	$page = floor($pos / C("esoTalk.conversation.postsPerPage")) + 1;
+	$this->redirect(URL(conversationURL($conversationId, $title)."/p".$page."#p".$conversationId."-".$relativePostId));
+}
+// + andrewks }
 
 /**
  * Show a post's details in JSON format so they can be used to construct a quote. The JSON output will
@@ -502,7 +630,12 @@ public function delete($conversationId = false)
 	if (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
+/* - andrewks {
 	if (!$conversation["canModerate"]) {
+- andrewks } */
+// + andrewks {
+	if (!ET::$session->isAdmin()) {
+// + andrewks }
 		$this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
@@ -1067,7 +1200,13 @@ public function reply($conversationId = false)
 
 			// Normally, redirect to the post we just made.
 			elseif ($this->responseType === RESPONSE_TYPE_DEFAULT) {
+/* - andrewks {
 				$this->redirect(URL(R("return", postURL($postId))));
+- andrewks } */
+// + andrewks {
+				//$post = ET::postModel()->getByGlobalId($postId);
+				//if ($post) $this->redirect(URL(R("return", postURL($postId, $post["conversationId"], $post["relativePostId"]))));
+// + andrewks }
 			}
 
 		}
@@ -1108,9 +1247,14 @@ public function editPost($postId = false)
 
 	// Set up a form.
 	$form = ETFactory::make("form");
+/* - andrewks {
 	$form->action = URL("conversation/editPost/".$post["postId"]);
+- andrewks } */
+// + andrewks {
+	$form->action = URL("conversation/editPost/".$postId);
+// + andrewks }
 	$form->setValue("content", $post["content"]);
-
+	
 	if ($form->isPostBack("cancel"))
 		$this->redirect(URL(R("return", postURL($postId))));
 
@@ -1141,7 +1285,12 @@ public function editPost($postId = false)
 
 	$this->data("form", $form);
 	$this->data("post", $post);
+/* - andrewks {
 	$this->data("controls", $this->getEditControls("p".$post["postId"]));
+- andrewks } */
+// + andrewks {
+	$this->data("controls", $this->getEditControls("p".$postId));
+// + andrewks }
 	$this->render("conversation/editPost");
 }
 
@@ -1198,6 +1347,30 @@ public function restorePost($postId = false)
 }
 
 
+// + andrewks {
+public function showPost($postId = false)
+{
+	
+	if (!($post = $this->getPostForShowing($postId))) {
+		$this->renderMessage(T("Error"), T("message.postNotFound"));
+		return;
+	}
+	
+	// For an AJAX request, render the post view.
+	if ($this->responseType === RESPONSE_TYPE_AJAX) {
+		$this->data("post", $this->formatPostForTemplate($post, $post["conversation"]));
+		$this->render("conversation/postMini");
+		return;
+	} else {
+		$this->renderMessage(T("Error"), T("message.noPermission"));
+		return;
+	}
+
+}
+
+// + andrewks }
+
+
 /**
  * Format post data into an array which can be used to display the post template view (conversation/post).
  *
@@ -1210,22 +1383,58 @@ protected function formatPostForTemplate($post, $conversation)
 	$canEdit = ET::postModel()->canEditPost($post, $conversation);
 	$avatar = avatar($post);
 
+// + andrewks {
+	$relativePostIdShortURL = postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"], false);
+	$replies = "";
+	$repliesCount = 0;
+	if (!$post["deleteMemberId"]) {
+		$quotes = ET::postModel()->getPostQuotes((int)$conversation["conversationId"], (int)$post["relativePostId"]);
+		$repliesCount = count($quotes);
+		$replies = T("conversation.replies");
+	
+		foreach ($quotes as $quote) {
+			$replies .= ET::formatter()->getMiniQuote($quote, 'postRef')."\n";
+		}
+	}
+	
+// + andrewks }
+
 	// Construct the post array for use in the post view (conversation/post).
 	$formatted = array(
+/* - andrewks {
 		"id" => "p".$post["postId"],
 		"title" => memberLink($post["memberId"], $post["username"]),
+- andrewks } */
+// + andrewks {
+		"id" => "p".$relativePostIdShortURL,
+		"title" => "<a id='relativePostId' href='".URL(postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"]))."'>#".$post["relativePostId"]."</a>\n".memberLink($post["memberId"], $post["username"]),
+		"relativePostId" => (string)$post["relativePostId"], // relativePostId
+// + andrewks }
 		"avatar" => (!$post["deleteMemberId"] and $avatar) ? "<a href='".URL(memberURL($post["memberId"], $post["username"]))."'>$avatar</a>" : false,
 		"class" => $post["deleteMemberId"] ? array("deleted") : array(),
 		"info" => array(),
 		"controls" => array(),
+/* - andrewks {
 		"body" => !$post["deleteMemberId"] ? $this->displayPost($post["content"]) : false,
+- andrewks } */
+// + andrewks {
+		"body" => !$post["deleteMemberId"] ? $this->displayPost($post["content"], $conversation["conversationId"], $post["relativePostId"]) : false,
+		"repliesCount" => $repliesCount,
+		"replies" => $replies,
+// + andrewks }
 
 		"data" => array(
+/* - andrewks {
 			"id" => $post["postId"],
+- andrewks } */
+// + andrewks {
+			"id" => $relativePostIdShortURL,
+// + andrewks }
 			"memberid" => $post["memberId"]
 		)
 	);
 
+/* - andrewks {
 	// If the post was within the last 24 hours, show a relative time (eg. 2 hours ago.)
 	if (time() - $post["time"] < 24 * 60 * 60)
 		$date = relativeTime($post["time"], true);
@@ -1236,44 +1445,122 @@ protected function formatPostForTemplate($post, $conversation)
 
 	// Add the date/time to the post info as a permalink.
 	$formatted["info"][] = "<a href='".URL(postURL($post["postId"]))."' class='time' title='".date(T("date.full"), $post["time"])."'>".(!empty($conversation["searching"]) ? T("Context") : $date)."</a>";
+		
+- andrewks } */
+// + andrewks {
+	$date = date("d.m.Y H:i:s", $post["time"]);
+
+	// Add the date/time to the post info as a permalink.
+	$formatted["info"][] = "<a href='".URL(postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"]))."' class='time' title='".date(T("date.full"), $post["time"])."'>".(!empty($conversation["searching"]) ? T("Context") : $date)."</a>";
+	
+	// Add the IP to the post info as a permalink.
+	if ($conversation["canModerate"]) {
+		$ip = long2ip($post["memberIP"]);
+		$whoisURL = getWhoisURL($ip);
+		$formatted["info"][] = "<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+	}
+	
+// + andrewks }
 
 	// If the post isn't deleted, add a lot of stuff!
 	if (!$post["deleteMemberId"]) {
 
 		// Add the user's online status / last action next to their name.
+/* - andrewks {
 		if (empty($post["preferences"]["hideOnline"])) {
 			$lastAction = ET::memberModel()->getLastActionInfo($post["lastActionTime"], $post["lastActionDetail"]);
 			if ($lastAction[0]) $lastAction[0] = " (".sanitizeHTML($lastAction[0]).")";
-			if ($lastAction) array_unshift($formatted["info"], "<".(!empty($lastAction[1]) ? "a href='{$lastAction[1]}'" : "span")." class='online' title='".T("Online")."{$lastAction[0]}'>".T("Online")."</".(!empty($lastAction[1]) ? "a" : "span").">");
+			if ($lastAction) array_unshift($formatted["info"], "<".(!empty($lastAction[1]) ? "a href='{$lastAction[1]}'" : "span")." class='online' title='".T("Online")."{$lastAction[0]}'><i class='icon-circle'></i></".(!empty($lastAction[1]) ? "a" : "span").">");
 		}
+- andrewks } */
+// + andrewks {
+		if (ET::$session->isAdmin()) {
+			$lastAction = ET::memberModel()->getLastActionInfo($post["lastActionTime"], $post["lastActionDetail"]);
+			if ($lastAction[0]) $lastAction[0] = " (".sanitizeHTML($lastAction[0]).")";
+			if ($lastAction) array_unshift($formatted["info"], "<".(!empty($lastAction[1]) ? "a href='{$lastAction[1]}'" : "span")." class='online' title='".T("Online")."{$lastAction[0]}'><i class='icon-circle'></i></".(!empty($lastAction[1]) ? "a" : "span").">");
+		}
+// + andrewks }
 
+/* - andrewks {
 		// Show the user's group type.
 		$formatted["info"][] = "<span class='group'>".memberGroup($post["account"], $post["groups"])."</span>";
+		$formatted["class"][] = "group-".$post["account"];
+		foreach ($post["groups"] as $k => $v) {
+			if ($k) $formatted["class"][] = "group-".$k;
+		}
+- andrewks } */
 
+/* - andrewks {
 		// If the post has been edited, show the time and by whom next to the controls.
 		if ($post["editMemberId"]) $formatted["controls"][] = "<span class='editedBy'>".sprintf(T("Edited %s by %s"), "<span title='".date(T("date.full"), $post["editTime"])."'>".relativeTime($post["editTime"], true)."</span>", $post["editMemberName"])."</span>";
-
+		
 		// If the user can reply, add a quote control.
 		if ($conversation["canReply"])
-			$formatted["controls"][] = "<a href='".URL(conversationURL($conversation["conversationId"], $conversation["title"])."/?quote=".$post["postId"]."#reply")."' title='".T("Quote")."' class='control-quote'>".T("Quote")."</a>";
+			$formatted["controls"][] = "<a href='".URL(conversationURL($conversation["conversationId"], $conversation["title"])."/?quote=".$post["postId"]."#reply")."' title='".T("Quote")."' class='control-quote'><i class='icon-quote-left'></i></a>";
 
 		// If the user can edit the post, add edit/delete controls.
 		if ($canEdit) {
-			$formatted["controls"][] = "<a href='".URL("conversation/editPost/".$post["postId"])."' title='".T("Edit")."' class='control-edit'>".T("Edit")."</a>";
-			$formatted["controls"][] = "<a href='".URL("conversation/deletePost/".$post["postId"]."?token=".ET::$session->token)."' title='".T("Delete")."' class='control-delete'>".T("Delete")."</a>";
+			$formatted["controls"][] = "<a href='".URL("conversation/editPost/".$post["postId"])."' title='".T("Edit")."' class='control-edit'><i class='icon-edit'></i></a>";
+			$formatted["controls"][] = "<a href='".URL("conversation/deletePost/".$post["postId"]."?token=".ET::$session->token)."' title='".T("Delete")."' class='control-delete'><i class='icon-remove'></i></a>";
 		}
+
+- andrewks } */
+
+// + andrewks {
+		// If the post has been edited, show the time and by whom next to the controls.
+		if ($post["editMemberId"]) {
+			if ($conversation["canModerate"]) {
+				$ip = long2ip($post["editMemberIP"]);
+				$whoisURL = getWhoisURL($ip);
+				$whoisLink = "\n"."<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+			} else $whoisLink = "";
+			$formatted["controls"][] = "<span class='editedBy'>".sprintf(T("Edited %s by %s"), "<span title='".date(T("date.full"), $post["editTime"])."'>".date("d.m.Y H:i:s", $post["editTime"]).$whoisLink."</span>", $post["editMemberName"])."</span>";
+		}
+		
+		// If the user can reply, add a quote control.
+		if ($conversation["canReply"])
+			$formatted["controls"][] = "<a href='".URL(conversationURL($conversation["conversationId"], $conversation["title"])."/?quote=".$relativePostIdShortURL."#reply")."' title='".T("Quote")."' class='control-quote'><i class='icon-quote-left'></i></a>";
+
+		// If the user can edit the post, add edit/delete controls.
+		if ($canEdit) {
+			$formatted["controls"][] = "<a href='".URL("conversation/editPost/".$relativePostIdShortURL)."' title='".T("Edit")."' class='control-edit'><i class='icon-edit'></i></a>";
+			$formatted["controls"][] = "<a href='".URL("conversation/deletePost/".$relativePostIdShortURL."?token=".ET::$session->token)."' title='".T("Delete")."' class='control-delete'><i class='icon-remove'></i></a>";
+		}
+
+// + andrewks }
 
 	}
 
 	// But if the post IS deleted...
 	else {
 
+/* - andrewks {
 		// Add the "deleted by" information.
 		if ($post["deleteMemberId"]) $formatted["controls"][] = "<span>".sprintf(T("Deleted %s by %s"), "<span title='".date(T("date.full"), $post["deleteTime"])."'>".relativeTime($post["deleteTime"], true)."</span>", $post["deleteMemberName"])."</span>";
 
 		// If the user can edit the post, add a restore control.
 		if ($canEdit)
-			$formatted["controls"][] = "<a href='".URL("conversation/restorePost/".$post["postId"]."?token=".ET::$session->token)."' title='".T("Restore")."' class='control-restore'>".T("Restore")."</a>";
+			$formatted["controls"][] = "<a href='".URL("conversation/restorePost/".$post["postId"]."?token=".ET::$session->token)."' title='".T("Restore")."' class='control-restore'><i class='icon-reply'></i></a>";
+- andrewks } */
+
+// + andrewks {
+		// Add the "deleted by" information.
+		
+		if ($post["deleteMemberId"]) {
+			if ($conversation["canModerate"]) {
+				$ip = long2ip($post["deleteMemberIP"]);
+				$whoisURL = getWhoisURL($ip);
+				$whoisLink = "\n"."<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+			} else $whoisLink = "";
+			$formatted["controls"][] = "<span>".sprintf(T("Deleted %s by %s"), "<span title='".date(T("date.full"), $post["deleteTime"])."'>".date("d.m.Y H:i:s", $post["deleteTime"]).$whoisLink."</span>", $post["deleteMemberName"])."</span>";
+		}
+		
+		// If the user can edit the post, add a restore control.
+		if ($canEdit)
+			$formatted["controls"][] = "<a href='".URL("conversation/restorePost/".$relativePostIdShortURL."?token=".ET::$session->token)."' title='".T("Restore")."' class='control-restore'><i class='icon-reply'></i></a>";
+
+// + andrewks }
+
 	}
 
 	$this->trigger("formatPostForTemplate", array(&$formatted, $post, $conversation));
@@ -1288,11 +1575,20 @@ protected function formatPostForTemplate($post, $conversation)
  * @param string $content The post content to format.
  * @return string The formatted post content.
  */
+/* - andrewks {
 protected function displayPost($content)
 {
 	$words = ET::$session->get("highlight");
 	return ET::formatter()->init($content)->highlight($words)->format()->get();
 }
+- andrewks } */
+// + andrewks {
+protected function displayPost($content, $conversationId = 0, $relativePostId = 0)
+{
+	$words = ET::$session->get("highlight");
+	return ET::formatter()->init($content, true, $conversationId, $relativePostId)->highlight($words)->format()->get();
+}
+// + andrewks }
 
 
 /**
@@ -1304,7 +1600,7 @@ protected function displayPost($content)
 protected function getEditControls($id)
 {
 	$controls = array(
-		"quote" => "<a href='javascript:ETConversation.quote(\"$id\");void(0)' class='control-quote' title='".T("Quote")."' accesskey='q'><span>".T("Quote")."</span></a>",
+		"quote" => "<a href='javascript:ETConversation.quote(\"$id\");void(0)' class='control-quote' title='".T("Quote")."' accesskey='q'><i class='icon-quote-left'></i></a>",
 	);
 
 	$this->trigger("getEditControls", array(&$controls, $id));
@@ -1326,6 +1622,7 @@ protected function getEditControls($id)
  * @param int $conversationId The ID of the conversation that the post is in.
  * @return array An array containing the username and the post content.
  */
+/* - andrewks {
 protected function getPostForQuoting($postId, $conversationId)
 {
 	$result = ET::SQL()
@@ -1347,7 +1644,32 @@ protected function getPostForQuoting($postId, $conversationId)
 
 	return $result;
 }
+- andrewks } */
 
+// + andrewks {
+protected function getPostForQuoting($postId, $conversationId)
+{
+	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
+	$result = ET::SQL()
+		->select("username, content")
+		->from("post p")
+		->from("member m", "m.memberId=p.memberId", "inner")
+		->where("p.relativePostId=:relativePostId")
+		->where("p.conversationId=:conversationId")
+		->bind(":relativePostId", $relativePostId)
+		->bind(":conversationId", $conversationId)
+		->exec();
+	if (!$result->numRows()) return false;
+	$result = $result->firstRow();
+
+	// Convert spaces in the member name to non-breaking spaces.
+	// (Spaces aren't usually allowed in esoTalk usernames, so this is a bit of a "hack" for 
+	// certain esoTalk installations that do allow them.)
+	$result["username"] = str_replace(" ", "\xc2\xa0", $result["username"]);
+
+	return $result;
+}
+// + andrewks }
 
 /**
  * Shortcut function to get a conversation and render a 404 page if it cannot be found.
@@ -1396,4 +1718,18 @@ protected function getPostForEditing($postId)
 	return $post;
 }
 
+// + andrewks {
+protected function getPostForShowing($postId)
+{
+	// Get the conversation.
+	if (!($conversation = ET::conversationModel()->getByPostId($postId))) return false;
+
+	// Get the post.
+	$post = ET::postModel()->getById($postId);
+
+	$post["conversation"] = $conversation;
+
+	return $post;
+}
+// + andrewks }
 }

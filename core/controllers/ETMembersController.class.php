@@ -54,11 +54,13 @@ public function index($orderBy = false, $start = 0)
 		}
 
 		// Did we find any matching groups just before? If so, add a WHERE condition to the query to filter by group.
-		if ($restrictGroup < 0) $sql->where("account", $groups[$restrictGroup]["name"]);
-		elseif (!$groups[$restrictGroup]["private"] or ET::groupModel()->groupIdsAllowedInGroupIds(ET::$session->getGroupIds(), $restrictGroup, true)) {
-			$sql
-				->from("member_group mg", "mg.memberId=m.memberId", "left")
-				->where("mg.groupId", $restrictGroup);
+		if ($restrictGroup !== false) {
+			if ($restrictGroup < 0) $sql->where("account", $groups[$restrictGroup]["name"]);
+			elseif (!$groups[$restrictGroup]["private"] or ET::groupModel()->groupIdsAllowedInGroupIds(ET::$session->getGroupIds(), $restrictGroup, true)) {
+				$sql
+					->from("member_group mg", "mg.memberId=m.memberId", "left")
+					->where("mg.groupId", $restrictGroup);
+			}
 		}
 
 		// If there were no matching groups, just perform a normal LIKE search.
@@ -134,7 +136,12 @@ public function index($orderBy = false, $start = 0)
 	else $members = array();
 
 	// If we're ordering by last active, filter out members who have opted out of being displayed on the online list.
+/* - andrewks {
 	if ($orderBy == "activity") {
+- andrewks } */
+// + andrewks {
+	if (($orderBy == "activity") and (!ET::$session->isAdmin())) {
+// + andrewks }
 		foreach ($members as $k => $member) {
 			if (!empty($member["preferences"]["hideOnline"])) {
 				unset($members[$k]);
@@ -151,7 +158,9 @@ public function index($orderBy = false, $start = 0)
 
 		// Work out the canonical URL for this page.
 		$url = "members/$orderBy/p$page";
+/* - andrewks {
 		$this->canonicalURL = URL($url, true);
+- andrewks } */
 		$this->pushNavigation("members", "members", URL($url));
 
 		// Add JavaScript files and variables for the page to use.
@@ -264,12 +273,24 @@ public function online()
 
 	// Filter out members who have opted out of being displayed on the online list.
 	$hidden = 0;
+/* - andrewks {
 	foreach ($members as $k => $member) {
 		if (!empty($member["preferences"]["hideOnline"])) {
 			unset($members[$k]);
 			$hidden++;
 		}
 	}
+- andrewks } */
+// + andrewks {
+	if (!ET::$session->isAdmin()) {
+		foreach ($members as $k => $member) {
+			if (!empty($member["preferences"]["hideOnline"])) {
+				unset($members[$k]);
+				$hidden++;
+			}
+		}
+	}
+// + andrewks }
 
 	$this->data("members", $members);
 	$this->data("hidden", $hidden);
