@@ -2,39 +2,26 @@
 // Copyright 2011 Toby Zerner, Simon Zerner
 // This file is part of esoTalk. Please see the included license file for usage information.
 
+// This translation is forked from:
+//	"author" => "ext2",
+//	"authorEmail" => "ext2@ukr.net",
+//	"authorURL" => "http://unity-tracker.com",
+
 ET::$languageInfo["Russian"] = array(
 	"locale" => "ru-RU",
 	"name" => "Русский",
 	"description" => "Русский языковой пакет форума esoTalk",
 	"version" => ESOTALK_VERSION,
-	"author" => "ext2",
-	"authorEmail" => "ext2@ukr.net",
-	"authorURL" => "http://unity-tracker.com",
+	"author" => "forum330",
+	"authorEmail" => "forum330@gmail.com",
+	"authorURL" => "http://forum330.com",
 	"license" => "GPLv2"
 );
 
 // Define the character set that this language uses.
 $definitions["charset"] = "utf-8";
-$definitions["date.full"] = "j M Y, g:ia \G\M\TO"; // see http://au.php.net/manual/en/function.date.php for details
-// + andrewks {
 $definitions["date.full"] = "d.m.Y H:i:s"; // see http://au.php.net/manual/en/function.date.php for details
-// + andrewks }
 
-$definitions["%d day ago"] = "вчера";
-$definitions["%d days ago"] = "%d дней назад";
-$definitions["%d hour ago"] = "1 час назад";
-$definitions["%d hours ago"] = "%d часов назад";
-$definitions["%d minute ago"] = "1 минуту назад";
-$definitions["%d minutes ago"] = "%d минут назад";
-$definitions["%d month ago"] = "1 месяц назад";
-$definitions["%d months ago"] = "%d месяцев назад";
-$definitions["%d second ago"] = "1 секунду назад";
-$definitions["%d seconds ago"] = "%d секунд назад";
-$definitions["%d week ago"] = "на прошлой неделе";
-$definitions["%d weeks ago"] = "%d недель назад";
-$definitions["%d year ago"] = "в прошлом году";
-$definitions["%d years ago"] = "%d лет назад";
-// + andrewks {
 $definitions["%d day ago"] = "%d дн. назад";
 $definitions["%d days ago"] = "%d дн. назад";
 $definitions["%d hour ago"] = "%d ч. назад";
@@ -49,7 +36,7 @@ $definitions["%d week ago"] = "%d нед. назад";
 $definitions["%d weeks ago"] = "%d нед. назад";
 $definitions["%d year ago"] = "%d г. назад";
 $definitions["%d years ago"] = "%d г. назад";
-// month: full
+// months: full
 $definitions["January"] = "Январь";
 $definitions["February"] = "Февраль";
 $definitions["March"] = "Март";
@@ -64,7 +51,7 @@ $definitions["November"] = "Ноябрь";
 $definitions["December"] = "Декабрь";
 
 /*
-// month: short
+// months: short
 $definitions["Jan"] = "Янв";
 $definitions["Feb"] = "Фев";
 $definitions["Mar"] = "Мар";
@@ -78,7 +65,6 @@ $definitions["Oct"] = "Окт";
 $definitions["Nov"] = "Ноя";
 $definitions["Dec"] = "Дек";
 */
-// + andrewks }
 
 $definitions["%s and %s"] = "%s и %s";
 $definitions["%s can view this conversation."] = "%s может просматривать это обсуждение.";
@@ -89,10 +75,10 @@ $definitions["%s conversations"] = "%s обсуждения";
 $definitions["%s invited you to %s."] = "<b>%s</b> пригласил вас в %s.";
 $definitions["%s joined the forum."] = "<b>%s</b> присоединился к форуму.";
 $definitions["Joined"] = "Присоединился";
-$definitions["%s post"] = "%s сообщение";
-$definitions["%s posted %s"] = "%s сказал %s";
+$definitions["%s post"] = "%s сообщ.";
+$definitions["%s posts"] = "%s сообщ.";
+$definitions["%s posted %s"] = "%s".", %s";
 $definitions["%s posted in %s."] = "<b>%s</b> разместил сообщение в %s.";
-$definitions["%s posts"] = "%s сообщений";
 $definitions["%s reply"] = "%s ответ";
 $definitions["%s replies"] = "%s ответов";
 $definitions["%s Settings"] = "%s Настройки";
@@ -100,14 +86,9 @@ $definitions["%s started the conversation %s."] = "<b>%s</b> начал обсу
 $definitions["%s tagged you in a post."] = "<b>%s</b> упомянул вас в сообщении.";
 $definitions["%s will be able to view this conversation."] = "%s сможет просматривать это обсуждение.";
 $definitions["%s will be able to:"] = "%s сможет:";
-// + andrewks {
-$definitions["%s posted %s"] = "%s".", %s";
 $definitions["conversations.replies"] = "ответов";
 $definitions["conversations.newreplies"] = "новых";
 $definitions["conversation.replies"] = "Ответы: ";
-$definitions["%s post"] = "%s сообщ.";
-$definitions["%s posts"] = "%s сообщ.";
-// + andrewks }
 
 $definitions["A new version of esoTalk (%s) is available."] = "Новая версия esoTalk (%s) доступна!";
 $definitions["a private conversation"] = "частное обсуждение";
@@ -139,7 +120,7 @@ $definitions["Bold"] = "Жирный";
 $definitions["By %s"] = "Автор %s";
 
 $definitions["Can suspend/unsuspend members"] = "Может блокировать/разблокировать участников";
-$definitions["Cancel"] = "Отменить";
+$definitions["Cancel"] = "Отмена";
 $definitions["Change %s's Permissions"] = "Изменить привилегии %s'а";
 $definitions["Change avatar"] = "Изменить аватар";
 $definitions["Change channel"] = "Изменить канал";
@@ -161,7 +142,7 @@ $definitions["Click on a member's name to remove them."] = "Кликните н�
 $definitions["Close registration"] = "Закрыть регистрацию";
 $definitions["Confirm password"] = "Подтвердите пароль";
 $definitions["Context"] = "Контекст";
-$definitions["Controls"] = "Управление";
+$definitions["Controls"] = "Управл.";
 $definitions["Conversation"] = "Обсуждение";
 $definitions["Conversations participated in"] = "Участие в обсуждениях";
 $definitions["Conversations started"] = "Обсуждений начато";
@@ -187,23 +168,21 @@ $definitions["Discard"] = "Удалить";
 $definitions["Edit Channel"] = "Редактировать канал";
 $definitions["Edit Group"] = "Редактировать группу";
 $definitions["Edit member groups"] = "Редактировать группы пользователей";
-$definitions["Edit your profile"] = "Редактировать ваш профиль";
+$definitions["Edit your profile"] = "Редактировать профиль";
 $definitions["Edit"] = "Редактировать";
 $definitions["Edited %s by %s"] = "%s отредактировано %s";
 $definitions["Email me when I'm added to a private conversation"] = "Сообщить на почту, когда меня добавили в частное обсуждение";
 $definitions["Email me when someone posts in a conversation I have starred"] = "Сообщить на почту, когда кто-то оставил сообщение в обсуждении из моего избранного";
 $definitions["Email"] = "E-mail";
 $definitions["Enable"] = "Включить";
+$definitions["Enabled"] = "Включен";
 $definitions["Enter a conversation title"] = "Введите заголовок";
 $definitions["Error"] = "Ошибка";
 $definitions["esoTalk version"] = "Версия esoTalk ";
 $definitions["Registered members"] = "Участники форума";
 $definitions["Everyone"] = "Кто угодно";
-// + andrewks {
-$definitions["Enabled"] = "Включен";
 $definitions["hidden"] = "скрыто";
 $definitions["%d hidden"] = "%d скрытых";
-$definitions["Edit your profile"] = "Редактировать профиль";
 $definitions["Email me when someone posts in a conversation I have followed"] = "Сообщить на почту о новых сообщениях в избранных обсуждениях";
 $definitions["Email me when someone mentions me in a post"] = "Сообщить на почту об ответах на мои сообщения";
 $definitions["Automatically follow conversations that I reply to"] = "Автоматически добавлять в Избранное обсуждения, в которых я участвую";
@@ -211,15 +190,11 @@ $definitions["Automatically follow private conversations that I'm added to"] = "
 $definitions["Don't allow other users to see when I am online"] = "Запретить другим участникам видеть мой Онлайн-статус";
 $definitions["Change username"] = "Изменить имя";
 $definitions["Choose a Channel"] = "Укажите канал";
-$definitions["New conversation"] = "Новое обсуждение";
 $definitions["Older"] = "Ранее";
 $definitions["Load more posts"] = "Больше сообщений";
-$definitions["Back to administration"] = "Вернуться к 88администрированию";
-$definitions["Cancel"] = "Отмена";
-$definitions["message.close"] = "Закрыть";
-// + andrewks }
+$definitions["Back to administration"] = "Вернуться к администрированию";
 
-$definitions["Fatal Error"] = "О, нет!!! Критическая ошибка...";
+$definitions["Fatal Error"] = "Критическая ошибка!";
 $definitions["Feed"] = "Лента";
 $definitions["Filter by name or group..."] = "Фильтровать по имени или группе...";
 $definitions["Filter conversations..."] = "Фильтровать обсуждения...";
@@ -268,16 +243,16 @@ $definitions["just now"] = "только что";
 $definitions["<strong>Keep this member's posts.</strong> All of this member's posts will remain intact, but will show [deleted] as the author."] = "<strong>Сохранить сообщения этого участника.</strong> Все сообщения участника сохраняются, но будут отображаться как [удаленные] вместе с участником.";
 $definitions["label.draft"] = "Черновик";
 $definitions["label.locked"] = "Заблокировано";
-$definitions["label.muted"] = "Закрыто";
+$definitions["label.muted"] = "Скрыто";
 $definitions["label.private"] = "Частное";
-$definitions["label.sticky"] = "Популярное";
+$definitions["label.sticky"] = "Прикреплено";
 $definitions["Labels"] = "Метки";
 $definitions["Last active %s"] = "Последняя активность %s";
 $definitions["Latest News"] = "Последние новости";
 $definitions["Loading..."] = "Загрузка...";
 $definitions["Lock"] = "Заблокировать";
-$definitions["Log In"] = "Войти";
-$definitions["Log Out"] = "Выйти";
+$definitions["Log In"] = "Вход";
+$definitions["Log Out"] = "Выход";
 
 $definitions["Manage Groups"] = "Управление группами";
 $definitions["Manage Languages"] = "Управление языками";
@@ -294,7 +269,7 @@ $definitions["Members"] = "Участники";
 $definitions["Mobile skin"] = "Мобильная тема";
 $definitions["Moderate"] = "Модерация";
 $definitions["<strong>Move</strong> conversations to the following channel:"] = "<strong>Переместить</strong> обсуждения в этот канал:";
-$definitions["Mute conversation"] = "Закрыть обсуждение";
+$definitions["Mute conversation"] = "Скрыть";
 $definitions["MySQL database"] = "База данных MySQL";
 $definitions["MySQL host address"] = "Адрес хоста MySQL";
 $definitions["MySQL password"] = "Пароль MySQL";
@@ -302,9 +277,6 @@ $definitions["MySQL queries"] = "Запросы MySQL";
 $definitions["MySQL table prefix"] = "Префикс таблиц MySQL";
 $definitions["MySQL username"] = "Имя пользователя MySQL";
 $definitions["MySQL version"] = "Версия MySQL";
-// + andrewks {
-$definitions["label.sticky"] = "Прикреплено";
-$definitions["label.muted"] = "Скрыто";
 $definitions["Member privacy"] = "Конфиденциальность участников";
 $definitions["Make member and online list visible to:"] = "Кто может смотреть участников и их онлайн-статус:";
 $definitions["Editing permissions"] = "Настройка разрешений";
@@ -313,7 +285,7 @@ $definitions["Forever"] = "Всегда";
 $definitions["Until someone replies"] = "Пока кто-то не ответит";
 $definitions["For %s seconds"] = "В течение %s секунд";
 $definitions["Mark listed as read"] = "Пометить обсуждения из списка прочитанными";
-$definitions["Mute conversation"] = "Скрыть";
+
 // default Skin
 $definitions["Header color"] = "Цвет заголовка";
 $definitions["Background color"] = "Цвет фона";
@@ -321,12 +293,12 @@ $definitions["Reset"] = "Сбросить";
 $definitions["Background image"] = "Фоновое изображение";
 $definitions["Use a background image"] = "Использовать фоновое изображение";
 $definitions["Don't repeat"] = "Не повторять";
-// + andrewks }
 
 $definitions["Name"] = "Имя";
 $definitions["Last active"] = "Активность";
 $definitions["never"] = "никогда";
 $definitions["New Conversation"] = "Новое обсуждение";
+$definitions["New conversation"] = "Новое обсуждение";
 $definitions["New conversations in the past week"] = "Новые обсуждения за неделю";
 $definitions["New email"] = "Новый e-mail";
 $definitions["New members in the past week"] = "Новые пользователи за неделю";
@@ -387,20 +359,14 @@ $definitions["Show matching posts"] = "Показывать подходящие
 $definitions["Show the channel list by default"] = "Показывать список каналов";
 $definitions["Show the conversation list by default"] = "Показывать список обсуждений";
 $definitions["Show the forum title in the header"] = "Показывать название форума в заголовке";
-$definitions["Sign Up"] = "Зарегистрироваться";
+$definitions["Sign Up"] = "Регистрация";
 $definitions["Skins"] = "Темы оформления";
 $definitions["Specify Setup Information"] = "Введите информацию для установки";
 $definitions["Star to receive notifications"] = "Подписаться для получения уведомлений";
 $definitions["Starred"] = "Избранное";
-// + andrewks {
-$definitions["Sign Up"] = "Регистрация";
-$definitions["Log In"] = "Вход";
-$definitions["Log Out"] = "Выход";
-$definitions["Controls"] = "Управл.";
 $definitions["Follow"] = "Избранное";
 $definitions["Following"] = "Избранное";
 $definitions["Follow to receive notifications"] = "Подписаться для получения уведомлений";
-// + andrewks }
 $definitions["Start a conversation"] = "Начать обсуждение";
 $definitions["Start a private conversation with %s"] = "Начать частное обсуждение с %s";
 $definitions["Start Conversation"] = "Начать обсуждение";
@@ -414,7 +380,7 @@ $definitions["statistic.online.plural"] = "%s онлайн";
 $definitions["statistic.online"] = "%s онлайн";
 $definitions["statistic.post.plural"] = "%s сообщений";
 $definitions["statistic.post"] = "%s сообщение";
-$definitions["Sticky"] = "Популярное";
+$definitions["Sticky"] = "Прикрепить";
 $definitions["Subscribed"] = "Подписано";
 $definitions["Subscription"] = "Подписка";
 $definitions["Success!"] = "Успешно!";
@@ -425,9 +391,9 @@ $definitions["Try Again"] = "Попробуйте еще раз";
 
 $definitions["Uninstall"] = "Удалить";
 $definitions["Unlock"] = "Разблокировать";
-$definitions["Unmute conversation"] = "Возобновить обсуждение";
+$definitions["Unmute conversation"] = "Показать";
 $definitions["Unstarred"] = "Не в избранном";
-$definitions["Unsticky"] = "Непопулярное";
+$definitions["Unsticky"] = "Открепить";
 $definitions["Unsubscribe new users by default"] = "Отменить подписку новых пользователей по-умолчанию";
 $definitions["Unsubscribed"] = "Не подписано";
 $definitions["Unsuspend member"] = "Разблокировать участника";
@@ -442,7 +408,7 @@ $definitions["Username"] = "Имя пользователя";
 $definitions["View %s's profile"] = "Просмотреть профиль %s";
 $definitions["View all notifications"] = "Просмотреть все уведомления";
 $definitions["View more"] = "Просмотреть больше";
-$definitions["View your profile"] = "Просмотреть ваш профиль";
+$definitions["View your profile"] = "Просмотреть профиль";
 $definitions["View"] = "Просмотр";
 $definitions["Viewing: %s"] = "просматривает: %s";
 $definitions["Viewing %s"] = "просматривает %s";
@@ -452,17 +418,11 @@ $definitions["Write a reply..."] = "Написать ответ...";
 $definitions["Yes"] = "Да";
 $definitions["You can manage channel-specific permissions on the channels page."] = "Вы можете менять настройки привилегий каналов на странице каналов.";
 $definitions["Your current password"] = "Текущий пароль";
-// + andrewks {
-$definitions["Sticky"] = "Прикрепить";
-$definitions["Unsticky"] = "Открепить";
-$definitions["Unmute conversation"] = "Показать";
-$definitions["View your profile"] = "Просмотреть профиль";
 $definitions["Privacy"] = "Конфиденциальность";
 $definitions["Only allow members of this group to see who else is in it"] = "Только участникам группы разрешено видеть других участников группы";
 $definitions["Members who are part of this group can be listed by searching for the group name in the member list."] = "Участники данной группы могут быть найдены поиском по имени группы в общем списке участников";
 $definitions["Hide"] = "Скрыть";
 $definitions["Unhide"] = "Показать";
-// + andrewks }
 
 // Messages.
 $definitions["message.404"] = "Запрошенная вами страница не найдена! Проверьте ваш запрос или перейдите по другой ссылке.";
@@ -473,13 +433,14 @@ $definitions["message.cannotDeleteLastChannel"] = "Подождите, Вы не
 $definitions["message.changesSaved"] = "Ваши изменения сохранены.";
 $definitions["message.channelsHelp"] = "Каналы используются для разделения обсуждений на категории. Вы можете создать необходимое вам количество каналов и упорядочить/сортировать их, перетаскивая вверх/вниз.";
 $definitions["message.channelSlugTaken"] = "Эта метка уже используется другой темой.";
+$definitions["message.close"] = "Закрыть";
 $definitions["message.confirmDelete"] = "Вы уверены, что хотите удалить это? Вы не сможете это восстановить!";
 $definitions["message.confirmDiscardReply"] = "Вы не сохранили ваш ответ как черновик. Хотите удалить его навсегда?";
 $definitions["message.confirmEmail"] = "Перед тем, как Вы сможете использовать аккаунт, необходимо подтвердить Ваш e-mail адрес. В ближайшее время (пару минут) Вы получите e-mail, содержащий инструкции по активации аккаунта.";
 $definitions["message.confirmLeave"] = "Подождите, Вы не сохранили то, что редактируете! Если Вы уйдете с этой страницы, то потеряете все изменения. Вы уверены?";
 $definitions["message.connectionError"] = "Форум esoTalk не может соединиться с MySQL сервером. Возвращенная ошибка:<br/>%s";
 $definitions["message.conversationDeleted"] = "Обсуждение было удалено!";
-$definitions["message.conversationNotFound"] = "По каким-то причинам это обсуждение не может быть просмотрено. Может быть оно удалено? Или это частное обсуждение, а Вы не вошли на форум или не имеете права его просмотра.";
+$definitions["message.conversationNotFound"] = "Это обсуждение не может быть просмотрено. Возможно, Вы не вошли на форум или не имеете права его просмотра, либо оно было удалено.";
 $definitions["message.cookieAuthenticationTheft"] = "Из соображений безопасности, Вы не можете автоматически войти с вашим 'запомнить меня' cookie. Пожалуйста, войдите в ручном режиме!";
 $definitions["message.deleteChannelHelp"] = "Не торопитесь! Если Вы удалите этот канал, то не сможете его восстановить. Вместо этого, все ваши обсуждения могут быть перемещены в другой канал по вашему выбору.";
 $definitions["message.emailConfirmed"] = "Ура! Ваш аккаунт подтвержден и активирован, и Вы можете начинать обсуждения с другими участниками. Почему бы не <a href='".URL("conversation/start")."'>начать</a> прямо сейчас?";
@@ -494,7 +455,7 @@ $definitions["message.esoTalkUpdateAvailable"] = "Новая версия esoTal
 $definitions["message.esoTalkUpdateAvailableHelp"] = "Настоятельно рекомендуется поддерживать esoTalk всегда в обновленном состоянии. Это снижает риск взлома, исправляет ошибки и добавляет новые функции!";
 $definitions["message.esoTalkUpToDate"] = "Ваша версия esoTalk самая последняя.";
 $definitions["message.esoTalkUpToDateHelp"] = "Если вам нравится форум, окажите материальную поддержку его <a href='%s' target='_blank'>автору</a>.";
-$definitions["message.fatalError"] = "<p>Форум esoTalk обнаружил критическую ошибку!\n<li>Если Вы администратор форума, попробуйте поискать помощь на <strong><a href='%2\$s'>форуме поддержки esoTalk</a></strong>.</li>\n<li>Если Вы участник форума, то обязательно сообщите об этой ошибке администрации.</li>\n<li>Или попробуйте стукнуть компьютер - это иногда помогает ;)</li>\n";
+$definitions["message.fatalError"] = "<p>Обнаружена критическая ошибка! Возможно, отсутствует соединение с БД.</p>";
 $definitions["message.fatalErrorInstaller"] = "<p>Форум esoTalk обнаружил критическую ошибку, не позволяющую сделать то, что Вы хотели - установку.\n<li><p><strong>Проверьте ваши настройки.</strong> Также, рекомендуется проверить вашу базу данных форума.</p></li>";
 $definitions["message.fatalErrorUpgrader"] = "<p>Форум esoTalk обнаружил критическую ошибку, не позволяющую сделать то, что Вы хотели - обновление.\n<li><p><strong>Проверьте ваши настройки.</strong> Также, рекомендуется проверить вашу базу данных форума.</p></li>";
 $definitions["message.fileUploadFailed"] = "Выбранный вами файл не может быть загружен. Он или слишком велик, или в неправильном формате.";
@@ -515,10 +476,10 @@ $definitions["message.installerMySQLHelp"] = "Форуму esoTalk необхо�
 $definitions["message.installerWelcome"] = "<p>Добро пожаловать в установщик форума esoTalk! Нам необходимо уточнить у вас некоторые параметры для установки форума.</p>\n<p>Если у вас возникнут трудности в установке, обращайтесь за помощью на <a href='%s'>форум поддержки esoTalk</a>.</p>";
 $definitions["message.invalidChannel"] = "Вы выбрали неправильный канал!";
 $definitions["message.invalidEmail"] = "Этот e-mail адрес неправильный.";
-$definitions["message.invalidUsername"] = "Имя пользователя должно содержать от 3 до 20 символов.";
+$definitions["message.invalidUsername"] = "Имя пользователя может содержать буквы, цифры, символы пробела, дефиса и подчёркивания, иметь длину от 2 до 20 символов.";
 $definitions["message.javascriptRequired"] = "Эта страница требует включенного JavaScript для корректной работы!";
 $definitions["message.languageUninstalled"] = "Язык был удален.";
-$definitions["message.locked"] = "Похоже, что это обсуждение <strong>заблокировано</strong>, поэтому Вы не можете в нем участвовать.";
+$definitions["message.locked"] = "Это обсуждение <strong>заблокировано</strong>, поэтому Вы не можете в нём участвовать.";
 $definitions["message.loginToParticipate"] = "Для участия в обсуждениях и размещения сообщений, пожалуйста, войдите на форум.";
 $definitions["message.logInToReply"] = "<a href='%1\$s' class='link-login'>Войдите</a> или <a href='%2\$s' class='link-join'>зарегистрируйтесь</a> чтобы ответить!";
 $definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Войдите</a> для просмотра тем/обсуждений скрытых от гостей.";
@@ -564,13 +525,6 @@ $definitions["message.unsuspendMemberHelp"] = "Разблокировка акк
 $definitions["message.upgradeSuccessful"] = "Форум esoTalk был успешно обновлен!";
 $definitions["message.waitToReply"] = "Вы должны подождать минимум %s секунд перед началом нового обсуждения или ответом в нем. Глубоко вдохните и попробуйте еще раз ;)";
 $definitions["message.waitToSearch"] = "Помедленнее! Вы пытаетесь выполнить одновременно слишком много поисковых запросов. Подождите %s секунд и попробуйте снова.";
-// + andrewks {
-$definitions["Fatal Error"] = "Критическая ошибка!";
-$definitions["message.fatalError"] = "<p>Обнаружена критическая ошибка! Возможно, отсутствует соединение с БД.</p>";
-$definitions["message.invalidUsername"] = "Имя пользователя может содержать буквы, цифры, символы пробела, дефиса и подчёркивания, иметь длину от 2 до 20 символов.";
-$definitions["message.locked"] = "Это обсуждение <strong>заблокировано</strong>, поэтому Вы не можете в нём участвовать.";
-$definitions["message.conversationNotFound"] = "Это обсуждение не может быть просмотрено. Возможно, Вы не вошли на форум или не имеете права его просмотра, либо оно было удалено.";
-// + andrewks }
 
 // Emails.
 $definitions["email.confirmEmail.body"] = "Кто-то (надеемся, что Вы) хочет зарегистрироваться на нашем форуме '%1\$s' с этим адресом e-mail.\n\nЕсли это были Вы, то просто перейдите по ссылке, и Ваш аккаунт будет активирован:\n%2\$s";
@@ -585,7 +539,6 @@ $definitions["email.privateAdd.body"] = "Вас добавили к частно
 $definitions["email.privateAdd.subject"] = "Вас добавили к частному обсуждению";
 $definitions["email.replyToStarred.body"] = "%1\$s ответил на сообщение из вашего избранного: '%2\$s'.\n\nДля просмотра этого сообщения перейдите по этой ссылке:\n%3\$s";
 $definitions["email.replyToStarred.subject"] = "Есть новый ответ на '%1\$s'";
-
 
 // Translating the gambit system can be quite complex, but we'll do our best to get you through it. :)
 // Note: Don't use any html entities in these definitions, except for: &lt; &gt; &amp; &#39;
@@ -607,8 +560,8 @@ $definitions["gambit.private"] = "частные";
 $definitions["gambit.random"] = "случайные";
 $definitions["gambit.reverse"] = "обратное";
 $definitions["gambit.starred"] = "избранные";
-$definitions["gambit.muted"] = "закрытые";
-$definitions["gambit.sticky"] = "популярные";
+$definitions["gambit.muted"] = "скрытые";
+$definitions["gambit.sticky"] = "прикрепленные";
 $definitions["gambit.unread"] = "непрочитанные";
 $definitions["gambit.more results"] = "больше результатов";
 
@@ -639,10 +592,6 @@ $definitions["gambit.month"] = "месяцев";
 $definitions["gambit.year"] = "год";
 $definitions["gambit.last"] = "за"; // as in "active last 180 days"
 $definitions["gambit.active"] = "активные"; // as in "active last 180 days"
-// + andrewks {
-$definitions["gambit.muted"] = "скрытые";
-$definitions["gambit.sticky"] = "прикрепленные";
-// + andrewks }
 
 // Now the hard bit. This is a regular expression to test for the "active" gambit.
 // The group (?<a> ... ) is the comparison operator (>, <, >=, <=, or last).

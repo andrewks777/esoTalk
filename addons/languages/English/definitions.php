@@ -354,6 +354,7 @@ $definitions["message.cannotDeleteLastChannel"] = "Hey, wait up, you can't delet
 $definitions["message.changesSaved"] = "Your changes were saved.";
 $definitions["message.channelsHelp"] = "Channels are used to categorize conversations on your forum. You can create as many channels as needed, and rearrange/nest them by dragging and dropping below.";
 $definitions["message.channelSlugTaken"] = "This slug is already in use by another channel.";
+$definitions["message.close"] = "Close";
 $definitions["message.confirmDelete"] = "Are you sure you want to delete this? Seriously, you won't be able to get it back.";
 $definitions["message.confirmDiscardReply"] = "You have not saved your reply as a draft. Do you wish to discard it?";
 $definitions["message.confirmEmail"] = "Before you can start using your newly-created account, you'll need to confirm your email address. Within the next minute or two you should receive an email from us containing a link to activate your account.";
@@ -534,9 +535,6 @@ $definitions["gambit.active last ? days"] = "{$definitions["gambit.active"]} {$d
 // Usually you just need to change the "has" and "repl".
 $definitions["gambit.gambitHasNReplies"] = "/^has *(?<a>>|<|>=|<=)? *(?<b>\d+) *repl/";
 
-// + andrewks {
 $definitions["conversations.replies"] = "replies";
 $definitions["conversations.newreplies"] = "new";
 $definitions["conversation.replies"] = "Replies: ";
-$definitions["message.close"] = "Close";
-// + andrewks }
