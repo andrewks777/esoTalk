@@ -21,13 +21,8 @@ public function index()
 {
 	// Set the canonical URL and push onto the navigation stack.
 	$url = "channels";
-/* - andrewks {
-	$this->canonicalURL = URL($url, true);
-- andrewks } */
-// + andrewks {
 	$canonicalURL = URL($url, true);
 	if (!checkCanonicalURI($canonicalURL)) $this->canonicalURL = $canonicalURL;
-// + andrewks }
 	$this->pushNavigation("channels", "channels", URL($url));
 
 	// Get all of the channels that we can view.

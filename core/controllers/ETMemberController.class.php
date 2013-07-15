@@ -107,9 +107,9 @@ public function profile($member, $pane = "")
 	// Sort out what the canonical URL for this page is.
 	$url = memberURL($member["memberId"], $member["username"], $pane);
 	$this->pushNavigation("member/".$member["memberId"], "member", URL($url));
-/* - andrewks {
+	/* hack - disable canonical URL
 	$this->canonicalURL = URL($url, true);
-- andrewks } */
+	*/
 
 	// Make a list of default member panes, and highlight the currently active one.
 	$panes = ETFactory::make("menu");
@@ -196,9 +196,7 @@ public function activity($member = "", $page = "")
 	$this->data("showViewMoreLink", $showViewMoreLink);
 
 	$this->addJSLanguage("message.confirmDelete");
-// + andrewks {
 		if (ET::$session->user) $this->addJSLanguage("Controls");
-// + andrewks }
 
 	$this->renderProfile("member/activity");
 }
@@ -261,9 +259,7 @@ public function statistics($member = "")
 	// Send it off to the view.
 	$this->data("statistics", $statistics);
 
-// + andrewks {
-		if (ET::$session->user) $this->addJSLanguage("Controls");
-// + andrewks }
+	if (ET::$session->user) $this->addJSLanguage("Controls");
 
 	$this->renderProfile("member/statistics");
 }

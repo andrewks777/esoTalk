@@ -136,12 +136,7 @@ public function index($orderBy = false, $start = 0)
 	else $members = array();
 
 	// If we're ordering by last active, filter out members who have opted out of being displayed on the online list.
-/* - andrewks {
-	if ($orderBy == "activity") {
-- andrewks } */
-// + andrewks {
 	if (($orderBy == "activity") and (!ET::$session->isAdmin())) {
-// + andrewks }
 		foreach ($members as $k => $member) {
 			if (!empty($member["preferences"]["hideOnline"])) {
 				unset($members[$k]);
@@ -158,9 +153,9 @@ public function index($orderBy = false, $start = 0)
 
 		// Work out the canonical URL for this page.
 		$url = "members/$orderBy/p$page";
-/* - andrewks {
+		/* hack - disable canonical URL
 		$this->canonicalURL = URL($url, true);
-- andrewks } */
+		*/
 		$this->pushNavigation("members", "members", URL($url));
 
 		// Add JavaScript files and variables for the page to use.
@@ -273,15 +268,6 @@ public function online()
 
 	// Filter out members who have opted out of being displayed on the online list.
 	$hidden = 0;
-/* - andrewks {
-	foreach ($members as $k => $member) {
-		if (!empty($member["preferences"]["hideOnline"])) {
-			unset($members[$k]);
-			$hidden++;
-		}
-	}
-- andrewks } */
-// + andrewks {
 	if (!ET::$session->isAdmin()) {
 		foreach ($members as $k => $member) {
 			if (!empty($member["preferences"]["hideOnline"])) {
@@ -290,7 +276,6 @@ public function online()
 			}
 		}
 	}
-// + andrewks }
 
 	$this->data("members", $members);
 	$this->data("hidden", $hidden);

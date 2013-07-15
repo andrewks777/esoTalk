@@ -55,12 +55,7 @@ public function login()
 
 		// If the login was successful, redirect or set a json flag, depending on the response type.
 		if (ET::$session->login($form->getValue("username"), $form->getValue("password"), $form->getValue("remember")))
-/* - andrewks {
-			$this->redirect(URL(R("return")));
-- andrewks } */
-// + andrewks {
 			$this->redirect(URL(R("return"), false, false));
-// + andrewks }
 
 		// Otherwise, get the errors that occurred and pass them to the form.
 		else {
@@ -205,36 +200,23 @@ public function confirm($hash = "")
 
 	// See if there is an unconfirmed user with this ID and password hash. If there is, confirm them and log them in.
 	$result = ET::SQL()
-/* - andrewks {
-		->select("1")
-		->from("member")
-		->where("memberId", $memberId)
-		->where("resetPassword", md5($hash))
-		->where("confirmedEmail=0")
-- andrewks } */
-// + andrewks {
 		->select("email, joinTimeEmail")
 		->from("member")
 		->where("memberId", $memberId)
 		->where("resetPassword", $hash)
 		->where("confirmedEmail=0")
-// + andrewks }
 		->exec();
 
 	if ($result->numRows()) {
 
 		// Mark the member as confirmed.
-// + andrewks {
 		list($email, $joinTimeEmail) = array_values($result->firstRow());
 		if (empty($joinTimeEmail)) {
 			$joinTimeEmail = $email;
 		}
-// + andrewks }
 		ET::memberModel()->updateById($memberId, array(
 			"resetPassword" => null,
-// + andrewks {
 			"joinTimeEmail" => $joinTimeEmail,
-// + andrewks }
 			"confirmedEmail" => true
 		));
 

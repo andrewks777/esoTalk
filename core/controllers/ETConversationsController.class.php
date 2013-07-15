@@ -97,13 +97,8 @@ function index($channelSlug = false)
 	foreach ($currentChannels as $channel) $slugs[] = $channelInfo[$channel]["slug"];
 	$url = "conversations/".urlencode(($k = implode(" ", $slugs)) ? $k : "all").($searchString ? "?search=".urlencode($searchString) : "");
 	$this->pushNavigation("conversations", "search", URL($url));
-/* - andrewks {
-	$this->canonicalURL = URL($url, true);
-- andrewks } */
-// + andrewks {
 	$canonicalURL = URL('conversations/all', true);
 	if (!checkCanonicalURI($canonicalURL)) $this->canonicalURL = $canonicalURL;
-// + andrewks }
 
 	// If we're loading the page in full...
 	if ($this->responseType === RESPONSE_TYPE_DEFAULT) {

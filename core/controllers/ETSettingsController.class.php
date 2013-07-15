@@ -114,12 +114,7 @@ public function general()
 	if (count(ET::getLanguages()) > 1) {
 		$form->addSection("language", T("Forum language"));
 
-/* - andrewks {
-		$form->setValue("language", ET::$session->preference("language"));
-- andrewks } */
-// + andrewks {
 		$form->setValue("language", (ET::$session->preference("language")) ? ET::$session->preference("language") : C("esoTalk.language"));
-// + andrewks }
 		$form->addField("language", "language", array($this, "fieldLanguage"), array($this, "saveLanguage"));
 	}
 
@@ -230,12 +225,7 @@ public function fieldLanguage($form)
 public function saveLanguage($form, $key, &$preferences)
 {
 	$language = $form->getValue($key);
-/* - andrewks {
-	if (!in_array($language, ET::getLanguages()) or $language == C("esoTalk.language")) $language = null;
-- andrewks } */
-// + andrewks {
 	if (!in_array($language, ET::getLanguages())) $language = null;
-// + andrewks }
 	$preferences["language"] = $language;
 }
 
