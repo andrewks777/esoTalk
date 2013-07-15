@@ -18,12 +18,7 @@ class ETPlugin_Emoticons extends ETPlugin {
 
 public function handler_conversationController_renderBefore($sender)
 {
-/* - andrewks {
-	$sender->addToHead("<style type='text/css'>.emoticon {display:inline-block; text-indent:-9999px; width:16px; height:16px; background:url(".URL($this->getResource("emoticons.png"))."); background-repeat:no-repeat}</style>");
-- andrewks } */
-// + andrewks {
 	$sender->addToHead("<style type='text/css'>.emoticon {display:inline-block; text-indent:-9999px; width:16px; height:16px; background:url(".URL($this->getResource("emoticons.png"), false, false)."); background-repeat:no-repeat}</style>");
-// + andrewks }
 }
 public function handler_memberController_renderBefore($sender)
 {

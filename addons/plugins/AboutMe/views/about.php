@@ -10,14 +10,9 @@ $about = $data["about"];
 <div id='memberAbout'>
 
 <?php
-/* - andrewks {
-	echo $about;
-- andrewks } */
-// + andrewks {
 	if (ET::$session->user) {
 		echo $about;
 	} else echo T("hidden");
-// + andrewks }
 ?>
 
 </div>

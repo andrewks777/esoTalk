@@ -31,9 +31,9 @@ class ETSkin_Default extends ETSkin {
  */
 public function handler_init($sender)
 {
-/* - andrewks {
+	/* hack - disable fonts.googleapis.com
 	$sender->addCSSFile((C("esoTalk.https") ? "https" : "http")."://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700");
-- andrewks } */
+	*/
 	$sender->addCSSFile("core/skin/base.css", true);
 	$sender->addCSSFile("core/skin/font-awesome.css", true);
 	$sender->addCSSFile($this->getResource("styles.css"), true);
