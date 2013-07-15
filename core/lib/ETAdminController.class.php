@@ -40,12 +40,7 @@ public function init()
 	$this->menu->highlight(ET::$controllerName);
 
 	if ($this->responseType === RESPONSE_TYPE_DEFAULT)
-/* - andrewks {
-		$this->pushNavigation("admin", "administration", URL($this->selfURL));
-- andrewks } */
-// + andrewks {
 		$this->pushNavigation("admin", "administration", URL($this->selfURL, false, false));
-// + andrewks }
 
 	$this->addJSFile("core/js/admin.js");
 	$this->addCSSFile("core/skin/admin.css");

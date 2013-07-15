@@ -715,35 +715,6 @@ function json_decode($json)
  *
  * @package esoTalk
  */
-/* - andrewks {
-function URL($url = "", $absolute = false)
-{
-	if (strpos($url, "http://") === 0) return $url;
-	
-	// Strip off the hash.
-	$hash = strstr($url, "#");
-	if ($hash) $url = substr($url, 0, -strlen($hash));
-
-	// Strip off the query string.
-	$query = strstr($url, "?");
-	if ($query) $url = substr($url, 0, -strlen($query));
-
-	// If we don't have nice urls, use ?p=controller/method/argument instead.
-	if (!C("esoTalk.urls.friendly") and $url) {
-		$link = "?p=".$url;
-		if ($query) $query[0] = "&";
-	}
-	else $link = $url;
-
-	// Re-add the query string and has to the URL.
-	$link .= $query . $hash;
-
-	// If we're not using mod_rewrite, we need to prepend "index.php/" to the link.
-	if (C("esoTalk.urls.friendly") and !C("esoTalk.urls.rewrite")) $link = "index.php/$link";
-	return $absolute ? rtrim(C("esoTalk.baseURL"), "/")."/".$link : getWebPath($link);
-}
-- andrewks } */
-// + andrewks {
 function URL($url = "", $absolute = false, $prependIndex = true)
 {
 	if (strpos($url, "http://") === 0) return $url;
@@ -770,7 +741,6 @@ function URL($url = "", $absolute = false, $prependIndex = true)
 	if (C("esoTalk.urls.friendly") and !C("esoTalk.urls.rewrite") and ($prependIndex === true)) $link = "index.php/$link";
 	return $absolute ? rtrim(C("esoTalk.baseURL"), "/")."/".$link : getWebPath($link);
 }
-// + andrewks }
 
 
 /**
@@ -848,12 +818,7 @@ function getResource($path, $absolute = false)
  */
 function conversationURL($conversationId, $title = "")
 {
-/* - andrewks {
-	return $conversationId.(($title = slug($title)) ? "-$title" : "");
-- andrewks } */
-// + andrewks {
 	return (string)$conversationId;
-// + andrewks }
 }
 
 
@@ -869,12 +834,7 @@ function conversationURL($conversationId, $title = "")
  */
 function memberURL($memberId, $username = "", $pane = "")
 {
-/* - andrewks {
-	return "member/".($pane ? "$pane/" : "").$memberId.(($username = slug($username)) ? "-$username" : "");
-- andrewks } */
-// + andrewks {
 	return "member/".($pane ? "$pane/" : "").$memberId;
-// + andrewks }
 
 }
 
@@ -888,18 +848,10 @@ function memberURL($memberId, $username = "", $pane = "")
  * @package esoTalk
  */
 
-/* - andrewks {
-function postURL($postId)
-{
-	return "conversation/post/".$postId;
-}
-- andrewks } */
-// + andrewks {
 function postURL($postId, $conversationId = 0, $relativePostId = -1, $includePrefix = true)
 {
 	return ($includePrefix ? "conversation/post/" : "").($relativePostId >=0 ? "$conversationId-".$relativePostId : $postId);
 }
-// + andrewks }
 
 
 /**
@@ -1007,13 +959,11 @@ function relativeTime($then, $precise = false)
 }
 
 
-// + andrewks {
 function absoluteFullTime($then)
 {
 	if (!$then) return T("never");
 	return date("d.m.Y H:i:s", $then);
 }
-// + andrewks }
 
 /**
  * Extract the contents of a ZIP file, and return a list of files it contains and their contents.
@@ -1191,7 +1141,6 @@ function lcfirst($str)
 
 }
 
-// + andrewks {
 function explodeRelativePostId($relativePostId)
 {
 	return explode("-", $relativePostId, 2);
@@ -1218,5 +1167,3 @@ function checkCanonicalURI($canonicalURL)
 {
 	return ($canonicalURL == $_SERVER['REQUEST_URI']);
 }
-
-// + andrewks }
