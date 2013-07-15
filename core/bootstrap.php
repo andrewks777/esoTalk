@@ -132,16 +132,9 @@ if (!C("esoTalk.installed")) {
 	ET::$config["esoTalk.defaultRoute"] = "install";
 }
 
-/* - andrewks {
-elseif (C("esoTalk.version") != ESOTALK_VERSION) {
-	ETFactory::registerController("upgrade", "ETUpgradeController", PATH_CONTROLLERS."/ETUpgradeController.class.php");
-}
-- andrewks } */
-// + andrewks {
 elseif (C("esoTalk.version") != ESOTALK_VERSION || C("esoTalk.admin.needUpgradeDB")) {
 	ETFactory::registerController("upgrade", "ETUpgradeController", PATH_CONTROLLERS."/ETUpgradeController.class.php");
 }
-// + andrewks }
 
 // Otherwise, register all the default controllers and admin controllers.
 else {
