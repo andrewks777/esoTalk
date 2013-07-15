@@ -57,9 +57,7 @@ protected function structure($drop = false)
 		->column("data", "tinyblob")
 		->column("conversationId", "int(11) unsigned")
 		->column("postId", "int(11) unsigned")
-// + andrewks {
 		->column("relativePostId", "int(15) unsigned")
-// + andrewks }
 		->column("time", "int(11) unsigned")
 		->column("read", "tinyint(1)", 0)
 		->key("activityId", "primary")
@@ -154,10 +152,8 @@ protected function structure($drop = false)
 		->column("preferences", "mediumblob")
 		->column("countPosts", "int(11) unsigned", 0)
 		->column("countConversations", "int(11) unsigned", 0)
-// + andrewks {
 		->column("joinTimeIP", "int(11)", 0)
 		->column("joinTimeEmail", "varchar(63)", "")
-// + andrewks }
 		->key("memberId", "primary")
 		->key("username", "unique")
 		->key("email", "unique")
@@ -221,22 +217,17 @@ protected function structure($drop = false)
 		->column("title", "varchar(100)", false)
 		->column("content", "text", false)
 		->column("attributes", "mediumblob")
-// + andrewks {
 		->column("relativePostId", "int(11) unsigned", false)
 		->column("memberIP", "int(11)", 0)
 		->column("editMemberIP", "int(11)", 0)
 		->column("deleteMemberIP", "int(11)", 0)
-// + andrewks }
 		->key("postId", "primary")
 		->key("memberId")
 		->key(array("conversationId", "time"))
 		->key(array("title", "content"), "fulltext")
-// + andrewks {
 		->key(array("conversationId", "relativePostId"))
-// + andrewks }
 		->exec($drop);
 
-// + andrewks {
 	// Post-cites table.
 	$structure
 		->table("post_citing")
@@ -283,7 +274,6 @@ protected function structure($drop = false)
 		->key("editTime")
 		->exec($drop);
 		
-// + andrewks }
 
 	// Search table.
 	$structure

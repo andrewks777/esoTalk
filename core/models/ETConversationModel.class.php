@@ -211,19 +211,6 @@ public function get($wheres = array())
  * @return array The conversation.
  * @see get()
  */
-/* - andrewks {
-public function getByPostId($postId)
-{
-	$subquery = ET::SQL()
-		->select("conversationId")
-		->from("post")
-		->where("postId=:postId")
-		->bind(":postId", (int)$postId)
-		->get();
-	return $this->get("c.conversationId=($subquery)");
-}
-- andrewks } */
-// + andrewks {
 public function getByPostId($postId)
 {
 	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
@@ -237,8 +224,6 @@ public function getByPostId($postId)
 		->get();
 	return $this->get("c.conversationId=($subquery)");
 }
-// + andrewks }
-
 
 
 /**
@@ -703,13 +688,8 @@ public function addReply(&$conversation, $content)
 
 	// Create the post. If there were validation errors, get them from the post model and add them to this model.
 	$postModel = ET::postModel();
-/* - andrewks {
-	$postId = $postModel->create($conversation["conversationId"], ET::$session->userId, $content, $conversation["title"]);
-- andrewks } */
-// + andrewks {
 	$postId = $postModel->create($conversation["conversationId"], ET::$session->userId, $content, $conversation["title"], $conversation["countPosts"]);
 	$post = $postModel->getByGlobalId($postId);
-// + andrewks }
 	if (!$postId) $this->error($postModel->errors());
 
 	// Did we encounter any errors? Don't continue.
@@ -748,9 +728,7 @@ public function addReply(&$conversation, $content)
 	$data = array(
 		"conversationId" => $conversation["conversationId"],
 		"postId" => $postId,
-// + andrewks {
 		"relativePostId" => $post["relativePostId"],
-// + andrewks }
 		"title" => $conversation["title"]
 	);
 	$emailData = array("content" => $content);

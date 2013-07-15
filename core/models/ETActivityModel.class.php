@@ -114,9 +114,7 @@ public function create($type, $member, $fromMember = null, $data = null, $emailD
 		"fromMemberId" => $fromMember ? $fromMember["memberId"] : null,
 		"conversationId" => isset($data["conversationId"]) ? $data["conversationId"] : null,
 		"postId" => isset($data["postId"]) ? $data["postId"] : null,
-// + andrewks {
 		"relativePostId" => isset($data["relativePostId"]) ? $data["relativePostId"] : null,
-// + andrewks }
 		"time" => time()
 	);
 	$activityId = null;
@@ -133,6 +131,7 @@ public function create($type, $member, $fromMember = null, $data = null, $emailD
 
 	// If this activity type has an email projection, the member wants to receive an email notification
 	// for this type, and we haven't set sent them one in a previous call of this method, then let's send one!
+	/* hack - disable sending notifications via mail
 	if (!empty($projections[self::PROJECTION_EMAIL]) and !empty($member["preferences"]["email.$type"]) and !in_array($member["memberId"], $this->membersUsed)) {
 
 		// Log the member as "used", so we don't send them any more email notifications about the same subject.
@@ -146,14 +145,13 @@ public function create($type, $member, $fromMember = null, $data = null, $emailD
 		list($subject, $body) = call_user_func($projections[self::PROJECTION_EMAIL], $activity, $member);
 
 		// Send the email, prepending/appending a common email header/footer.
-/* - andrewks {
 		sendEmail($member["email"], $subject, sprintf(T("email.header"), $member["username"]).$body.sprintf(T("email.footer"), URL("settings", true)));
-- andrewks } */
 
 		// Revert back to esoTalk's old language definitions.
 		ET::revertLanguageState();
 
 	}
+	*/
 
 	return $activity["activityId"];
 }
@@ -207,10 +205,8 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		->select("type")
 		->select("data")
 		->select("NULL", "postId")
-// + andrewks {
 		->select("NULL", "conversationId")
 		->select("NULL", "relativePostId")
-// + andrewks }
 		->select("NULL", "title")
 		->select("NULL", "content")
 		->select("NULL", "start")
@@ -235,10 +231,8 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		->select("'postActivity'", "type")
 		->select("NULL", "data")
 		->select("postId")
-// + andrewks {
 		->select("p.conversationId","conversationId")
 		->select("p.relativePostId","relativePostId")
-// + andrewks }
 		->select("c.title", "title")
 		->select("content")
 		->select("c.startMemberId=p.memberId AND c.startTime=p.time", "start")
@@ -305,9 +299,7 @@ public function getNotifications($limit = 5)
 		->select("a.data")
 		->select("a.type")
 		->select("a.postId")
-// + andrewks {
 		->select("a.relativePostId")
-// + andrewks }
 		->select("a.conversationId")
 		->select("a.read")
 		->from("activity a")
@@ -380,14 +372,8 @@ public function markNotificationsAsRead($conversationId = false)
 public static function postActivity($item, $member)
 {
 	return array(
-/* - andrewks {
-		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), name($member["username"]), "<a href='".URL(postURL($item["postId"]))."'>".sanitizeHTML($item["title"])."</a>"),
-		ET::formatter()->init($item["content"])->basic(true)->format()->get()
-- andrewks } */
-// + andrewks {
 		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), name($member["username"]), "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML($item["title"])."</a>"),
 		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->basic(true)->format()->get()
-// + andrewks }
 	);
 }
 
@@ -403,12 +389,7 @@ public static function postNotification(&$item)
 {
 	return array(
 		sprintf(T("%s posted in %s."), name($item["fromMemberName"]), "<i class='star icon-star'></i> <strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
-/* - andrewks {
-		URL(postURL($item["postId"]))
-- andrewks } */
-// + andrewks {
 		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
-// + andrewks }
 	);
 }
 
@@ -469,12 +450,7 @@ public static function mentionNotification($item)
 {
 	return array(
 		sprintf(T("%s tagged you in a post."), "<strong>".name($item["fromMemberName"])."</strong>"),
-/* - andrewks {
-		URL(postURL($item["data"]["postId"]))
-- andrewks } */
-// + andrewks {
 		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
-// + andrewks }
 	);
 }
 
@@ -489,12 +465,8 @@ public static function mentionNotification($item)
 public static function mentionEmail($item, $member)
 {
 	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
-/* - andrewks {
-	$url = URL(postURL($item["data"]["postId"]), true);
-- andrewks } */
-// + andrewks {
 	$url = URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]), true);
-// + andrewks }
+
 	return array(
 		sprintf(T("email.mention.subject"), name($item["fromMemberName"], false)),
 		sprintf(T("email.mention.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")

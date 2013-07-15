@@ -98,13 +98,6 @@ public function get($wheres = array())
  * @param int $postId The ID of the post.
  * @return array An array of the post's details.
  */
-/* - andrewks {
-public function getById($postId)
-{
-	return reset($this->get(array("p.postId" => $postId)));
-}
-- andrewks } */
-// + andrewks {
 public function getById($postId)
 {
 	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
@@ -115,8 +108,6 @@ public function getByGlobalId($postId)
 {
 	return reset($this->get(array("p.postId" => $postId)));
 }
-
-// + andrewks }
 
 
 /**
@@ -202,12 +193,7 @@ private function whereSearch(&$sql, $search)
  * @param string $title The title of the conversation (so it can be added alongside the post, for fulltext purposes.)
  * @return bool|int The new post's ID, or false if there were errors.
  */
-/* - andrewks {
-public function create($conversationId, $memberId, $content, $title = "")
-- andrewks } */
-// + andrewks {
 public function create($conversationId, $memberId, $content, $title = "", $relativePostId = 0)
-// + andrewks }
 {
 	// Validate the post content.
 	$this->validate("content", $content, array($this, "validateContent"));
@@ -215,15 +201,11 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 	if ($this->errorCount()) return false;
 
 	// Prepare the post details for the query.
-// + andrewks {
 		$ip = getUserIP();
-// + andrewks }
 	$data = array(
 		"conversationId" => $conversationId,
-// + andrewks {
 		"relativePostId" => $relativePostId,
 		"memberIP" => $ip,
-// + andrewks }
 		"memberId" => $memberId,
 		"time" => time(),
 		"content" => $content,
@@ -246,9 +228,7 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 		->where("channelId", ET::SQL()->select("channelId")->from("conversation")->where("conversationId=:conversationId")->bind(":conversationId", $conversationId)->exec()->result())
 		->exec();
 
-// + andrewks {
 	$this->updatePostQuotes((int)$conversationId, (int)$relativePostId, $content, false);
-// + andrewks }
 
 	// Parse the post content for @mentions, and notify any members who were mentioned.
 	if (C("esoTalk.format.mentions")) {
@@ -268,9 +248,7 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 			$data = array(
 				"conversationId" => $conversationId,
 				"postId" => (int)$id,
-// + andrewks {
 				"relativePostId" => (int)$relativePostId,
-// + andrewks }
 				"title" => $title
 			);
 			$emailData = array("content" => $content);
@@ -299,7 +277,6 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 }
 
 
-// + andrewks {
 public function getPostQuotes($conversationId, $relativePostId)
 {
 	/*
@@ -371,7 +348,6 @@ public function updatePostQuotes($conversationId, $relativePostId, $content, $ch
 		}
 	}
 }
-// + andrewks }
 
 /**
  * Edit a post's content.
@@ -389,30 +365,22 @@ public function editPost(&$post, $content)
 	if ($this->errorCount()) return false;
 
 	// Update the post.
-// + andrewks {
 		$ip = getUserIP();
-// + andrewks }
 	$time = time();
 	$this->updateById($post["postId"], array(
 		"content" => $content,
 		"editMemberId" => ET::$session->userId,
-// + andrewks {
 		"editMemberIP" => $ip,
-// + andrewks }
 		"editTime" => $time
 	));
 
 	$post["content"] = $content;
 	$post["editMemberId"] = ET::$session->userId;
-// + andrewks {
 	$post["editMemberIP"] = $ip;
-// + andrewks }
 	$post["editMemberName"] = ET::$session->user["username"];
 	$post["editTime"] = $time;
 
-// + andrewks {
 	$this->updatePostQuotes((int)$post["conversationId"], (int)$post["relativePostId"], $content, true);
-// + andrewks }
 
 	$this->trigger("editPostAfter", array($post));
 
@@ -430,22 +398,16 @@ public function editPost(&$post, $content)
 public function deletePost(&$post)
 {
 	// Update the post.
-// + andrewks {
 		$ip = getUserIP();
-// + andrewks }
 	$time = time();
 	$this->updateById($post["postId"], array(
 		"deleteMemberId" => ET::$session->userId,
-// + andrewks {
 		"deleteMemberIP" => $ip,
-// + andrewks }
 		"deleteTime" => $time
 	));
 
 	$post["deleteMemberId"] = ET::$session->userId;
-// + andrewks {
 	$post["deleteMemberIP"] = $ip;
-// + andrewks }
 	$post["deleteMemberName"] = ET::$session->user["username"];
 	$post["deleteTime"] = $time;
 
@@ -465,16 +427,12 @@ public function restorePost(&$post)
 	$time = time();
 	$this->updateById($post["postId"], array(
 		"deleteMemberId" => null,
-// + andrewks {
 		"deleteMemberIP" => 0,
-// + andrewks }
 		"deleteTime" => null
 	));
 
 	$post["deleteMemberId"] = null;
-// + andrewks {
 	$post["deleteMemberIP"] = 0;
-// + andrewks }
 	$post["deleteMemberName"] = null;
 	$post["deleteTime"] = null;
 
