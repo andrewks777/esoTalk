@@ -540,6 +540,13 @@ initPosts: function() {
 		ETConversation.restorePost(postId);
 		e.preventDefault();
 	});
+	
+	$("#conversationPosts .controls .control-view").live("click", function(e) {
+		e.preventDefault();
+		var e = $(this).parents(".postContent").children(".postBody,.postReplies");
+		var delClassId = "deleted";
+		if (e.hasClass(delClassId)) e.removeClass(delClassId); else e.addClass(delClassId);
+	});
 
 	$("#conversationPosts .post:not(.edit) .controls .control-quote").live("click", function(e) {
 		var postId = $(this).parents(".post").data("id");

@@ -67,6 +67,8 @@ $config["esoTalk.gzipOutput"] = true; // Whether or not to compress the page out
 $config["esoTalk.https"] = false; // Whether or not to force HTTPS.
 $config["esoTalk.cache"] = false; // What type of cache to use.
 $config["esoTalk.includeFaviconTag"] = ""; // Include favicon tag. Set to empty if it isn't used.
+// example:
+//$config["esoTalk.includeFaviconTag"] = '<link rel="icon" type="image/png" href="/favicon.png">';
 $config["esoTalk.hostName"] = "http://127.0.0.1";
 
 // Meta information.

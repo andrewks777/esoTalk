@@ -36,7 +36,7 @@ endif; ?>>
 </div>
 
 <?php if (!empty($post["body"])): ?>
-<div class='postBody'>
+<div class='postBody <?php echo implode(" ", (array)$post["bodyClass"]); ?>'>
 <?php
 echo $post["body"];
 ?>
@@ -44,7 +44,7 @@ echo $post["body"];
 <?php
 // + andrewks {
 if (isset($post["repliesCount"]) && $post["repliesCount"]) {
-	echo '<div class="postReplies">';
+	echo '<div class="postReplies '.implode(" ", (array)$post["bodyClass"]).'">';
 	echo $post["replies"];
 	echo '</div>';
 }

@@ -1358,8 +1358,13 @@ public function showPost($postId = false)
 	
 	// For an AJAX request, render the post view.
 	if ($this->responseType === RESPONSE_TYPE_AJAX) {
-		$this->data("post", $this->formatPostForTemplate($post, $post["conversation"]));
-		$this->render("conversation/postMini");
+		$postData = $this->formatPostForTemplate($post, $post["conversation"]);
+		if ($postData === false) {
+			$this->renderMessage(T("Error"), T("message.postNotFound"));
+		} else {
+			$this->data("post", $postData);
+			$this->render("conversation/postMini");
+		}
 		return;
 	} else {
 		$this->renderMessage(T("Error"), T("message.noPermission"));
@@ -1380,6 +1385,10 @@ public function showPost($postId = false)
  */
 protected function formatPostForTemplate($post, $conversation)
 {
+	if ($post["deleteMemberId"] && !$conversation["canModerate"]) {
+		return false;
+	}
+	
 	$canEdit = ET::postModel()->canEditPost($post, $conversation);
 	$avatar = avatar($post);
 
@@ -1387,7 +1396,7 @@ protected function formatPostForTemplate($post, $conversation)
 	$relativePostIdShortURL = postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"], false);
 	$replies = "";
 	$repliesCount = 0;
-	if (!$post["deleteMemberId"]) {
+	if (!$post["deleteMemberId"] || $conversation["canModerate"]) {
 		$quotes = ET::postModel()->getPostQuotes((int)$conversation["conversationId"], (int)$post["relativePostId"]);
 		$repliesCount = count($quotes);
 		$replies = T("conversation.replies");
@@ -1418,7 +1427,8 @@ protected function formatPostForTemplate($post, $conversation)
 		"body" => !$post["deleteMemberId"] ? $this->displayPost($post["content"]) : false,
 - andrewks } */
 // + andrewks {
-		"body" => !$post["deleteMemberId"] ? $this->displayPost($post["content"], $conversation["conversationId"], $post["relativePostId"]) : false,
+		"bodyClass" => $post["deleteMemberId"] ? array("deleted") : array(),
+		"body" => !$post["deleteMemberId"] || $conversation["canModerate"] ? $this->displayPost($post["content"], $conversation["conversationId"], $post["relativePostId"]) : false,
 		"repliesCount" => $repliesCount,
 		"replies" => $replies,
 // + andrewks }
@@ -1558,6 +1568,9 @@ protected function formatPostForTemplate($post, $conversation)
 		// If the user can edit the post, add a restore control.
 		if ($canEdit)
 			$formatted["controls"][] = "<a href='".URL("conversation/restorePost/".$relativePostIdShortURL."?token=".ET::$session->token)."' title='".T("Restore")."' class='control-restore'><i class='icon-reply'></i></a>";
+			
+		if ($conversation["canModerate"]) 
+			$formatted["controls"][] = "<a href='#' title='".T("View")."' class='control-view'><i class='icon-eye-open'></i></a>";
 
 // + andrewks }
 
