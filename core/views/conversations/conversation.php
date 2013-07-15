@@ -27,13 +27,8 @@ if ($conversation["startMemberId"] == ET::$session->user) $className .= " mine";
 $conversationURL = conversationURL($conversation["conversationId"], $conversation["title"]);
 
 // Output the conversation title, highlighting search keywords.
-/* - andrewks {
-echo "<strong class='title'><a href='".URL($conversationURL.((ET::$session->user and $conversation["unread"]) ? "/unread" : ""))."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
-- andrewks } */
-// + andrewks {
 $convToolTip = $conversation["startMember"].", ".relativeTime($conversation["startTime"], true);
 echo "<strong class='title'><a href='".URL($conversationURL.((ET::$session->user and $conversation["unread"]) ? "/unread" : ""))."' title='".$convToolTip."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
-// + andrewks }
 
 // Output the conversation's labels.
 echo "<span class='labels'>";
@@ -57,20 +52,11 @@ echo "<a href='".URL(searchURL("", $channel["slug"]))."' class='channel channel-
 <div class='col-replies'>
 <i class='icon-comment<?php if (!$conversation["replies"]) echo "-alt"; ?>'></i>
 <?php
-/* - andrewks {
-echo "<span>".Ts("%s reply", "%s replies", $conversation["replies"])."</span>";
-
-// Output an "unread indicator", showing the number of unread posts.
-if (ET::$session->user and $conversation["unread"])
-	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
-- andrewks } */
-// + andrewks {
 echo "<span title='".T("conversations.replies")."'>".sprintf("%s", $conversation["replies"])."</span>";
 
 // Output an "unread indicator", showing the number of unread posts.
 if (ET::$session->user and $conversation["unread"])
 	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
-// + andrewks }
 
 
 ?></div>

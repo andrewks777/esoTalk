@@ -34,18 +34,11 @@ endif;
 <div class='col-lastActive'>
 <span class='subText'>
 <?php
-/* - andrewks {
-	printf(T("Last active %s"), empty($member["preferences"]["hideOnline"])
-	? "<span title='".date(T("date.full"), $member["lastActionTime"])."'>".relativeTime($member["lastActionTime"], true)."</span>"
-	: "[".T("hidden")."]");
-- andrewks } */
-// + andrewks {
 	if (ET::$session->user) {
 		printf(T("Last active %s"), (empty($member["preferences"]["hideOnline"]) or ET::$session->isAdmin())
 		? "<span title='".date(T("date.full"), $member["lastActionTime"])."'>".relativeTime($member["lastActionTime"], true)."</span>"
 		: "[".T("hidden")."]");
 	}
-// + andrewks }
 ?></span>
 </div>
 

@@ -42,13 +42,11 @@ echo $post["body"];
 ?>
 </div>
 <?php
-// + andrewks {
 if (isset($post["repliesCount"]) && $post["repliesCount"]) {
 	echo '<div class="postReplies '.implode(" ", (array)$post["bodyClass"]).'">';
 	echo $post["replies"];
 	echo '</div>';
 }
-// + andrewks }
 ?>
 <?php endif; ?>
 

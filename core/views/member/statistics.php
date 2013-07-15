@@ -31,23 +31,13 @@ $member = $data["member"];
 
 <li><label><?php echo T("First posted"); ?></label> <div>
 <?php
-/* - andrewks {
-	echo ucfirst(relativeTime($statistics["firstPosted"]));
-- andrewks } */
-// + andrewks {
 	echo absoluteFullTime($statistics["firstPosted"]);
-// + andrewks }
 ?>
 </div></li>
 
 <li><label><?php echo T("Joined"); ?></label> <div>
 <?php
-/* - andrewks {
-	echo ucfirst(relativeTime($statistics["joinTime"]));
-- andrewks } */
-// + andrewks {
 	echo absoluteFullTime($statistics["joinTime"]);
-// + andrewks }
 ?>
 </div></li>
 

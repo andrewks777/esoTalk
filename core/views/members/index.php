@@ -69,43 +69,31 @@ if ($data["searchString"] and !count($data["members"])): ?>
 <ul class='scrubber letterScrubber'>
 
 <?php
+/*
+// Construct an array of letters, and "#" as the item for special characters and numbers.
+$letters = range("a", "z");
+array_unshift($letters, "#");
+foreach (range(0x0430, 0x0435) as $char) { // а..е
+	$char = html_entity_decode("&#$char;", ENT_COMPAT, "UTF-8");
+	$letters[] = $char;
+}
+$letters[] = 'ё';
+foreach (range(0x0436, 0x044F) as $char) { // ж..я
+	$char = html_entity_decode("&#$char;", ENT_COMPAT, "UTF-8");
+	$letters[] = $char;
+}
 
-// // Construct an array of letters, and "#" as the item for special characters and numbers.
-// $letters = range("a", "z");
-// array_unshift($letters, "#");
-// // + andrewks {
-// foreach (range(0x0430, 0x0435) as $char) { // а..е
-	// $char = html_entity_decode("&#$char;", ENT_COMPAT, "UTF-8");
-	// $letters[] = $char;
-// }
-// $letters[] = 'ё';
-// foreach (range(0x0436, 0x044F) as $char) { // ж..я
-	// $char = html_entity_decode("&#$char;", ENT_COMPAT, "UTF-8");
-	// $letters[] = $char;
-// }
-// // + andrewks }
+// Work out what letter we are currently viewing by looking at the name of the first member in the results.
+$currentLetter = mb_strtolower($data["members"][0]["username"][0]);
+if (!in_array($currentLetter, $letters)) $currentLetter = "#";
 
-// // Work out what letter we are currently viewing by looking at the name of the first member in the results.
-// /* - andrewks {
-// $currentLetter = strtolower($data["members"][0]["username"][0]);
-// - andrewks } */
-// // + andrewks {
-// $currentLetter = mb_strtolower($data["members"][0]["username"][0]);
-// // + andrewks }
-// if (!in_array($currentLetter, $letters)) $currentLetter = "#";
-
-// // Output the letter scrubber items.
-// foreach ($letters as $letter) {
-	// $selected = ($currentLetter == $letter) ? " selected" : "";
-	// $id = $letter == "#" ? 0 : $letter;
-// /* - andrewks {
-	// echo "<li class='scrubber-$id$selected' data-index='$id'><a href='".URL("members/name/$id")."'>".strtoupper($letter)."</a></li>";
-// - andrewks } */
-// // + andrewks {
-	// echo "<li class='scrubber-$id$selected' data-index='$id'><a href='".URL("members/name/$id")."'>".mb_strtoupper($letter, "UTF-8")."</a></li>";
-// // + andrewks }
-// }
-
+// Output the letter scrubber items.
+foreach ($letters as $letter) {
+	$selected = ($currentLetter == $letter) ? " selected" : "";
+	$id = $letter == "#" ? 0 : $letter;
+	echo "<li class='scrubber-$id$selected' data-index='$id'><a href='".URL("members/name/$id")."'>".mb_strtoupper($letter, "UTF-8")."</a></li>";
+}
+*/
 ?>
 </ul>
 
