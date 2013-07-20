@@ -255,11 +255,36 @@ public function linksCallback($matches)
 	// If we're not doing basic formatting, YouTube embedding is enabled, and this is a YouTube video link,
 	// then return an embed tag.
 
-	if (!$this->basic and C("esoTalk.format.youtube") and preg_match("/^(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)([^&]+)/i", $matches[2], $youtube)) {
-		$id = $youtube[1];
-		$width = 425;
-		$height = 344;
-		return "<div class='video'><object width='$width' height='$height'><param name='movie' value='http://www.youtube.com/v/$id'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/$id' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='$width' height='$height'></embed></object></div>";
+	if (!$this->basic) {
+		if (C("esoTalk.format.youtube") and preg_match("/^(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)([^&]+)/i", $matches[2], $youtube)) {
+			$id = $youtube[1];
+			$width = 425;
+			$height = 344;
+			return "<div class='video'><object width='$width' height='$height'><param name='movie' value='http://www.youtube.com/v/$id'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/$id' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='$width' height='$height'></embed></object></div>";
+		} else
+		if (C("esoTalk.format.rutube") and preg_match("/^rutube\.ru\/video\/(?:embed\/)?([\S]+)/i", $matches[2], $rutube)) {
+			$id = $rutube[1];
+			$width = 425; // rutube value: 720
+			$height = 344; // rutube value: 405
+			return "<div class='video'><iframe width='$width' height='$height' src='http://rutube.ru/video/embed/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe></div>";
+		} else
+		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video([0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
+			$oid = $vkvideo[1];
+			$id = $vkvideo[2];
+			$params = (count($vkvideo) >= 4) ? "&".$vkvideo[3] : "";
+			$width = 425; // vk.com value: 720
+			$height = 344; // vk.com value: 410
+			return "<div class='video'><iframe width='$width' height='$height' src='http://vk.com/video_ext.php?oid=$oid&id=$id$params' frameborder='0'></iframe></div>";
+		} else
+		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video_ext\.php\?oid=([0-9]+)&amp;id=([0-9]+)(&amp;hash=[\S]*)/i", $matches[2], $vkvideo)) {
+			$oid = $vkvideo[1];
+			$id = $vkvideo[2];
+			$params = (count($vkvideo) >= 4) ? $vkvideo[3] : "";
+			$width = 425; // vk.com value: 720
+			$height = 344; // vk.com value: 410
+			return "<div class='video'><iframe width='$width' height='$height' src='http://vk.com/video_ext.php?oid=$oid&id=$id$params' frameborder='0'></iframe></div>";
+		}
+		
 	}
 
 	// If this is an internal link...
