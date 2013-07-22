@@ -441,9 +441,9 @@ $definitions["message.confirmLeave"] = "Подождите, Вы не сохра
 $definitions["message.connectionError"] = "Форум esoTalk не может соединиться с MySQL сервером. Возвращенная ошибка:<br/>%s";
 $definitions["message.conversationDeleted"] = "Обсуждение было удалено!";
 $definitions["message.conversationNotFound"] = "Это обсуждение не может быть просмотрено. Возможно, Вы не вошли на форум или не имеете права его просмотра, либо оно было удалено.";
-$definitions["message.cookieAuthenticationTheft"] = "Из соображений безопасности, Вы не можете автоматически войти с вашим 'запомнить меня' cookie. Пожалуйста, войдите в ручном режиме!";
-$definitions["message.deleteChannelHelp"] = "Не торопитесь! Если Вы удалите этот канал, то не сможете его восстановить. Вместо этого, все ваши обсуждения могут быть перемещены в другой канал по вашему выбору.";
-$definitions["message.emailConfirmed"] = "Ура! Ваш аккаунт подтвержден и активирован, и Вы можете начинать обсуждения с другими участниками. Почему бы не <a href='".URL("conversation/start")."'>начать</a> прямо сейчас?";
+$definitions["message.cookieAuthenticationTheft"] = "Из соображений безопасности, Вам необходимо заново войти в аккаунт.";
+$definitions["message.deleteChannelHelp"] = "Если Вы удалите этот канал, то не сможете его восстановить. Вместо этого, все ваши обсуждения могут быть перемещены в другой канал по Вашему выбору.";
+$definitions["message.emailConfirmed"] = "Ваш аккаунт подтвержден и активирован, и Вы можете начинать обсуждения с другими участниками. Почему бы не <a href='".URL("conversation/start")."'>начать</a> прямо сейчас?";
 $definitions["message.emailDoesntExist"] = "Этот e-mail адрес не совпадает ни с одним из адресов участников форума. Возможно, Вы ошиблись?";
 $definitions["message.emailNotYetConfirmed"] = "Вы должны подтвердить ваш адрес e-mail перед тем, как сможете войти!<br>Если Вы не получили письмо с подтверждением регистрации, то <a href='%s'>нажмите тут</a> для его повторной отправки.";
 $definitions["message.emailTaken"] = "Участник форума с таким e-mail уже зарегистрирован!";
@@ -518,7 +518,7 @@ $definitions["message.safeModeWarning"] = "<strong>Безопасный режи
 $definitions["message.searchAllConversations"] = "Попробуйте поискать это значение по всем обсуждениям.";
 $definitions["message.setNewPassword"] = "Какой Вы хотите установить новый пароль?";
 $definitions["message.skinUninstalled"] = "Тема оформления была удалена.";
-$definitions["message.suspended"] = "Упс! Администрация форума <strong>заблокировала</strong> ваш аккаунт.";
+$definitions["message.suspended"] = "Администрация форума <strong>заблокировала</strong> ваш аккаунт.";
 $definitions["message.suspendMemberHelp"] = "Блокировка аккаунта %s запретит ему участвовать в обсуждениях на форуме. После этого аккаунт будет иметь привилегии гостя форума.";
 $definitions["message.tablePrefixConflict"] = "Установщик определил, что другая инсталяция esoTalk использует ту же MySQL базу с аналогичными таблицами.<br/>Чтобы перезаписать (удалить) эту инсталяцию esoTalk, нажмите 'Установить мой форум' снова.<strong>Все данные будут утеряны!</strong><br/>Если Вы хотите создать другую инсталяцию esoTalk вместе с существующей, <strong>измените префикс таблиц</strong>.";
 $definitions["message.unsuspendMemberHelp"] = "Разблокировка аккаунта %s позволит ему снова участвовать в обсуждениях на форуме.";
