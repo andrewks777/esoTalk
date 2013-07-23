@@ -20,6 +20,8 @@ class ETUpgradeModel extends ETModel {
  */
 public function checkForUpdates()
 {
+	return; // hack - disable updates checking
+
 	// Save the last update check time so we won't do it again for a while.
 	ET::writeConfig(array("esoTalk.admin.lastUpdateCheckTime" => time()));
 

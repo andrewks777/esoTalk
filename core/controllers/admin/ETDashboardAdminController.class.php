@@ -69,13 +69,6 @@ public function news()
 	// Check for updates and add the update notification view to the response.
 	ET::upgradeModel()->checkForUpdates();
 	$this->json("updateNotification", $this->getViewContents("admin/updateNotification"));
-	/* hack - deprecated for upgrade DB struct
-	$needUpgrade = C("esoTalk.admin.needUpgradeDB");
-	if ($needUpgrade) {
-		ET::upgradeModel()->upgrade();
-		ET::writeConfig(array("esoTalk.admin.needUpgradeDB" => false));
-	}
-	*/
 
 	// Now fetch the latest posts from the esoTalk blog.
 	// Thanks to Brian for this code.
