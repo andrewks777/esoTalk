@@ -289,10 +289,21 @@ public function linksCallback($matches)
 
 	// If this is an internal link...
 	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
-	$baseURL = C("esoTalk.hostName").C("esoTalk.baseURL");
-	if (substr($url, 0, strlen($baseURL)) == $baseURL) {
+	$encoding = "utf8";
+	$shortURL = "";
+	if (C("esoTalk.hostNamePattern")) {
+		if (preg_match("/".C("esoTalk.hostNamePattern")."(.+)/iu", $url, $sub_url_matches)) {
+			$sub_url = $sub_url_matches[1];
+			$baseURL = C("esoTalk.baseURL");
+			if (mb_stripos($sub_url, $baseURL, 0, $encoding) === 0) $shortURL = mb_substr($sub_url, mb_strlen($baseURL, $encoding) - 1, null, $encoding);
+		}
+	} else {
+		$baseURL = C("esoTalk.hostName").C("esoTalk.baseURL");
+		if (mb_stripos($url, $baseURL, 0, $encoding) === 0) $shortURL = mb_substr($url, mb_strlen($baseURL, $encoding) - 1, null, $encoding);
+		//return $url."|".$baseURL."|".$shortURL;
+	}
+	if ($shortURL) {
 		$caption = $matches[0];
-		$shortURL = substr($url, strlen($baseURL) - 1);
 		$postId = "";
 		if (preg_match("/^\/(?:conversation\/post\/(\d+)-)?(\d+)/i", $shortURL, $conv)) {
 			if ($conv[1] === "") $conversationId = $conv[2]; else $conversationId = $conv[1];

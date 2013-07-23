@@ -56,7 +56,7 @@ $config["esoTalk.database.connectionOptions"] = array(
 $config["esoTalk.forumTitle"] = "";
 $config["esoTalk.forumLogo"] = false; // Path to an image file to replace the title (don't make it too big or it'll stretch the header!)
 $config["esoTalk.language"] = "English";
-$config["esoTalk.baseURL"] = "";
+$config["esoTalk.baseURL"] = "/";
 $config["esoTalk.resourceURL"] = ""; // URL used for all resources (CSS+JS+images, including those from plugins and skins.) If blank, the base URL will be used.
 $config["esoTalk.rootAdmin"] = 1; // The member ID of the root administrator.
 $config["esoTalk.emailFrom"] = ""; // The email address to send forum emails (notifications etc.) from.
@@ -69,7 +69,8 @@ $config["esoTalk.cache"] = false; // What type of cache to use.
 $config["esoTalk.includeFaviconTag"] = ""; // Include favicon tag. Set to empty if it isn't used.
 // example:
 //$config["esoTalk.includeFaviconTag"] = '<link rel="icon" type="image/png" href="/favicon.png">';
-$config["esoTalk.hostName"] = "http://127.0.0.1";
+$config["esoTalk.hostName"] = "http://127.0.0.1"; // host name with protocol, without URL (not used, if "esoTalk.hostNamePattern" is set)
+$config["esoTalk.hostNamePattern"] = ""; // PCRE pattern for host name with protocol, without URL (override "esoTalk.hostName"), i.e.: "^http:\/\/(?:www\.)?myforum\.com", "^http:\/\/(?:127.0.0.1|localhost)"
 
 // Meta information.
 $config["esoTalk.meta.keywords"] = null;
