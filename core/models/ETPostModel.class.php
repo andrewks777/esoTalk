@@ -298,7 +298,7 @@ public function getPostQuotes($conversationId, $relativePostId)
 		pc.citingConversationId AS conversationId,
 		pc.citingRelativePostId AS relativePostId
 		FROM ".C("esoTalk.database.prefix")."post_citing pc
-		WHERE (conversationId=".$conversationId.") and (relativePostId=".$relativePostId.")
+		WHERE (conversationId=".(int)$conversationId.") and (relativePostId=".(int)$relativePostId.")
 		ORDER BY conversationId,relativePostId";
 	
 	$quotes = ET::$database->query($query)->allRows();

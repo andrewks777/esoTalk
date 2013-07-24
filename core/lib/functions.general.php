@@ -1143,7 +1143,12 @@ function lcfirst($str)
 
 function explodeRelativePostId($relativePostId)
 {
-	return explode("-", $relativePostId, 2);
+	if (preg_match("/^(\d+)(?:-(\d+))?$/i", $relativePostId, $matches)) {
+		return explode("-", $relativePostId, 2);
+	} else {
+		return explode("-", "0-0", 2);
+	}
+	
 }
 
 function getUserIP()
