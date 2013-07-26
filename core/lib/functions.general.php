@@ -1151,11 +1151,25 @@ function explodeRelativePostId($relativePostId)
 	
 }
 
-function getUserIP()
+function getUserIP($fromHTTP = false, $getStr = false)
 {
-	$ip = (int)ip2long(ET::$session->ip);
-	if ($ip === false) { $ip = 0; }
-	return $ip;
+	if ($fromHTTP) {
+		$ip_str = $_SERVER["REMOTE_ADDR"];
+	} else {
+		$ip_str = ET::$session->ip;
+	}
+	if ($getStr) {
+		return $ip_str;
+	} else {
+		$ip = (int)ip2long($ip_str);
+		if ($ip === false) $ip = 0;
+		return $ip;
+	}
+}
+
+function getUserIdent()
+{
+	return md5(getUserIP(true, true));
 }
 
 function getWhoisURL($ip)

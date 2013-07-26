@@ -279,28 +279,13 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 
 public function getPostQuotes($conversationId, $relativePostId)
 {
-	/*
-	$wheres = array(
-		"conversationId" => $conversationId,
-		"relativePostId" => $relativePostId
-	);
-	$quotes = ET::SQL()
-		->select("pc.citingConversationId AS conversationId")
-		->select("pc.citingRelativePostId AS relativePostId")
-		->from("post_citing pc")
-		->where($wheres)
-		->orderBy("conversationId,relativePostId")
-		->exec()
-		->allRows();
-	*/
-	
 	$query = "SELECT DISTINCT
 		pc.citingConversationId AS conversationId,
 		pc.citingRelativePostId AS relativePostId
 		FROM ".C("esoTalk.database.prefix")."post_citing pc
-		WHERE (conversationId=".(int)$conversationId.") and (relativePostId=".(int)$relativePostId.")
+		WHERE (conversationId=".ET::$database->escapeValue($conversationId, PDO::PARAM_INT).") and (relativePostId=".ET::$database->escapeValue($relativePostId, PDO::PARAM_INT).")
 		ORDER BY conversationId,relativePostId";
-	
+		
 	$quotes = ET::$database->query($query)->allRows();
 	
 	return $quotes;

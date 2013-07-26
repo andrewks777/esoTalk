@@ -441,7 +441,7 @@ $definitions["message.confirmLeave"] = "Подождите, Вы не сохра
 $definitions["message.connectionError"] = "Форум esoTalk не может соединиться с MySQL сервером. Возвращенная ошибка:<br/>%s";
 $definitions["message.conversationDeleted"] = "Обсуждение было удалено!";
 $definitions["message.conversationNotFound"] = "Это обсуждение не может быть просмотрено. Возможно, Вы не вошли на форум или не имеете права его просмотра, либо оно было удалено.";
-$definitions["message.cookieAuthenticationTheft"] = "Из соображений безопасности, Вам необходимо заново войти в аккаунт.";
+$definitions["message.cookieAuthenticationTheft"] = "Возможно, была попытка взлома Вашего аккаунта. Из соображений безопасности, Вам необходимо заново войти в аккаунт.";
 $definitions["message.deleteChannelHelp"] = "Если Вы удалите этот канал, то не сможете его восстановить. Вместо этого, все ваши обсуждения могут быть перемещены в другой канал по Вашему выбору.";
 $definitions["message.emailConfirmed"] = "Ваш аккаунт подтвержден и активирован, и Вы можете начинать обсуждения с другими участниками. Почему бы не <a href='".URL("conversation/start")."'>начать</a> прямо сейчас?";
 $definitions["message.emailDoesntExist"] = "Этот e-mail адрес не совпадает ни с одним из адресов участников форума. Возможно, Вы ошиблись?";

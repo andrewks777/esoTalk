@@ -20,7 +20,7 @@ class ETUpgradeModel extends ETModel {
  */
 public function checkForUpdates()
 {
-	if (!C("esoTalk.updateCheckInterval")) return; // hack - disable updates checking
+	if (!C("esoTalk.updateCheckInterval") and !C("esoTalk.admin.needUpgradeDB")) return; // hack - disable updates checking
 
 	// Save the last update check time so we won't do it again for a while.
 	ET::writeConfig(array("esoTalk.admin.lastUpdateCheckTime" => time()));
@@ -292,6 +292,7 @@ protected function structure($drop = false)
 		->column("memberId", "int(11) unsigned", false)
 		->column("series", "char(32)", false)
 		->column("token", "char(32)", false)
+		->column("ident", "char(32)")
 		->key(array("memberId", "series"), "primary")
 		->exec($drop);
 }

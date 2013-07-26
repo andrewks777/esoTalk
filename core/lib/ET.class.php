@@ -145,6 +145,7 @@ public static function trigger($event, $parameters = array())
  */
 public static function checkForUpdates()
 {
+	if (!C("esoTalk.updateCheckInterval")) return; // hack - disable updates checking
 	$json = file_get_contents("http://get.esotalk.org/versions.txt");
 	$packages = json_decode($json, true);
 

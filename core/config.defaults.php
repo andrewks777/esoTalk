@@ -94,6 +94,8 @@ $config["esoTalk.cookie.path"] = null; // Set a custom cookie path.
 $config["esoTalk.cookie.expire"] = 2592000; // 30 days
 $config["esoTalk.cookie.secure"] = false; // Indicates that the cookie should only be transmitted over a secure HTTPS connection from the client.
 $config["esoTalk.cookie.httponly"] = false; // When TRUE the cookie will be made accessible only through the HTTP protocol.
+$config["esoTalk.cookie.checkIdent"] = false; // When TRUE the cookie will be rejected if IP is changed.
+$config["esoTalk.cookie.disableAllAtAttack"] = false; // When TRUE the all cookies will be disabled if attack is detected.
 
 // URL settings.
 $config["esoTalk.urls.friendly"] = false; // ex. example.com/index.php/conversation/1

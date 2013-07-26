@@ -40,6 +40,12 @@ public $token;
  */
 public $ip;
 
+/**
+ * The Ident of the current user.
+ * @var string
+ */
+private $ident;
+
 
 /**
  * Class constructor: starts the session and initializes class properties (ip, token, user, etc.)
@@ -54,11 +60,15 @@ public function __construct()
 	if (empty($_SESSION["token"])) $this->regenerateToken();
 
 	// Complicate session highjacking - check the current user agent against the one that initiated the session.
-	if (md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) session_destroy();
+	if (md5(getUserIP(true, true)) != $_SESSION["userIP"] or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
+		session_destroy();
+		$this->setCookie("persistent", false, -1);
+	}
 
 	// Set the class properties to reference session variables.
 	$this->token = &$_SESSION["token"];
 	$this->ip = $_SERVER["REMOTE_ADDR"];
+	$this->ident = getUserIdent();
 	$this->userId = &$_SESSION["userId"];
 
 	// If a persistent login cookie is set, attempt to log in.
@@ -82,11 +92,17 @@ public function __construct()
 		if ($row = $result->firstRow() and $row["series"] == $series) {
 
 			// If the token doesn't match, the user's cookie has probably been stolen by someone else.
-			if ($row["token"] != $token) {
+			if ($row["token"] != $token or (C("esoTalk.cookie.checkIdent") and $row["ident"] != $this->ident)) {
 
 				// Delete this member's cookie identifier for this series, so the attacker will not be able
 				// to log in again.
 				ET::SQL()->delete()->from("cookie")->where("memberId", $memberId)->where("series", $series)->exec();
+				
+				// Overwrite all this member's cookie identifier's for providing notification of the member
+				if (C("esoTalk.cookie.disableAllAtAttack")) {
+					$hackedToken = "hacked";
+					ET::SQL()->update("cookie")->set("token", $hackedToken)->where("memberId", $memberId)->exec();
+				}
 
 				// Add an error to the model.
 				$this->error("cookieAuthenticationTheft");
@@ -217,6 +233,12 @@ public function login($name, $password, $remember = false)
 
 	// Set a persistent login "remember me" cookie?
 	if ($return === true and $remember) $this->setRememberCookie($this->userId);
+	
+	// Remove 'hacked' cookies
+	if ($return === true) {
+		$hackedToken = "hacked";
+		ET::SQL()->delete()->from("cookie")->where("memberId", $member["memberId"])->where("token", $hackedToken)->exec();
+	}
 
 	return $return;
 }
@@ -238,7 +260,8 @@ protected function createPersistentToken($memberId, $series)
 	ET::SQL()->insert("cookie")->set(array(
 		"memberId" => $memberId,
 		"series" => $series,
-		"token" => $token
+		"token" => $token,
+		"ident" => $this->ident
 	))->setOnDuplicateKey("token", $token)->exec();
 
 	return $token;
@@ -343,6 +366,7 @@ public function regenerateToken()
 	session_regenerate_id(true);
 	$_SESSION["token"] = substr(md5(uniqid(rand())), 0, 13);
 	$_SESSION["userAgent"] = md5($_SERVER["HTTP_USER_AGENT"]);
+	$_SESSION["userIP"] = md5(getUserIP(true, true));
 }
 
 
