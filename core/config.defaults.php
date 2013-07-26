@@ -131,7 +131,8 @@ $config["esoTalk.members.membersPerPage"] = 30;
 
 // Post formatting settings.
 $config["esoTalk.format.youtube"] = true; // Automatically convert YouTube links to embeds?
-$config["esoTalk.format.rutube"] = true; // Automatically convert Rutube links to embeds?
+$config["esoTalk.format.rutube"] = true; // Automatically convert Rutube.ru links to embeds?
+$config["esoTalk.format.smotri"] = true; // Automatically convert Smotri.com links to embeds?
 $config["esoTalk.format.vkvideo"] = true; // Automatically convert vk.com video links to embeds?
 $config["esoTalk.format.mentions"] = true; // Allow @mentioning of members?
 $config["esoTalk.format.PCRE.UseUnicode"] = true; // Allow to use Unicode in PCRE patterns.

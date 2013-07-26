@@ -268,6 +268,12 @@ public function linksCallback($matches)
 			$height = 344; // rutube value: 405
 			return "<div class='video'><iframe width='$width' height='$height' src='http://rutube.ru/video/embed/$id' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe></div>";
 		} else
+		if (C("esoTalk.format.smotri") and preg_match("/^smotri\.com\/video\/view\/\?id=(v[0-9a-z]+)/i", $matches[2], $smotri)) {
+			$id = $smotri[1];
+			$width = 425; // rutube value: 640
+			$height = 344; // rutube value: 360
+			return "<div class='video'><object id='smotriComVideoPlayer' classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000' width='$width' height='$height'><param name='movie' value='http://pics.smotri.com/player.swf?file=$id&autoStart=false&str_lang=rus&xmlsource=http%3A%2F%2Fpics%2Esmotri%2Ecom%2Fcskins%2Fblue%2Fskin%5Fcolor%2Exml&xmldatasource=http%3A%2F%2Fpics.smotri.com%2Fskin_ng.xml' /><param name='allowScriptAccess' value='always' /><param name='allowFullScreen' value='true' /><param name='bgcolor' value='#ffffff' /><embed name='smotriComVideoPlayer' src='http://pics.smotri.com/player.swf?file=$id&autoStart=false&str_lang=rus&xmlsource=http%3A%2F%2Fpics%2Esmotri%2Ecom%2Fcskins%2Fblue%2Fskin%5Fcolor%2Exml&xmldatasource=http%3A%2F%2Fpics.smotri.com%2Fskin_ng.xml' quality='high' allowscriptaccess='always' allowfullscreen='true' wmode='window'  width='$width' height='$height' type='application/x-shockwave-flash'></embed></object></div>";
+		} else
 		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video([0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
 			$oid = $vkvideo[1];
 			$id = $vkvideo[2];
@@ -282,7 +288,7 @@ public function linksCallback($matches)
 			$params = (count($vkvideo) >= 4) ? $vkvideo[3] : "";
 			$width = 425; // vk.com value: 720
 			$height = 344; // vk.com value: 410
-			return "<div class='video'><iframe width='$width' height='$height' src='http://vk.com/video_ext.php?oid=$oid&id=$id$params' frameborder='0'></iframe></div>";
+			return "<div class='video'><iframe onerror='javascript:alert(\"error\");' width='$width' height='$height' src='http://vk.com/video_ext.php?oid=$oid&id=$id$params' frameborder='0'></iframe></div>";
 		}
 		
 	}
