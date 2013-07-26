@@ -1320,7 +1320,7 @@ protected function formatPostForTemplate($post, $conversation)
 	if ($conversation["canModerate"]) {
 		$ip = long2ip($post["memberIP"]);
 		$whoisURL = getWhoisURL($ip);
-		$formatted["info"][] = "<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+		$formatted["info"][] = "<a href='".$whoisURL."' class='time'>".$ip."</a>";
 	}
 	
 	// If the post isn't deleted, add a lot of stuff!
@@ -1347,7 +1347,7 @@ protected function formatPostForTemplate($post, $conversation)
 			if ($conversation["canModerate"]) {
 				$ip = long2ip($post["editMemberIP"]);
 				$whoisURL = getWhoisURL($ip);
-				$whoisLink = "\n"."<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+				$whoisLink = "\n"."<a href='".$whoisURL."' class='time'>".$ip."</a>";
 			} else $whoisLink = "";
 			$formatted["controls"][] = "<span class='editedBy'>".sprintf(T("Edited %s by %s"), "<span title='".date(T("date.full"), $post["editTime"])."'>".date("d.m.Y H:i:s", $post["editTime"]).$whoisLink."</span>", $post["editMemberName"])."</span>";
 		}
@@ -1373,7 +1373,7 @@ protected function formatPostForTemplate($post, $conversation)
 			if ($conversation["canModerate"]) {
 				$ip = long2ip($post["deleteMemberIP"]);
 				$whoisURL = getWhoisURL($ip);
-				$whoisLink = "\n"."<a href='".$whoisURL."' class='time' title='".$ip."'>".$ip."</a>";
+				$whoisLink = "\n"."<a href='".$whoisURL."' class='time'>".$ip."</a>";
 			} else $whoisLink = "";
 			$formatted["controls"][] = "<span>".sprintf(T("Deleted %s by %s"), "<span title='".date(T("date.full"), $post["deleteTime"])."'>".date("d.m.Y H:i:s", $post["deleteTime"]).$whoisLink."</span>", $post["deleteMemberName"])."</span>";
 		}
