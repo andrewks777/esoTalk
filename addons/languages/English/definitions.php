@@ -444,6 +444,7 @@ $definitions["message.suspendMemberHelp"] = "Suspending %s will prevent them fro
 $definitions["message.tablePrefixConflict"] = "The installer has detected that there is another installation of esoTalk in the same MySQL database with the same table prefix.<br/>To overwrite this installation of esoTalk, click 'Install My Forum' again. <strong>All data will be lost.</strong><br/>If you wish to create another esoTalk installation alongside the existing one, <strong>change the table prefix</strong>.";
 $definitions["message.unsuspendMemberHelp"] = "Unsuspending %s will enable them to participate in conversations on this forum again.";
 $definitions["message.upgradeSuccessful"] = "esoTalk was successfully upgraded.";
+$definitions["message.videoLoadingError"] = "Video loading error!";
 $definitions["message.waitToReply"] = "You must wait at least %s seconds between starting or replying to conversations. Take a deep breath and try again.";
 $definitions["message.waitToSearch"] = "Woah, slow down! Looks like you're trying to perform a few too many searches. Wait %s seconds and try again.";
 

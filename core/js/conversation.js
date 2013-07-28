@@ -1210,6 +1210,14 @@ togglePreview: function(id, preview) {
 		$("#" + id + " textarea").show();
 		$("#" + id + "-preview").hide();
 	}
+},
+
+onErrorLoadingVideo: function(e) {
+	var e = $(e);
+	var srclink = e.prop("src");
+	var ediv = e.parent();
+	ediv.children("iframe").remove();
+	ediv.append("<a class='badVideo' href='"+srclink+"'>"+T("message.videoLoadingError")+"</a>");
 }
 
 };
