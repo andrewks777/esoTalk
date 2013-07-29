@@ -95,6 +95,7 @@ body, input, textarea, select {font-family:lucida grande,lucida sans unicode,hel
 .postHeader h3 a {color:#444444}
 .postBody a.link-member {color:#444444; font-weight:bold}
 .postBody a.badVideo {color:#990000; font-size:120%; border:1px solid #ccc; border-radius:3px; box-shadow: 0 0 3px rgba(0,0,0,0.5); padding:3px 15px 3px}
+.postBody a span.linkPrefix {font-size:70%; padding-right:2px}
 /*.post {margin-bottom:0px; margin-top:0px; padding-bottom:0px; padding-top:0px}*/
 .post {margin-bottom:0px; margin-top:0px; padding-bottom:3px; padding-top:3px}
 /*.postBody {font-size:14px}*/

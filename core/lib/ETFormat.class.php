@@ -202,10 +202,6 @@ public function links()
 	// http://jmrware.com/articles/2009/uri_regexp/URI_regex.html
 	// http://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
 	
-	// deprecated templates:
-	//"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:".($use_unicode ? "\pL" : "[a-z]" )."{2,4})[^\s<]*?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
-	//"/(?<=\s|^|>|\()(\w+:\/\/)?([\w\-\.]+\.(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ)(?:[\.\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
-
 	$ipv4Pattern = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 	$domainPattern = "(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ)";
 	$hostNamePattern = $use_unicode
@@ -213,7 +209,8 @@ public function links()
 		: "(?:[a-z0-9]\.|[a-z0-9][a-z0-9\-]*[a-z0-9]\.)+".$domainPattern;
 	$portPattern = "(?::\d+)?";
 	$this->content = preg_replace_callback(
-		"/(?<=\s|^|>|\()((?:http|https|ftp|ftps):\/\/)?((?:".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+		//"/(?<=\s|^|>|\()((?:http|https|ftp|ftps):\/\/)?((?:".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>\)]*(?:\s|>|\)|$))/i".($use_unicode ? "u" : "" ),
+		"/(?<=\s|^|>|\()((?:http|https|ftp|ftps):\/\/)?((?:".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>]*(?:\s|>|$))/i".($use_unicode ? "u" : "" ),
 		array($this, "linksCallback"), $this->content);
 
 	// Convert email links.
@@ -232,7 +229,6 @@ public function linksCallback2($matches)
 	if ((int)$matches[1] < $this->relativePostId) {
 		$dataId = postURL($matches[1], $this->conversationId, $matches[1], false);
 		$url = URL(postURL($matches[1], $this->conversationId, $matches[1]), true);
-		//return "<a href='".$url."' rel='post' data-id='$dataId' class='control-search postRef'><i class='icon-search'></i>$matches[0]</a>";
 		return "<a href='".$url."' rel='post' data-id='$dataId' class='postRef'>$matches[0]</a>";
 	} else return $matches[0];
 }
@@ -293,9 +289,21 @@ public function linksCallback($matches)
 		}
 		
 	}
+	
+	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
+	$matches2_decoded = sanitizeHTML(urldecode($matches[2]));
+	$url_decoded = ($matches[1] ? $matches[1] : "http://").$matches2_decoded;
+	
+	if (C("esoTalk.format.wikipedia") and preg_match("/^[a-z]{2,2}\.wikipedia\.org\/wiki\/([\S]+)/iu", $matches2_decoded, $wiki)) {
+		$article = $wiki[1];
+		return "<a href='".$url."' target='_blank' class='link-external'><span class='linkPrefix'>wiki:</span>".$article."</a>";
+	} else
+	if (C("esoTalk.format.lurkmore") and preg_match("/^lurkmore\.to\/([\S]+)/iu", $matches2_decoded, $lurk)) {
+		$article = $lurk[1];
+		return "<a href='".$url."' target='_blank' class='link-external'><span class='linkPrefix'>lurk:</span>".$article."</a>";
+	}
 
 	// If this is an internal link...
-	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
 	$encoding = "utf8";
 	$shortURL = "";
 	if (C("esoTalk.hostNamePattern")) {
@@ -307,16 +315,14 @@ public function linksCallback($matches)
 	} else {
 		$baseURL = C("esoTalk.hostName").C("esoTalk.baseURL");
 		if (mb_stripos($url, $baseURL, 0, $encoding) === 0) $shortURL = mb_substr($url, mb_strlen($baseURL, $encoding) - 1, null, $encoding);
-		//return $url."|".$baseURL."|".$shortURL;
 	}
 	if ($shortURL) {
-		$caption = $matches[0];
+		$caption = $matches[1].$matches2_decoded;
 		$postId = "";
 		if (preg_match("/^\/(?:conversation\/post\/(\d+)-)?(\d+)/i", $shortURL, $conv)) {
 			if ($conv[1] === "") $conversationId = $conv[2]; else $conversationId = $conv[1];
 			$conversation = ET::conversationModel()->getById($conversationId);
 			if ($conversation) {
-				//if (!$conversation["private"]) $caption = $conversation["title"];
 				$caption = $conversation["title"];
 				$postId = ($conv[1] === "") ? "0" : $conv[2];
 				$postId = $conversationId."-".$postId;
@@ -326,7 +332,7 @@ public function linksCallback($matches)
 	}
 
 	// Otherwise, return an external HTML anchor tag.
-	return "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$matches[0]." <i class='icon-external-link'></i></a>";
+	return "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$matches[1].$matches2_decoded." <i class='icon-external-link'></i></a>";
 }
 
 

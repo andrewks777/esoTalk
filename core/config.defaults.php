@@ -134,6 +134,8 @@ $config["esoTalk.format.youtube"] = true; // Automatically convert YouTube links
 $config["esoTalk.format.rutube"] = true; // Automatically convert Rutube.ru links to embeds?
 $config["esoTalk.format.smotri"] = true; // Automatically convert Smotri.com links to embeds?
 $config["esoTalk.format.vkvideo"] = true; // Automatically convert vk.com video links to embeds?
+$config["esoTalk.format.wikipedia"] = true; // Stylize wikipedia-links?
+$config["esoTalk.format.lurkmore"] = false; // Stylize lurkmore-links?
 $config["esoTalk.format.mentions"] = true; // Allow @mentioning of members?
 $config["esoTalk.format.PCRE.UseUnicode"] = true; // Allow to use Unicode in PCRE patterns.
 
