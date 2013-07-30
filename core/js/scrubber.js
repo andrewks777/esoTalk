@@ -327,6 +327,23 @@ addItems: function(startFrom, items, moreItem, animate) {
 	if (Math.max.apply(Math, ETScrubber.loadedItems) >= ETScrubber.count - 1)
 		$(".scrubberNext").remove();
 
+	//kitt highlightjs
+	$('pre code', items).each(function(i, e) {hljs.highlightBlock(e)});
+	
+	//kitt bbcode spoiler	
+	$('.bbcode-block-spoiler',items).each(function(i,e){
+		$(e).before('<a href="javascript:void(0)" class="bbcode-link-spoiler">Скрытый текст: нажмите, чтобы посмотреть</a>').hide();
+		
+	});
+	
+	$('.bbcode-link-spoiler', items).click(function(){
+		$('.bbcode-block-spoiler',$(this).parent()).toggle(); 			
+		return false;
+	}).toggle(
+		function(){$(this).text('Нажмите еще раз, чтобы скрыть')},
+		function(){$(this).text('Скрытый текст: нажмите, чтобы посмотреть')}			
+	);
+			
 	return items;
 }
 

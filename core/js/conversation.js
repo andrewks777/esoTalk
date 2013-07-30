@@ -184,6 +184,7 @@ init: function() {
 
 	// Add an onbeforeunload handler (to warn the user if they have an unsaved post/draft).
 	$(window).bind("beforeunload.ajax", ETConversation.beforeUnload);
+	
 },
 
 
