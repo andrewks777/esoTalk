@@ -348,9 +348,11 @@ public function editPost(&$post, $content)
 	$this->validate("content", $content, array($this, "validateContent"));
 
 	if ($this->errorCount()) return false;
-
+	
+	$contentOld = $post["content"];
+	
 	// Update the post.
-		$ip = getUserIP();
+	$ip = getUserIP();
 	$time = time();
 	$this->updateById($post["postId"], array(
 		"content" => $content,
@@ -366,6 +368,25 @@ public function editPost(&$post, $content)
 	$post["editTime"] = $time;
 
 	$this->updatePostQuotes((int)$post["conversationId"], (int)$post["relativePostId"], $content, true);
+	
+	if (C("esoTalk.admin.postEditingLog")) {
+		$values_log = array(
+			"postId" => $post["postId"],
+			"conversationId" => $post["conversationId"],
+			"relativePostId" => $post["relativePostId"],
+			"editMemberId" => $post["editMemberId"],
+			"editTime" => $post["editTime"],
+			"editMemberIP" => $post["editMemberIP"],
+			"contentOld" => $contentOld,
+			"contentNew" => $post["content"]
+		);
+				
+		ET::SQL()->insert("post_editing")
+		->set($values_log)
+		->exec();
+	}
+	
+	writeAdminLog('editPost', $post["postId"], $post["memberId"], null, null, $time);
 
 	$this->trigger("editPostAfter", array($post));
 
@@ -383,7 +404,7 @@ public function editPost(&$post, $content)
 public function deletePost(&$post)
 {
 	// Update the post.
-		$ip = getUserIP();
+	$ip = getUserIP();
 	$time = time();
 	$this->updateById($post["postId"], array(
 		"deleteMemberId" => ET::$session->userId,
@@ -396,6 +417,8 @@ public function deletePost(&$post)
 	$post["deleteMemberName"] = ET::$session->user["username"];
 	$post["deleteTime"] = $time;
 
+	writeAdminLog('deletePost', $post["postId"], $post["memberId"], null, null, $time);
+	
 	return true;
 }
 
@@ -420,6 +443,8 @@ public function restorePost(&$post)
 	$post["deleteMemberIP"] = 0;
 	$post["deleteMemberName"] = null;
 	$post["deleteTime"] = null;
+	
+	writeAdminLog('restorePost', $post["postId"], $post["memberId"], null, null, $time);
 
 	return true;
 }

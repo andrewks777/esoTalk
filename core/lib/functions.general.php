@@ -1186,3 +1186,26 @@ function checkCanonicalURI($canonicalURL)
 {
 	return ($canonicalURL == $_SERVER['REQUEST_URI']);
 }
+
+// write action to table 'adm_actions'
+function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0)
+{
+	if (C("esoTalk.admin.AdmActionsLog")) {
+		if (!$time) $time = time();
+		$values_log = array(
+			"actionType" => $actionType,
+			"objectId" => &$objectId,
+			"memberId" => &$memberId,
+			"time" => $time,
+			"adminId" => ET::$session->userId,
+			"adminIP" => getUserIP(),
+			"adminUserAgent" => substr(getUserAgent(), 0, 80),
+			"titleOld" => &$titleOld,
+			"titleNew" => &$titleNew
+		);
+
+		ET::SQL()->insert("adm_actions")
+		->set($values_log)
+		->exec();
+	}
+}

@@ -530,6 +530,7 @@ public function delete($conversationId = false)
 
 	// Delete the conversation, then redirect to the index.
 	ET::conversationModel()->deleteById($conversation["conversationId"]);
+	writeAdminLog('deleteConversation', $conversation["conversationId"], $conversation["startMemberId"], $conversation["title"], null);
 	$this->message(T("message.conversationDeleted"), "success dismissable");
 	$this->redirect(URL(""));
 }
@@ -578,8 +579,15 @@ protected function toggle($conversationId, $type)
 		return;
 	}
 
+	$oldflag = $conversation[$type];
 	$function = "set".ucfirst($type);
 	ET::conversationModel()->$function($conversation, !$conversation[$type]);
+	if ($type == "locked") {
+		writeAdminLog($oldflag ? 'unlockConversation' : 'lockConversation', $conversation["conversationId"], $conversation["startMemberId"], $conversation["title"], null);
+	} else
+	if ($type == "sticky") {
+		writeAdminLog($oldflag ? 'unstickyConversation' : 'stickyConversation', $conversation["conversationId"], $conversation["startMemberId"], $conversation["title"], null);
+	}
 
 	// For the default response type, redirect back to the conversation.
 	if ($this->responseType === RESPONSE_TYPE_DEFAULT) {
@@ -706,12 +714,18 @@ public function save($conversationId = false)
 	if ($conversation["conversationId"]) {
 
 		// Save the title.
-		if ($title = $form->getValue("title"))
+		if ($title = $form->getValue("title")) {
+			$oldtitle = $conversation["title"];
 			$model->setTitle($conversation, $title);
+			writeAdminLog('renameConversation', $conversation["conversationId"], $conversation["startMemberId"], $oldtitle, $conversation["title"]);
+		}
 
 		// Save the channel.
-		if ($channelId = $form->getValue("channel"))
+		if ($channelId = $form->getValue("channel")) {
+			$oldchannel = $conversation["channelId"];
 			$model->setChannel($conversation, $channelId);
+			writeAdminLog('changeChannelConversation', $conversation["conversationId"], $conversation["startMemberId"], $oldchannel, $conversation["channelId"]);
+		}
 
 		// If there are errors, show them.
 		if ($model->errorCount())
@@ -849,6 +863,7 @@ public function addMember($conversationId = false)
 		// Good to go? Add the member!
 		else {
 			$model->addMember($conversation, $member);
+			writeAdminLog('editPermissionsConversation', $conversation["conversationId"], $conversation["startMemberId"], null, "add;".$member["type"].";".$member["id"]);
 		}
 
 	}
@@ -906,6 +921,7 @@ public function removeMember($conversationId = false)
 	// If we have a member/group to remove, remove it!
 	if ($member) {
 		$model->removeMember($conversation, $member);
+		writeAdminLog('editPermissionsConversation', $conversation["conversationId"], $conversation["startMemberId"], "remove;".$member["type"].";".$member["id"], null);
 	}
 
 	// Now grab the new members allowed summary for the conversation.

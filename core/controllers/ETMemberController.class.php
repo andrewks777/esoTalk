@@ -330,6 +330,8 @@ public function permissions($memberId = "")
 
 		// Save the new account and groups.
 		ET::memberModel()->setGroups($member, $currentAccount, $currentGroups);
+		
+		writeAdminLog('editPermissionsMember', $member["memberId"], $member["memberId"], $member["username"], null);
 
 		// Show a message and redirect.
 		$this->message(T("message.changesSaved"), "success");
@@ -378,6 +380,8 @@ public function removeAvatar($memberId = "")
 
 	// Clear the member's avatar format field.
 	ET::memberModel()->updateById($member["memberId"], array("avatarFormat" => null));
+	
+	writeAdminLog('removeAvatarMember', $member["memberId"], $member["memberId"], $member["username"], null);
 
 	$url = R("return", memberURL($member["memberId"], $member["username"]));
 	$this->redirect(URL($url));
@@ -410,6 +414,7 @@ public function suspend($memberId = "")
 	// Suspend the member?
 	if ($form->validPostBack("suspend") and $member["account"] != ACCOUNT_SUSPENDED) {
 		ET::memberModel()->setGroups($member, ACCOUNT_SUSPENDED);
+		writeAdminLog('lockMember', $member["memberId"], $member["memberId"], $member["username"], null);
 		$this->message(T("message.changesSaved"), "success");
 		$this->redirect($redirectURL);
 	}
@@ -417,6 +422,7 @@ public function suspend($memberId = "")
 	// Or unsuspend the member?
 	elseif ($form->validPostBack("unsuspend") and $member["account"] == ACCOUNT_SUSPENDED) {
 		ET::memberModel()->setGroups($member, ACCOUNT_MEMBER);
+		writeAdminLog('unlockMember', $member["memberId"], $member["memberId"], $member["username"], null);
 		$this->message(T("message.changesSaved"), "success");
 		$this->redirect($redirectURL);
 	}
@@ -454,9 +460,11 @@ public function rename($memberId = "")
 	// If the form was submitted, change the member's username.
 	if ($form->validPostBack("save")) {
 
+		$oldusername = $member["username"];
 		// Update the username.
 		$model = ET::memberModel();
 		$model->updateById($member["memberId"], array("username" => $form->getValue("username")));
+		writeAdminLog('renameMember', $member["memberId"], $member["memberId"], $oldusername, $member["username"]);
 
 		// Check for errors - if there are none, show a message and redirect.
 		if ($model->errorCount()) $form->errors($model->errors());
@@ -499,6 +507,7 @@ public function delete($memberId = "")
 	// If the form was submitted, delete the member and take the appropriate action upon all their posts.
 	if ($form->validPostBack("delete")) {
 		ET::memberModel()->deleteById($member["memberId"], $form->getValue("deletePosts"));
+		writeAdminLog('deleteMember', $member["memberId"], $member["memberId"], $member["username"], null);
 		$this->message(T("message.changesSaved"), "success");
 		$this->redirect(URL("members"));
 	}

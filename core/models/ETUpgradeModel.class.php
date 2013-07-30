@@ -237,23 +237,23 @@ protected function structure($drop = false)
 		->column("relativePostId", "int(15) unsigned", false)
 		->column("citingConversationId", "int(15) unsigned", false)
 		->column("citingRelativePostId", "int(15) unsigned", false)
-		//->key(array("conversationId", "relativePostId", "citingConversationId", "citingRelativePostId"), "primary")
 		->key(array("conversationId", "relativePostId"))
 		->key(array("citingConversationId", "citingRelativePostId"))
 		->exec($drop);
 		
 	// Administrative actions log table.
 	$structure
-		->table("adm_actions", "MyISAM")
+		->table("adm_actions")
 		->column("actionId", "int(15) unsigned", false)
-		->column("actionType", "enum('none','lockMember','unlockMember','editPermissionsMember','renameMember','deleteMember','changeChannelConversation','renameConversation','editPermissionsConversation','lockConversation','unlockConversation','deleteConversation','deletePost','restorePost','editPost')", "none")
-		->column("objectId", "int(15) unsigned", false) // member, conversation, post Id
+		->column("actionType", "enum('none','lockMember','unlockMember','editPermissionsMember','renameMember','deleteMember','removeAvatarMember','changeChannelConversation','renameConversation','editPermissionsConversation','lockConversation','unlockConversation','stickyConversation','unstickyConversation','deleteConversation','deletePost','restorePost','editPost','cookieTheft','hackerAttack')", "none")
+		->column("objectId", "int(15) unsigned") // member, conversation, post Id
+		->column("memberId", "int(15) unsigned") // memberId
 		->column("time", "int(11) unsigned", false)
-		->column("adminId", "int(15) unsigned", false) // memberId
+		->column("adminId", "int(15) unsigned") // memberId (administrator/moderator)
 		->column("adminIP", "int(11)", 0)
-		->column("adminUserAgent", "varchar(60)", "")
-		->column("titleOld", "varchar(100)")
-		->column("titleNew", "varchar(100)")
+		->column("adminUserAgent", "varchar(80)", "")
+		->column("titleOld", "varchar(120)")
+		->column("titleNew", "varchar(120)")
 		->key("actionId", "primary")
 		->key("objectId")
 		->key("adminId")
@@ -263,6 +263,7 @@ protected function structure($drop = false)
 	// Post editing log table.
 	$structure
 		->table("post_editing", "MyISAM")
+		->column("editingId", "int(15) unsigned", false)
 		->column("postId", "int(15) unsigned", false)
 		->column("conversationId", "int(15) unsigned", false)
 		->column("relativePostId", "int(15) unsigned", false)
@@ -271,7 +272,8 @@ protected function structure($drop = false)
 		->column("editMemberIP", "int(11)", 0)
 		->column("contentOld", "text")
 		->column("contentNew", "text")
-		->key("postId", "primary")
+		->key("editingId", "primary")
+		->key("postId")
 		->key("editMemberId")
 		->key("editTime")
 		->exec($drop);

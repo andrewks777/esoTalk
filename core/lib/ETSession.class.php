@@ -60,7 +60,9 @@ public function __construct()
 	if (empty($_SESSION["token"])) $this->regenerateToken();
 
 	// Complicate session highjacking - check the current user agent against the one that initiated the session.
-	if (md5(getUserIP(true, true)) != $_SESSION["userIP"] or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
+	$curr_ip = getUserIP(true, true);
+	if (md5($curr_ip) != $_SESSION["userIP"] or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
+		writeAdminLog('cookieTheft', $_SESSION["userId"], $_SESSION["userId"], "session;".$_SESSION["userIP"].";".$_SESSION["userAgent"], $curr_ip.";".$_SERVER["HTTP_USER_AGENT"]);
 		session_destroy();
 		$this->setCookie("persistent", false, -1);
 	}
@@ -93,7 +95,8 @@ public function __construct()
 
 			// If the token doesn't match, the user's cookie has probably been stolen by someone else.
 			if ($row["token"] != $token or (C("esoTalk.cookie.checkIdent") and $row["ident"] != $this->ident)) {
-
+				writeAdminLog('cookieTheft', $memberId, $memberId, "persistent;".$row["series"].";".$row["token"].";".$row["ident"], $cookie.";".$this->ident);
+			
 				// Delete this member's cookie identifier for this series, so the attacker will not be able
 				// to log in again.
 				ET::SQL()->delete()->from("cookie")->where("memberId", $memberId)->where("series", $series)->exec();

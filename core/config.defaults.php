@@ -164,3 +164,7 @@ $config["esoTalk.avatars.thumbHeight"] = 20;
 $config["esoTalk.minUserName"] = 2;
 $config["esoTalk.maxUserName"] = 20;
 $config["esoTalk.useUnicodeLettersInUserName"] = true; // Allow to use Unicode letters in users names.
+
+// Admin logs
+$config["esoTalk.admin.postEditingLog"] = false;
+$config["esoTalk.admin.AdmActionsLog"] = false;
