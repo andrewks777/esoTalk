@@ -253,7 +253,7 @@ public function linksCallback($matches)
 
 	if (!$this->basic) {
 		$onerror = "javascript:ETConversation.onErrorLoadingVideo(this);";
-		if (C("esoTalk.format.youtube") and preg_match("/^(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)([^&]+)/i", $matches[2], $youtube)) {
+		if (C("esoTalk.format.youtube") and preg_match("/^(?:(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)|youtu\.be\/)([^&]+)/i", $matches[2], $youtube)) {
 			$id = $youtube[1];
 			$width = 425;
 			$height = 344;
