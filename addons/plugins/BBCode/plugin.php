@@ -33,7 +33,11 @@ class ETPlugin_BBCode extends ETPlugin {
 public function handler_conversationController_renderBefore($sender)
 {
 	$sender->addJSFile($this->getResource("bbcode.js"));
+	$sender->addJSFile($this->getResource("highlightpack.js"));
 	$sender->addCSSFile($this->getResource("bbcode.css"));	
+	$sender->addCSSFile($this->getResource('default.css'));
+	$sender->addCSSFile($this->getResource('tomorrow.css'));
+	
 }
 
 

@@ -31,9 +31,6 @@ $classes = array("channel-".$conversation["channelId"]);
 if ($conversation["starred"]) $classes[] = "starred";
 if ($conversation["startMemberId"] == ET::$session->userId) $classes[] = "mine";
 ?>
-<?php $this->addCSSFile('cache/highlightjs/styles/default.css'); ?>
-<?php $this->addCSSFile('cache/highlightjs/styles/tomorrow.css'); ?>
-<script src="cache/highlightjs/highlight.pack.js" ></script>
 
 <div id='conversation' class='<?php echo implode(" ", $classes); ?>'>
 
