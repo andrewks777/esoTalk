@@ -118,7 +118,7 @@ $config["esoTalk.conversation.searchesPerMinute"] = 15; // Users are limited to 
 $config["esoTalk.conversation.timeBetweenPosts"] = 10; // Posting flood control, in seconds.
 $config["esoTalk.conversation.maxCharsPerPost"] = 10000;
 $config["esoTalk.conversation.editPostTimeLimit"] = -1; // For how long can a user edit their own posts? -1 = forever | "reply" = until someone replies | x seconds
-$config["esoTalk.conversation.popularTopicPostsCount"] = 50; // Set to -1 to disable
+$config["esoTalk.conversation.popularTopicPostsCount"] = 50; // Set to 0 to disable
 
 // Conversation ajax-updating intervals. Set all of these to 0 to disable ajax-updating.
 $config["esoTalk.conversation.updateIntervalStart"] = 10; // The initial number of seconds before checking for new posts on the conversation view.
