@@ -469,6 +469,7 @@ $definitions["message.gambitsHelp"] = "Теги это фразы, описыв�
 $definitions["message.gdNotEnabledWarning"] = "Внимание, <strong>GD расширение PHP</strong> не активировано.<br/><small>. Установите или активируйте его.</small>";
 $definitions["message.greaterMySQLVersionRequired"] = "На вашем сервере должен быть установлен <strong>MySQL 4 или выше</strong> и <a href='http://php.net/manual/en/mysql.installation.php' target='_blank'>MySQL-расширение должно быть включено в настройках PHP</a>.<br/>";
 $definitions["message.greaterPHPVersionRequired"] = "На вашем сервере должен быть установлен <strong>PHP 5.0.0 или выше</strong> для запуска esoTalk.<br/><small>Пожалуйста, обновите PHP.</small>";
+$definitions["message.imageLoadingError"] = "Ошибка загрузки изображения!";
 $definitions["message.incorrectLogin"] = "Ваш логин неправильный.";
 $definitions["message.incorrectPassword"] = "Ваш пароль неправильный.";
 $definitions["message.installerAdminHelp"] = "Форум esoTalk будет использовать эту информацию для настройки аккаунта Администратора форума.";

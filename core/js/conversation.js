@@ -1217,7 +1217,14 @@ onErrorLoadingVideo: function(e) {
 	var srclink = e.prop("src");
 	var ediv = e.parent();
 	ediv.children("iframe").remove();
-	ediv.append("<a class='badVideo' href='"+srclink+"'>"+T("message.videoLoadingError")+"</a>");
+	ediv.append("<a class='badVideo' href='"+srclink+"' rel='nofollow external' target='_blank'>"+T("message.videoLoadingError")+"</a>");
+},
+
+onErrorLoadingImage: function(e) {
+	var e = $(e);
+	var srclink = e.prop("src");
+	e.after("<a class='badImage' href='"+srclink+"' rel='nofollow external' target='_blank'>"+T("message.imageLoadingError")+"</a>");
+	e.remove();
 }
 
 };
