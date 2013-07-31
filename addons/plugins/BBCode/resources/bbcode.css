@@ -8,7 +8,7 @@
 .bbcode-img span {background-position:-120px 0}
 .bbcode-fixed span {background-position:-144px 0}
 .bbcode-block-spoiler {display: block}
-.bbcode-spoiler span { background-image: none}
+.bbcode-spoiler span { background-position:-168px 0}
 .bbcode-link-spoiler, .bbcode-block-spoiler {
 	border: 1px grey dashed;
 	/*background-color: #ffF6CA;*/
