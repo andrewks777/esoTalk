@@ -34,9 +34,13 @@ public function handler_conversationController_renderBefore($sender)
 {
 	$sender->addJSFile($this->getResource("bbcode.js"));
 	$sender->addJSFile($this->getResource("highlightpack.js"));
+	$sender->addJSFile($this->getResource("jquery.sooperfish.js"));
+	$sender->addJSFile($this->getResource("jquery.easing-sooper.js"));
 	$sender->addCSSFile($this->getResource("bbcode.css"));	
 	$sender->addCSSFile($this->getResource('default.css'));
 	$sender->addCSSFile($this->getResource('tomorrow.css'));
+	$sender->addCSSFile($this->getResource('sooperfish.css'));
+	$sender->addCSSFile($this->getResource('sooperfish-theme-silver.css'));
 	
 }
 
@@ -49,7 +53,7 @@ public function handler_conversationController_renderBefore($sender)
  */
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
-	addToArrayString($controls, "code", "<a href='javascript:BBCode.code(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
+	addToArrayString($controls, "code", "<ul class='sf-menu'><li class='current'><a href='javascript:BBCode.code(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a><ul><li>C#</li><li>C++</li><li>VB</li><li>1C</li></ul></li></ul>", 0);
 	addToArrayString($controls, "spoiler", "<a href='javascript:BBCode.spoiler(\"$id\");void(0)' title='".T("Spoiler")."' class='bbcode-spoiler'><span>".T("Spoiler")."</span></a>", 0);
 	//addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
 	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);
