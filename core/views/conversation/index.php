@@ -268,4 +268,12 @@ else {
 <script>
   hljs.tabReplace = '    ';
   hljs.initHighlightingOnLoad();
+  
+  $(document).ready(function() {
+	  var menu = $('ul.sf-menu');
+	  alert('MENU '+menu.length);
+      menu.sooperfish();
+    });
 </script>
+
+
