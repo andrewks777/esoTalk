@@ -10,7 +10,7 @@ html body ul.sf-menu ul
 width:180px;
 }
 html body ul.sf-menu ul ul {
-margin:0 0 0 180px;
+margin:0 0 0 20px;
 }
 
 /* Framework for proper showing/hiding/positioning */
@@ -41,7 +41,7 @@ position:relative;
 ul.sf-menu ul {
 position:absolute;
 left:0;
-width:150px; 
+/*width:150px; */
 top:auto;
 left:-999999px;
 }
@@ -50,11 +50,11 @@ zoom:1; /* IE6/7 fix */
 }
 ul.sf-menu ul li {
 float:left; /* Must always be floated otherwise there will be a rogue 1px margin-bottom in IE6/7 */
-width:150px;
+/*width:150px;*/
 }
 ul.sf-menu ul ul {
 top:0;
-margin:0 0 0 150px
+margin:0 0 0 20
 }
 
 ul.sf-menu li:hover ul,ul.sf-menu li:focus ul,ul.sf-menu li.sf-hover ul { /*first level*/

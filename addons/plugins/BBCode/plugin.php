@@ -40,7 +40,7 @@ public function handler_conversationController_renderBefore($sender)
 	$sender->addCSSFile($this->getResource('default.css'));
 	$sender->addCSSFile($this->getResource('tomorrow.css'));
 	$sender->addCSSFile($this->getResource('sooperfish.css'));
-	$sender->addCSSFile($this->getResource('sooperfish-theme-silver.css'));
+	$sender->addCSSFile($this->getResource('sooperfish-theme-glass.css'));
 	
 }
 
@@ -53,7 +53,57 @@ public function handler_conversationController_renderBefore($sender)
  */
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
-	addToArrayString($controls, "code", "<ul class='sf-menu'><li class='current'><a href='javascript:BBCode.code(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a><ul><li>C#</li><li>C++</li><li>VB</li><li>1C</li></ul></li></ul>", 0);
+	addToArrayString($controls, "code", 
+	"
+			
+			<ul class='sf-menu' id='nav'>
+				<li class='current'>	
+				<a href='javascript:BBCode.code(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'>".T("Code")."</a>							
+					<ul>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='C#' class=''><span>C#</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='C++' class=''><span>C++</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='VB' class=''><span>VB</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='1C' class=''><span>1C</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='PHP' class=''><span>PHP</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Perl' class=''><span>Perl</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Haskell' class=''><span>Haskell</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Ruby' class=''><span>Ruby</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='SQL' class=''><span>SQL</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='shell' class=''><span>shell</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Closure' class=''><span>Closure</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Go' class=''><span>Go</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Fortran' class=''><span>Fortran</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		
+	", 0);
 	addToArrayString($controls, "spoiler", "<a href='javascript:BBCode.spoiler(\"$id\");void(0)' title='".T("Spoiler")."' class='bbcode-spoiler'><span>".T("Spoiler")."</span></a>", 0);
 	//addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
 	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);

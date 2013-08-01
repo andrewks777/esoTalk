@@ -1421,8 +1421,8 @@ protected function getEditControls($id)
 	$this->trigger("getEditControls", array(&$controls, $id));
 
 	if (!empty($controls)) {
-		array_unshift($controls, "<span class='formattingButtons'>");
-		$controls[] = "</span>";
+		array_unshift($controls, "<div class='formattingButtons'>");
+		$controls[] = "</div>";
 		$controls[] = "<label class='previewCheckbox'><input type='checkbox' id='$id-previewCheckbox' onclick='ETConversation.togglePreview(\"$id\",this.checked)' accesskey='p'/> ".T("Preview")."</label>";
 	}
 
