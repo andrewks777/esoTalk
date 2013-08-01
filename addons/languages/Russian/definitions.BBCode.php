@@ -12,3 +12,4 @@ $definitions["Header"] = "Заголовок";
 $definitions["Italic"] = "Курсив";
 $definitions["Bold"] = "Жирный";
 $definitions["Quote"] = "Цитата";
+$definitions["Spoiler"] = "Спойлер";

@@ -7,3 +7,14 @@
 .bbcode-link span {background-position:-96px 0}
 .bbcode-img span {background-position:-120px 0}
 .bbcode-fixed span {background-position:-144px 0}
+.bbcode-block-spoiler {display: block}
+.bbcode-spoiler span { background-position:-168px 0}
+.bbcode-link-spoiler, .bbcode-block-spoiler {
+	border: 1px grey dashed;
+	/*background-color: #ffF6CA;*/
+	padding: 5px;
+	margin: 5px;
+}
+.postHeader{overflow: visible}
+/*.sf-menu{z-index: 999}*/
+

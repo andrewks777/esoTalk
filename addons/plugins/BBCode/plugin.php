@@ -33,7 +33,15 @@ class ETPlugin_BBCode extends ETPlugin {
 public function handler_conversationController_renderBefore($sender)
 {
 	$sender->addJSFile($this->getResource("bbcode.js"));
-	$sender->addCSSFile($this->getResource("bbcode.css"));
+	$sender->addJSFile($this->getResource("highlightpack.js"));
+	$sender->addJSFile($this->getResource("jquery.sooperfish.js"));
+	$sender->addJSFile($this->getResource("jquery.easing-sooper.js"));
+	$sender->addCSSFile($this->getResource("bbcode.css"));	
+	$sender->addCSSFile($this->getResource('default.css'));
+	$sender->addCSSFile($this->getResource('tomorrow.css'));
+	$sender->addCSSFile($this->getResource('sooperfish.css'));
+	$sender->addCSSFile($this->getResource('sooperfish-theme-glass.css'));
+	
 }
 
 
@@ -45,7 +53,59 @@ public function handler_conversationController_renderBefore($sender)
  */
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
-	addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
+	addToArrayString($controls, "code", 
+	"
+			
+			<ul class='sf-menu' id='nav'>
+				<li class='current'>	
+				<a href='javascript:BBCode.code(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'>".T("Code")."</a>							
+					<ul>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='C#' class=''><span>C#</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='C++' class=''><span>C++</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='VB' class=''><span>VB</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='1C' class=''><span>1C</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='PHP' class=''><span>PHP</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Perl' class=''><span>Perl</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Haskell' class=''><span>Haskell</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Ruby' class=''><span>Ruby</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='SQL' class=''><span>SQL</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='shell' class=''><span>shell</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Closure' class=''><span>Closure</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Go' class=''><span>Go</span></a>
+						</li>
+						<li>
+							<a href='javascript:BBCode.code(\"$id\");void(0)' title='Fortran' class=''><span>Fortran</span></a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		
+	", 0);
+	addToArrayString($controls, "spoiler", "<a href='javascript:BBCode.spoiler(\"$id\");void(0)' title='".T("Spoiler")."' class='bbcode-spoiler'><span>".T("Spoiler")."</span></a>", 0);
+	//addToArrayString($controls, "fixed", "<a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a>", 0);
 	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);
 	addToArrayString($controls, "link", "<a href='javascript:BBCode.link(\"$id\");void(0)' title='".T("Link")."' class='bbcode-link'><span>".T("Link")."</span></a>", 0);
 	addToArrayString($controls, "header", "<a href='javascript:BBCode.header(\"$id\");void(0)' title='".T("Header")."' class='bbcode-h'><span>".T("Header")."</span></a>", 0);
@@ -110,6 +170,9 @@ public function handler_format_format($sender)
 
 	// Headers: [h]header[/h]
 	$sender->content = preg_replace("/\[h\](.*?)\[\/h\]/", "</p><h4>$1</h4><p>", $sender->content);
+	
+	// Spoiler: [spoiler]Spoiler[/spoiler]
+	$sender->content = preg_replace("/\[spoiler\](.*?)\[\/spoiler\]/si", "<div class='bbcode-block-spoiler'>$1</div>", $sender->content);
 }
 
 
@@ -144,7 +207,7 @@ public function handler_format_afterFormat($sender)
 	$sender->content = preg_replace("/<code><\/code>/ie", "'<code>' . array_shift(\$this->inlineFixedContents) . '</code>'", $sender->content);
 
 	// Retrieve the contents of the block <pre> tags from the array in which they are stored.
-	$sender->content = preg_replace("/<pre><\/pre>/ie", "'<pre>' . array_pop(\$this->blockFixedContents) . '</pre>'", $sender->content);
+	$sender->content = preg_replace("/<pre><\/pre>/ie", "'<pre><code>' . array_pop(\$this->blockFixedContents) . '</code></pre>'", $sender->content);
 }
 
 }

@@ -31,6 +31,7 @@ $classes = array("channel-".$conversation["channelId"]);
 if ($conversation["starred"]) $classes[] = "starred";
 if ($conversation["startMemberId"] == ET::$session->userId) $classes[] = "mine";
 ?>
+
 <div id='conversation' class='<?php echo implode(" ", $classes); ?>'>
 
 <!-- Conversation header -->
@@ -264,3 +265,15 @@ else {
 </div>
 
 </div>
+<script>
+  hljs.tabReplace = '    ';
+  hljs.initHighlightingOnLoad();
+  
+  $(document).ready(function() {
+	  var menu = $('ul.sf-menu');
+	  alert('MENU '+menu.length);
+      menu.sooperfish();
+    });
+</script>
+
+
