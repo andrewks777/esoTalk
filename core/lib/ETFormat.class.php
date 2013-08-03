@@ -298,7 +298,7 @@ public function linksCallback($matches)
 		$article = $wiki[1];
 		return "<a href='".$url."' target='_blank' class='link-external'><span class='linkPrefix'>wiki:</span>".$article."</a>";
 	} else
-	if (C("esoTalk.format.lurkmore") and preg_match("/^lurkmore\.to\/([\S]+)/iu", $matches2_decoded, $lurk)) {
+	if (C("esoTalk.format.lurkmore") and preg_match("/^(?:lurkmore\.to|lurkmo\.re)\/([\S]+)/iu", $matches2_decoded, $lurk)) {
 		$article = $lurk[1];
 		return "<a href='".$url."' target='_blank' class='link-external'><span class='linkPrefix'>lurk:</span>".$article."</a>";
 	}
