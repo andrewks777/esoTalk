@@ -138,3 +138,4 @@ body, input, textarea, select {font-family:lucida grande,lucida sans unicode,hel
 .autoCompletePopup .popupMenu li > a {padding:3px 10px 3px 10px}
 div.video {text-align:center}
 .postContent div.deleted {display:none}
+blockquote a.expand {padding:0 8px; font-size:14px; width:16px}
