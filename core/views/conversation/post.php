@@ -36,7 +36,7 @@ endif; ?>>
 </div>
 
 <?php if (!empty($post["body"])): ?>
-<div class='postBody <?php echo implode(" ", (array)$post["bodyClass"]); ?>'>
+<div class='postBody <?php if (isset($post["bodyClass"])) echo implode(" ", (array)$post["bodyClass"]); ?>'>
 <?php
 echo $post["body"];
 ?>
