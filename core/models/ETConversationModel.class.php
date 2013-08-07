@@ -114,7 +114,7 @@ public function addAllowedPredicate(&$sql, $member = false, $table = "c")
 			->get();
 
 		// They must be the start member, or the conversation mustn't be a draft or private. If it is private, they must be allowed, using the query above.
-		$viewAllPrivate = (int)C("esoTalk.conversation.adminViewAllPrivate");
+		$viewAllPrivate = (int)(ET::$session->isAdmin() and C("esoTalk.conversation.adminViewAllPrivate"));
 		$sql->where("($table.startMemberId=:startMemberId OR ($table.countPosts>0 AND ($table.private=0 OR :viewAllPrivate=1 OR $table.conversationId IN ($allowedQuery))))")
 			->bind(":viewAllPrivate", $viewAllPrivate)
 			->bind(":allowedMemberId", $member["memberId"])
