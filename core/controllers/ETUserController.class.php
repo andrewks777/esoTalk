@@ -178,7 +178,7 @@ protected function sendConfirmationEmail($email, $username, $hash)
 {
 	sendEmail($email,
 		sprintf(T("email.confirmEmail.subject"), $username),
-		sprintf(T("email.header"), $username).sprintf(T("email.confirmEmail.body"), C("esoTalk.forumTitle"), URL("user/confirm/".$hash, true))
+		sprintf(T("email.header"), $username).sprintf(T("email.confirmEmail.body"), C("esoTalk.forumTitle"), URL("user/confirm/".$hash, true, true, true))
 	);
 }
 
@@ -290,7 +290,7 @@ public function forgot()
 			// Send them email containing the link, and redirect to the home page.
 			sendEmail($member["email"],
 				sprintf(T("email.forgotPassword.subject"), $member["username"]),
-				sprintf(T("email.header"), $member["username"]).sprintf(T("email.forgotPassword.body"), C("esoTalk.forumTitle"), URL("user/reset/".$member["memberId"].$hash, true))
+				sprintf(T("email.header"), $member["username"]).sprintf(T("email.forgotPassword.body"), C("esoTalk.forumTitle"), URL("user/reset/".$member["memberId"].$hash, true, true, true))
 			);
 			$this->renderMessage(T("Success!"), T("message.passwordEmailSent"));
 			return;

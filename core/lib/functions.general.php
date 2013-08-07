@@ -715,7 +715,7 @@ function json_decode($json)
  *
  * @package esoTalk
  */
-function URL($url = "", $absolute = false, $prependIndex = true)
+function URL($url = "", $absolute = false, $prependIndex = true, $external = false)
 {
 	if (strpos($url, "http://") === 0) return $url;
 	
@@ -739,7 +739,7 @@ function URL($url = "", $absolute = false, $prependIndex = true)
 
 	// If we're not using mod_rewrite, we need to prepend "index.php/" to the link.
 	if (C("esoTalk.urls.friendly") and !C("esoTalk.urls.rewrite") and ($prependIndex === true)) $link = "index.php/$link";
-	return $absolute ? rtrim(C("esoTalk.baseURL"), "/")."/".$link : getWebPath($link);
+	return $absolute ? rtrim(($external ? C("esoTalk.hostName") : "").C("esoTalk.baseURL"), "/")."/".$link : getWebPath($link);
 }
 
 
