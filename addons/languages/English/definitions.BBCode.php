@@ -11,3 +11,5 @@ $definitions["Strike"] = "Strike";
 $definitions["Header"] = "Header";
 $definitions["Italic"] = "Italic";
 $definitions["Bold"] = "Bold";
+$definitions["Spoiler"] = "Hidden";
+$definitions["Hidden text"] = "Hidden text";
