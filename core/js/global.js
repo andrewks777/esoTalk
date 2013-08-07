@@ -827,7 +827,7 @@ $(function() {
 		e.preventDefault();
 	});
 	
-	var miniQuoteId = "#conversationPosts .postReplies .postRef, #conversationPosts .postBody .postRef, #conversationPosts .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
+	var miniQuoteId = "#conversationPosts .postReplies .postRef, #conversationPosts .postBody .postRef, #conversationPosts .postBody .mqPostRef, #conversationPosts .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
 	$(miniQuoteId).live("mouseenter", function(e) {
 		$("#postToolTip").remove();
 		var e = $(this);

@@ -229,11 +229,11 @@ public function linksCallback2($matches)
 	if ((int)$matches[1] < $this->relativePostId) {
 		$dataId = postURL($matches[1], $this->conversationId, $matches[1], false);
 		$url = URL(postURL($matches[1], $this->conversationId, $matches[1]), true);
-		return "<a href='".$url."' rel='post' data-id='$dataId' class='postRef'>$matches[0]</a>";
+		return "<a href='".$url."' rel='post' data-id='$dataId' class='mqPostRef'>$matches[0]</a>";
 	} else return $matches[0];
 }
 
-public function getMiniQuote($quote, $classname = 'postRef')
+public function getMiniQuote($quote, $classname = 'mqPostRef')
 {
 	$dataId = postURL(0, $quote["conversationId"], $quote["relativePostId"], false);
 	$url = URL(postURL(0, $quote["conversationId"], $quote["relativePostId"]), true);
