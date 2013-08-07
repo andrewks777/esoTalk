@@ -36,6 +36,10 @@ public function handler_conversationController_renderBefore($sender)
 	$sender->addCSSFile($this->getResource("bbcode.css"));
 }
 
+public function handler_memberController_renderBefore($sender)
+{
+	$this->handler_conversationController_renderBefore($sender);
+}
 
 /**
  * Add an event handler to the "getEditControls" method of the conversation controller to add BBCode
