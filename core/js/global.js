@@ -877,6 +877,23 @@ $(function() {
 			$("#postToolTip").remove();
 		}
 	});
+	
+	// Change Header behavior
+	$("#body").css("padding-top", "3px");
+	var hdr = $("#hdr");
+	hdr.hide();
+	hdr.live("mouseleave", function(e) {
+		var e = $(this);
+		e.slideUp("fast");
+	});
+	
+	$(document).ready( function() {
+		$(document).live("mousemove",  function(e) {
+			//if (e.pageY <= 10) $("#hdr").slideDown("fast");
+			if (e.clientY <= 10) $("#hdr").slideDown("fast");
+		});
+	});
+	
 
 });
 
