@@ -882,15 +882,24 @@ $(function() {
 	$("#body").css("padding-top", "3px");
 	var hdr = $("#hdr");
 	hdr.hide();
-	hdr.live("mouseleave", function(e) {
-		var e = $(this);
-		e.slideUp("fast");
-	});
+	
+	var scrubber = $(".scrubberColumn");
+	scrubber.css("position", "fixed").css("margin", "0").css("right", "0").css("z-index", "100").css("background", "#fff");
+	scrubber.children(".scrubberContent").css("background", "#fff");
+	scrubber.hide();
+	$(".hasScrubber").css("margin-right", "0px");
 	
 	$(document).ready( function() {
 		$(document).live("mousemove",  function(e) {
-			//if (e.pageY <= 10) $("#hdr").slideDown("fast");
-			if (e.clientY <= 10) $("#hdr").slideDown("fast");
+			var hdr = $("#hdr");
+			if (e.clientY <= 10) hdr.slideDown("fast");
+			else if (e.clientY > hdr.height()) hdr.slideUp("fast");
+			
+			var browserWindow = $(window);
+			var width = browserWindow.width();
+			var scrubber = $(".scrubberColumn");
+			if (e.clientX >= browserWindow.width() - 20) scrubber.show("fast");
+			else if (e.clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
 		});
 	});
 	
