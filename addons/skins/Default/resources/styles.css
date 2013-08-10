@@ -99,6 +99,7 @@ body, input, textarea, select {font-family:lucida grande,lucida sans unicode,hel
 #conversationPrivacy {margin:0px; padding:5px 15px} 
 #conversationReply {margin:30px 0px 20px}
 #conversationBody .scrubberContent .button {width:110px}
+#conversationsFilter {padding-bottom:10px}
 #onlineSheet {width:70%; margin-left:-35%; height:auto; max-height:75%; overflow:auto}
 
 .conversationList .title a:visited {color:#333333}
@@ -112,6 +113,7 @@ body, input, textarea, select {font-family:lucida grande,lucida sans unicode,hel
 .memberList .col-member {width:50%}
 .memberList .col-lastActive {width:35%}
 .memberList .col-replies {width:12%}
+.scrubberColumn {font-size:13px}
 
 .postHeader {margin-bottom:1px; padding:2px 2px 2px 12px}
 .postHeader h3 {display:inline; font-size:90%; margin:0}
