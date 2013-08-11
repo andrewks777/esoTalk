@@ -829,6 +829,7 @@ $(function() {
 	
 	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
 	$(miniQuoteId).live("mouseenter", function(e) {
+		e.preventDefault();
 		$("#postToolTip").remove();
 		var e = $(this);
 		var em = e.parent().parent();
@@ -844,10 +845,10 @@ $(function() {
 			showPostTooltip(postId);
 			e.dequeue();
 		}, 'qsp');
-		e.preventDefault();
 	});
 	
 	$(miniQuoteId).live("mouseleave", function(e) {
+		e.preventDefault();
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
@@ -855,15 +856,14 @@ $(function() {
 		if (em.prop("class") == "col-conversation") {
 			$("#postToolTip").remove();
 		}*/
-		e.preventDefault();
 	});
 	
 	$(miniQuoteId).live("click", function(e) {
+		e.preventDefault();
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
 		$("#postToolTip").remove();
-		e.preventDefault();
 	});
 	
 	$("#postToolTip .controls .control-closeToolTip").live("click", function(e) {
