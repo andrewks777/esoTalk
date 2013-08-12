@@ -859,7 +859,6 @@ $(function() {
 	});
 	
 	$(miniQuoteId).live("click", function(e) {
-		e.preventDefault();
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
