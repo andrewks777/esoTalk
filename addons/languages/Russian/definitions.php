@@ -488,7 +488,7 @@ $definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login
 $definitions["message.memberNotFound"] = "Нет пользователя с таким именем.";
 $definitions["message.memberNoPermissionView"] = "Этот участник не может быть добавлен потому, что у него нет разрешения на просмотр темы, к которой принадлежит это обсуждение.";
 $definitions["message.nameTaken"] = "Введенное вами имя занято или зарезервировано. Попробуйте другое.";
-$definitions["message.newSearchResults"] =  "Появились новые обсуждения/сообщения, влияющие на результаты вашего поиска.<a href='%s'>Обновить</a>";
+$definitions["message.newSearchResults"] =  "Появились новые обсуждения/сообщения, влияющие на результаты вашего поиска. <a href='%s'>Обновить</a>";
 $definitions["message.noActivity"] = "%s еще ничего не сделал на этом форуме.";
 $definitions["message.noMembersOnline"] = "Нет пользователей онлайн.";
 $definitions["message.noNotifications"] = "У вас нет уведомлений.";
