@@ -191,6 +191,7 @@ function index($channelSlug = false)
 		// Add JavaScript language definitions and variables.
 		$this->addJSLanguage("Starred", "Unstarred", "gambit.member", "gambit.more results", "Filter conversations", "Jump to last");
 		$this->addJSVar("searchUpdateInterval", C("esoTalk.search.updateInterval"));
+		$this->addJSVar("searchUpdateResults", C("esoTalk.search.updateResults"));
 		$this->addJSVar("currentSearch", $searchString);
 		$this->addJSVar("currentChannels", $currentChannels);
 		$this->addJSFile("core/js/lib/jquery.cookie.js");
@@ -374,7 +375,7 @@ public function update($channelSlug = "", $query = "")
 	}
 
 	if (!count($conversationIds)) return;
-	$conversationIds = array_slice((array)$conversationIds, 0, 20);
+	$conversationIds = array_slice((array)$conversationIds, 0, C("esoTalk.search.updateResults"));
 
 	// Work out if there are any new results for this channel/search query.
 
@@ -390,11 +391,13 @@ public function update($channelSlug = "", $query = "")
 
 		// Get a list of conversation IDs for the channel/query.
 		$newConversationIds = $search->getConversationIDs($channelIds, $query, count($currentChannels));
-		$newConversationIds = array_slice((array)$newConversationIds, 0, 20);
+		$newConversationIds = array_slice((array)$newConversationIds, 0, C("esoTalk.search.updateResults"));
 
 		// Get the difference of the two sets of conversationId's.
 		$diff = array_diff((array)$newConversationIds, (array)$conversationIds);
 		if (count($diff)) $this->message(sprintf(T("message.newSearchResults"), "javascript:ETSearch.showNewActivity();void(0)"), array("id" => "newSearchResults"));
+		// Reorder conversations IDs
+		$conversationIds = array_merge(array_intersect((array)$newConversationIds, (array)$conversationIds), array_diff((array)$conversationIds, (array)$newConversationIds));
 
 	}
 
@@ -406,13 +409,13 @@ public function update($channelSlug = "", $query = "")
 	$results = $search->getResults($conversationIds, true);
 	$rows = array();
 	foreach ($results as $conversation) {
-		$rows[$conversation["conversationId"]] = $this->getViewContents("conversations/conversation", array(
+		$rows["c".$conversation["conversationId"]] = $this->getViewContents("conversations/conversation", array(
 			"conversation" => $conversation,
 			"channelInfo" => $channelInfo,
 			"fulltextString" => $fulltextString
 		));
 	}
-
+	
 	// Add that to the response.
 	$this->json("conversations", $rows);
 

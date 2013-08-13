@@ -386,9 +386,9 @@ update: function() {
 
 	// Construct a list of conversation IDs for which to get updated details.
 	var conversationIds = "";
-	var count = Math.min($("#conversations li").length, 20);
+	var count = Math.min($("#conversations li").length, ET.searchUpdateResults);
 	$("#conversations li").each(function(i, row) {
-		if (i > count) return false;
+		if (i >= count) return false;
 		conversationIds += ETSearch.getConversationIdForElement(row) + ",";
 	});
 
@@ -405,9 +405,13 @@ update: function() {
 			if (!data.conversations) return;
 
 			// For each of the conversation rows returned, replace them in the results table.
+			var convList = $("#conversations ul");
+			var curConv = null;
 			for (var i in data.conversations) {
-				if (!$("#c"+i).length) continue;
-				$("#c"+i).replaceWith(data.conversations[i]);
+				if (!$("#"+i).length) continue;
+				$("#"+i).remove();
+				if (!curConv) curConv = convList.prepend(data.conversations[i]).children("li:first");
+				else curConv = curConv.after(data.conversations[i]).next();
 			}
 			ETSearch.initSearchResults();
 		}
