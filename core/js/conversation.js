@@ -231,7 +231,10 @@ initReply: function() {
 	$("#reply .saveDraft").click(function(e){ ETConversation.saveDraft(); e.preventDefault(); });
 	$("#reply .discardDraft").click(function(e){ ETConversation.discardDraft(); e.preventDefault(); });
 	$("#reply .postReply").click(function(e){
-		if (ETConversation.id) ETConversation.addReply();
+		if (ETConversation.id) {
+			ETConversation.addReply();
+			ETConversation.update(true);
+		}
 		else ETConversation.startConversation();
 		e.preventDefault();
 	});
@@ -350,12 +353,21 @@ addReply: function() {
 			$("#conversationHeader .labels .label-draft").remove();
 			ETConversation.resetReply(false);
 
-			ETConversation.postCount++;
+			// Reset the post-checking timeout.
+			ETConversation.updateInterval.reset(ET.conversationUpdateIntervalStart);
+			
+			/*ETConversation.postCount++;
 
 			// Create a dud "more" block and then add the new post to it.
 			var moreItem = $("<li></li>").appendTo("#conversationPosts");
 			ETScrubber.count = ETConversation.postCount;
 			var items = ETScrubber.addItems(ETConversation.postCount - 1, data.view, moreItem, true);
+			ETConversation.redisplayAvatars();
+			ETConversation.collapseQuotes(items);*/
+			var view = $(data.view);
+			var items = view.filter("li").addClass("fromAddReply");
+			if ($("#conversationPosts div.timeMarker[data-now]").length) view.children("div.timeMarker").remove();
+			view.appendTo("#conversationPosts");
 			ETConversation.redisplayAvatars();
 			ETConversation.collapseQuotes(items);
 
@@ -365,7 +377,7 @@ addReply: function() {
 			}
 
 			// Reset the post-checking timeout.
-			ETConversation.updateInterval.reset(ET.conversationUpdateIntervalStart);
+			//ETConversation.updateInterval.reset(ET.conversationUpdateIntervalStart);
 
 		},
 		beforeSend: function() {
@@ -479,10 +491,10 @@ discardDraft: function() {
 //***** POSTS
 
 // Get new posts at the end of the conversation by comparing our post count with the server's.
-update: function() {
+update: function(fromAddReply) {
 
 	// Don't do this if we're searching, or if we haven't loaded the end of the conversation.
-	if (ETConversation.searchString || ETScrubber.loadedItems.indexOf(ETConversation.postCount - 1) == -1) return;
+	if ((!fromAddReply) && (ETConversation.searchString || ETScrubber.loadedItems.indexOf(ETConversation.postCount - 1) == -1)) return;
 
 	// Make the request for post data.
 	$.ETAjax({
@@ -491,12 +503,15 @@ update: function() {
 
 			// If there are new posts, add them.
 			if (ETConversation.postCount < data.countPosts) {
+				$("#conversationPosts li.fromAddReply").remove();
 				ETConversation.postCount = data.countPosts;
 
 				// Create a dud "more" block and then add the new post to it.
 				var moreItem = $("<li></li>").appendTo("#conversationPosts");
 				ETScrubber.count = ETConversation.postCount;
-				ETScrubber.addItems(data.startFrom, data.view, moreItem, true);
+				var items = ETScrubber.addItems(data.startFrom, data.view, moreItem, true);
+				ETConversation.redisplayAvatars();
+				ETConversation.collapseQuotes(items);
 
 				var interval = ET.conversationUpdateIntervalStart;
 
