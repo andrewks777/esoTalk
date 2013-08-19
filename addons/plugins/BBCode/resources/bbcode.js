@@ -21,7 +21,51 @@ init: function() {
 		
 		e.preventDefault();
 	});
+	
+	var languages = new Array();
+	for (var key in hljs.LANGUAGES) {
+		languages.push(key);
+	}
+	languages.sort();
+	languages.unshift('&lt;auto&gt;');
+	
+	var lng_list = $("ul#code-lng-list");
+	for (var key in languages) {
+		lng_list.append('<li><a href=\'#\'>'+languages[key]+'</a></li>');
+	}
+	
+	$("ul#code-lng-list li").on("click", function(e) {
+		e.preventDefault();
+		var id = 'reply';
+		var lang = '='+$.trim($(this).children('a:first').text());
+		if (lang == '=<auto>') lang = '=_auto_';
+		ETConversation.wrapText($("#"+id+" textarea"), "[code"+lang+"]", "[/code]");
+	});
+	
+	$(document).ready(function() {
+		$('pre._nhl').each(function(i, e) {
+			//var em=$(e).parent().parent().parent().prop('id');
+			//alert('ready:'+i+':'+e.tagName+':'+em);
+			BBCode.doHighlight(e);
+		});
+	});
+	
+	$(document).ajaxSuccess(function() {
+		$('pre._nhl').each(function(i, e) {
+			//var em=$(e).parent().parent().parent().prop('id');
+			//alert('ajaxSuccess:'+i+':'+e.tagName+':'+em);
+			BBCode.doHighlight(e);
+		});
+	});
+	
+},
 
+doHighlight: function(e) {
+	$(e).removeClass("_nhl");
+	hljs.highlightBlock(e, '    ');
+	var em = $(e);
+	var langId = $.trim(em.prop('class'));
+	if (langId != 'no-highlight') em.prop('title', langId);
 },
 
 bold: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[b]", "[/b]");},

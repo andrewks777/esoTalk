@@ -63,7 +63,7 @@ init: function() {
 					ETConversation.collapseQuotes(items);
 					ETConversation.redisplayAvatars();
 				},
-				global: false
+				global: true
 			});
 		}
 
@@ -523,7 +523,7 @@ update: function(fromAddReply) {
 			ETConversation.updateInterval.reset(interval);
 
 		},
-		global: false
+		global: true
 	});
 
 },

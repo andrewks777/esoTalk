@@ -9,4 +9,9 @@
 .bbcode-fixed span {background-position:-144px 0}
 .bbcode-spoiler span {background-position:-168px 0}
 .spoiler-link a {color:#888}
-.spoiler-link, .spoiler-block {display:inline-block; border:1px #aaa dashed; padding:1px 10px; margin:3px}
+.spoiler-link, .spoiler-block {display:inline-block; border:1px dashed #aaa; padding:1px 10px; margin:3px}
+#code-lng-list {display:none; position:absolute; margin-left:147px; height:200px; overflow-y:auto; width:80px; overflow-x:hidden; color:#666; background-color:#fff; list-style-type:none; cursor:pointer; padding:3px 6px 3px 6px; border:1px solid #aaa; border-radius:3px; z-index:300; opacity:0.9}
+#code-lng-list > li:hover {color:#000; background-color:#ddd}
+#code-lng-list > li a {color:#666}
+#code-lng-list > li:hover a {color:#000}
+#code-lng:hover #code-lng-list {display:block}
