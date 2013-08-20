@@ -177,7 +177,7 @@ public function blockFixedCallback($matches)
 	else if ($blockLangId == "1с") $blockLangId = "1c"; // cyrillic 'c' -> latin 'c'
 	else if ($blockLangId == "1с7") $blockLangId = "1c7"; // cyrillic 'c' -> latin 'c'
 	else if ($blockLangId == "1с8") $blockLangId = "1c8"; // cyrillic 'c' -> latin 'c'
-	//if ($blockLangId == "1c") $blockLangId = "1c8"; // by default
+	if ($blockLangId == "1c") $blockLangId = "1c8"; // by default
 	return "<pre class='_nhl $blockLangId'>".$blockContent."</pre>";
 }
 

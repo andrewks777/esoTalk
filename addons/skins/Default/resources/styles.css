@@ -90,6 +90,7 @@ input[type=text]:focus, input[type=password]:focus, textarea:focus {border-color
 /* Forum330 specific values. Must be moved to config/custom.css? */
 body {font-size:14px; color:#000}
 body, input, textarea, select {font-family:verdana,lucida grande,lucida sans unicode,helvetica,arial,sans-serif}
+pre {line-height:1.4em}
 #hdr h1 {padding:6px 0px 0px 0px; margin:0; max-width:120%}
 #hdr-inner {padding-right:760px}
 #userMenu {margin-right:-730px}
