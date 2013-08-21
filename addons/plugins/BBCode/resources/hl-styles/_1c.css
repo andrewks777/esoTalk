@@ -1,0 +1,55 @@
+/*
+
+1C style (c) andrewks <andrewks777@yahoo.de>
+
+*/
+
+pre._1c7, pre._1c8 {
+  font-family: Courier New;
+  color: #0000ff;
+  background: #ffffff
+}
+
+pre._1c7 .comment, pre._1c8 .comment {
+  font-weight: normal;
+  font-style: normal;
+  color: #008000;
+}
+
+pre._1c7 .keyword, pre._1c8 .keyword {
+  font-weight: normal;
+  font-style: normal;
+  color: #ff0000;
+}
+
+pre._1c7 .operator, pre._1c8 .operator {
+  font-weight: normal;
+  font-style: normal;
+  color: #ff0000;
+}
+
+pre._1c7 .built_in {
+  color: #ff0000;
+}
+
+pre._1c7 .number, pre._1c8 .number {
+  color: #000000;
+}
+
+pre._1c7 .string, pre._1c8 .string {
+  color: #000000;
+}
+
+pre._1c7 .date, pre._1c8 .date {
+  color: #000000;
+}
+
+pre._1c7 .goto-label, pre._1c8 .goto-label {
+  color: #000000;
+}
+
+pre._1c7 .preprocessor, pre._1c8 .preprocessor {
+  font-weight: normal;
+  font-style: normal;
+  color: #963200;
+}
