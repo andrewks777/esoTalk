@@ -55,7 +55,7 @@ public function handler_memberController_renderBefore($sender)
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
 	addToArrayString($controls, "spoiler", "<a href='javascript:BBCode.spoiler(\"$id\");void(0)' title='".T("Spoiler")."' class='bbcode-spoiler'><span>".T("Spoiler")."</span></a>", 0);
-	addToArrayString($controls, "fixed", "<span id='code-lng'><ul id='code-lng-list'></ul><a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a></span><script>BBCode.doFillLanguages();</script>", 0);
+	addToArrayString($controls, "fixed", "<span class='code-lng'><ul class='code-lng-list' data-id='$id'></ul><a href='javascript:BBCode.fixed(\"$id\");void(0)' title='".T("Code")."' class='bbcode-fixed'><span>".T("Code")."</span></a></span>", 0);
 	addToArrayString($controls, "image", "<a href='javascript:BBCode.image(\"$id\");void(0)' title='".T("Image")."' class='bbcode-img'><span>".T("Image")."</span></a>", 0);
 	addToArrayString($controls, "link", "<a href='javascript:BBCode.link(\"$id\");void(0)' title='".T("Link")."' class='bbcode-link'><span>".T("Link")."</span></a>", 0);
 	addToArrayString($controls, "header", "<a href='javascript:BBCode.header(\"$id\");void(0)' title='".T("Header")."' class='bbcode-h'><span>".T("Header")."</span></a>", 0);

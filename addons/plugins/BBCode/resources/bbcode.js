@@ -22,14 +22,20 @@ init: function() {
 		e.preventDefault();
 	});
 	
-	//BBCode.doFillLanguages();
+	BBCode.doFillLanguages();
 	
-	$("ul#code-lng-list li").on("click", function(e) {
+	$(".code-lng").live("mouseenter", function(e) {
+		BBCode.doFillLanguages(this);
+	});
+	
+	$('body').on('click', 'ul.code-lng-list li', function(e) {
 		e.preventDefault();
-		var id = 'reply';
-		var lang = '='+$.trim($(this).children('a:first').text());
-		if (lang == '=<auto>') lang = '=_auto_';
-		ETConversation.wrapText($("#"+id+" textarea"), "[code"+lang+"]", "[/code]");
+		BBCode.fixedLangSel(this);
+	});
+	
+	$("form ul.code-lng-list li").on("click", function(e) {
+		e.preventDefault();
+		BBCode.fixedLangSel(this);
 	});
 	
 	$(document).ready(function() {
@@ -44,8 +50,6 @@ init: function() {
 
 doHighlightAll: function() {
 	$('pre._nhl').each(function(i, e) {
-		//var em=$(e).parent().parent().parent().prop('id');
-		//alert('ajaxSuccess:'+i+':'+e.tagName+':'+em);
 		BBCode.doHighlight(e);
 	});
 },
@@ -58,8 +62,7 @@ doHighlight: function(e) {
 	if (langId != 'no-highlight') em.prop('title', langId);
 },
 
-doFillLanguages: function() {
-	//alert('doFillLanguages');
+doFillLanguages: function(e, updateExist) {
 	var languages = new Array();
 	for (var key in hljs.LANGUAGES) {
 		languages.push(key);
@@ -67,11 +70,30 @@ doFillLanguages: function() {
 	languages.sort();
 	languages.unshift('&lt;auto&gt;');
 	
-	var lng_list = $("ul#code-lng-list");
-	lng_list.children('li').remove();
-	for (var key in languages) {
-		lng_list.append('<li><a href=\'#\'>'+languages[key]+'</a></li>');
+	if (e) {
+		var lng_list = $(e).children("ul.code-lng-list");
+	} else {
+		var lng_list = $("ul.code-lng-list");
 	}
+	
+	lng_list.each(function(i, e) {
+		var e = $(e);
+		var lng_list_child = e.children('li');
+		if (lng_list_child.length == 0 || updateExist) {
+			lng_list_child.remove();
+			for (var key in languages) {
+				e.append('<li><a href=\'#\'>'+languages[key]+'</a></li>');
+			}
+		}
+	});
+},
+
+fixedLangSel: function(e) {
+	var e = $(e);
+	var id = e.parent().data('id');
+	var lang = '='+$.trim(e.children('a:first').text());
+	if (lang == '=<auto>') lang = '=_auto_';
+	ETConversation.wrapText($("#"+id+" textarea"), "[code"+lang+"]", "[/code]");
 },
 
 bold: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[b]", "[/b]");},

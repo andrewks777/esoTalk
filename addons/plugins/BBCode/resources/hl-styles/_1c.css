@@ -51,5 +51,12 @@ pre._1c7 .goto-label, pre._1c8 .goto-label {
 pre._1c7 .preprocessor, pre._1c8 .preprocessor {
   font-weight: normal;
   font-style: normal;
+}
+
+pre._1c7 .preprocessor {
+  color: #000000;
+}
+
+pre._1c8 .preprocessor {
   color: #963200;
 }
