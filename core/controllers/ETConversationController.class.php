@@ -156,7 +156,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		// Update the user's last action.
 		ET::memberModel()->updateLastAction("viewingConversation", $conversation["private"] ? null : array(
 			"conversationId" => $conversation["conversationId"],
-			"title" => $conversation["title"]
+			"title" => (mb_strlen($conversation["title"], "utf-8") <= 60) ? $conversation["title"] : mb_substr($conversation["title"], 0, 60, "utf-8")."..."
 		));
 
 	}
