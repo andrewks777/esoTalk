@@ -33,7 +33,7 @@ init: function() {
 		BBCode.fixedLangSel(this);
 	});
 	
-	$("form ul.code-lng-list li").on("click", function(e) {
+	$("#reply ul.code-lng-list li").on("click", function(e) {
 		e.preventDefault();
 		BBCode.fixedLangSel(this);
 	});
