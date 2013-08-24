@@ -503,7 +503,7 @@ update: function(fromAddReply) {
 
 			// If there are new posts, add them.
 			if (ETConversation.postCount < data.countPosts) {
-				$("#conversationPosts li.fromAddReply").remove();
+				$("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").remove();
 				ETConversation.postCount = data.countPosts;
 
 				// Create a dud "more" block and then add the new post to it.
