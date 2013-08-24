@@ -41,6 +41,17 @@ public function handler_conversationController_renderBefore($sender)
 	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"));
 }
 
+public function handler_conversationsController_init($sender)
+{
+	$sender->addJSFile($this->getResource("bbcode.js"));
+	$sender->addCSSFile($this->getResource("bbcode.css"));
+	
+	// Syntax highlighting
+	$sender->addJSFile($this->getResource("highlight.pack.js"));
+	$sender->addCSSFile($this->getResource("hl-styles/github.css"));
+	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"));
+}
+
 public function handler_memberController_renderBefore($sender)
 {
 	$this->handler_conversationController_renderBefore($sender);
@@ -129,7 +140,8 @@ public function handler_format_format($sender)
 	$sender->content = preg_replace("/\[h\](.*?)\[\/h\]/", "</p><h4>$1</h4><p>", $sender->content);
 	
 	// Spoiler: [b]spoiler[/b]
-	$sender->content = preg_replace("|\[spoiler\] (.*?) \[/spoiler\]|si", "<div class='spoiler-link'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block' style='display:none'>$1</div>" : "</a></div>"), $sender->content);
+	$sender->content = preg_replace("|\[spoiler\] (.*?\n.*?) \[/spoiler\]|si", "<div class='spoiler-link'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block' style='display:none'>$1</div>" : "</a></div>"), $sender->content);
+	$sender->content = preg_replace("|\[spoiler\] (.*?) \[/spoiler\]|si", "<div class='spoiler-link spoiler-link-line'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block spoiler-line' style='display:none'>$1</div>" : "</a></div>"), $sender->content);
 }
 
 
