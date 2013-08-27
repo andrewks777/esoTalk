@@ -24,6 +24,19 @@ ET::$pluginInfo["BBCode"] = array(
 class ETPlugin_BBCode extends ETPlugin {
 
 
+protected function addResources($sender)
+{
+	$groupKey = 'bbcode';
+	$sender->addJSFile($this->getResource("bbcode.js"), false, $groupKey);
+	$sender->addCSSFile($this->getResource("bbcode.css"), false, $groupKey);
+	
+	// Syntax highlighting
+	$sender->addJSFile($this->getResource("highlight.pack.js"), false, $groupKey);
+	$sender->addCSSFile($this->getResource("hl-styles/github.css"), false, $groupKey);
+	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"), false, $groupKey);
+}
+
+
 /**
  * Add an event handler to the initialization of the conversation controller to add BBCode CSS and JavaScript
  * resources.
@@ -32,24 +45,12 @@ class ETPlugin_BBCode extends ETPlugin {
  */
 public function handler_conversationController_renderBefore($sender)
 {
-	$sender->addJSFile($this->getResource("bbcode.js"));
-	$sender->addCSSFile($this->getResource("bbcode.css"));
-	
-	// Syntax highlighting
-	$sender->addJSFile($this->getResource("highlight.pack.js"));
-	$sender->addCSSFile($this->getResource("hl-styles/github.css"));
-	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"));
+	$this->addResources($sender);
 }
 
 public function handler_conversationsController_init($sender)
 {
-	$sender->addJSFile($this->getResource("bbcode.js"));
-	$sender->addCSSFile($this->getResource("bbcode.css"));
-	
-	// Syntax highlighting
-	$sender->addJSFile($this->getResource("highlight.pack.js"));
-	$sender->addCSSFile($this->getResource("hl-styles/github.css"));
-	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"));
+	$this->addResources($sender);
 }
 
 public function handler_memberController_renderBefore($sender)

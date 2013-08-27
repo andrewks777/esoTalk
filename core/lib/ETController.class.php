@@ -667,10 +667,10 @@ public function addJSVar($key, $val)
  * 		to cache the aggregated file.
  * @return void
  */
-public function addJSFile($file, $global = false)
+public function addJSFile($file, $global = false, $groupKey = '')
 {
 	if (strpos($file, "://") !== false) $key = "remote";
-	$key = $global ? "global" : "local";
+	else $key = $groupKey ? $groupKey : ($global ? "global" : "local");
 	$this->jsFiles[$key][] = $file;
 }
 
@@ -684,10 +684,10 @@ public function addJSFile($file, $global = false)
  * 		to cache the aggregated file.
  * @return void
  */
-public function addCSSFile($file, $global = false)
+public function addCSSFile($file, $global = false, $groupKey = '')
 {
 	if (strpos($file, "://") !== false) $key = "remote";
-	else $key = $global ? "global" : "local";
+	else $key = $groupKey ? $groupKey : ($global ? "global" : "local");
 	$this->cssFiles[$key][] = $file;
 }
 
@@ -802,9 +802,9 @@ public function head()
 	// Same thing as above, but with JavaScript!
 	foreach ($this->jsFiles as $files) {
 
-		// If JS aggregation is enabled, and there's more than one file in this "group", proceed with aggregation.
 		if ($isOperaMini4x) unset($files); // hack - do not include JS for Opera Mini 4.x
 		
+		// If JS aggregation is enabled, proceed with aggregation.
 		if (count($files) > 0 and C("esoTalk.aggregateJS"))
 			$files = $this->aggregateFiles($files, "js");
 
