@@ -28,7 +28,7 @@ init: function() {
 		BBCode.doFillLanguages(this);
 	});
 	
-	$('body').on('click', 'ul.code-lng-list li', function(e) {
+	$('body').on('click', '.edit:not(#reply) ul.code-lng-list li', function(e) {
 		e.preventDefault();
 		BBCode.fixedLangSel(this);
 	});

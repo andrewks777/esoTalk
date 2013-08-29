@@ -60,3 +60,47 @@ pre._1c7 .preprocessor {
 pre._1c8 .preprocessor {
   color: #963200;
 }
+
+pre._1c8_query {
+  font-family: Courier New;
+  color: #000000;
+  background: #ffffff
+}
+
+pre._1c8_query .comment {
+  font-weight: normal;
+  font-style: normal;
+  color: #008000;
+}
+
+pre._1c8_query .keyword {
+  font-weight: normal;
+  font-style: normal;
+  color: #0000ff;
+}
+
+pre._1c8_query .built_in {
+  font-weight: normal;
+  font-style: normal;
+  color: #800000;
+}
+
+pre._1c8_query .number {
+  color: #ff00ff;
+}
+
+pre._1c8_query .string {
+  color: #ff0000;
+}
+
+pre._1c8_query .param {
+  color: #008080;
+}
+
+pre._1c8_query .operator1 {
+  color: #0000ff;
+}
+
+pre._1c8_query .operator2 {
+  color: #ff0000;
+}
