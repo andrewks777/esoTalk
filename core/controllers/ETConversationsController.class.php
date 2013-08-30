@@ -207,7 +207,7 @@ function index($channelSlug = false)
 		$queries = array(
 			"post" => ET::SQL()->select("COUNT(*)")->from("post")->get(),
 			"conversation" => ET::SQL()->select("COUNT(*)")->from("conversation")->get(),
-			"member" => ET::SQL()->select("COUNT(*)")->from("member")->get()
+			"member" => (C("esoTalk.members.hideDead")) ? ET::SQL()->select("COUNT(*)")->from("member")->where("`lastActionTime` IS NOT NULL")->get() : ET::SQL()->select("COUNT(*)")->from("member")->get()
 		);
 		$sql = ET::SQL();
 		foreach ($queries as $k => $query) $sql->select("($query) AS $k");

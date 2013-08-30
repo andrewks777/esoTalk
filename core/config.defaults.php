@@ -131,6 +131,7 @@ $config["esoTalk.conversation.updateIntervalLimit"] = 512; // The maximum number
 // Member list settings.
 $config["esoTalk.members.visibleToGuests"] = false;
 $config["esoTalk.members.membersPerPage"] = 30;
+$config["esoTalk.members.hideDead"] = false;
 
 // Post formatting settings.
 $config["esoTalk.format.youtube"] = true; // Automatically convert YouTube links to embeds?
