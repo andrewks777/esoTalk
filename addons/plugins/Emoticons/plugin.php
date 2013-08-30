@@ -96,8 +96,6 @@ protected function fillStyles()
 
 protected function addResources($sender)
 {
-	$this->fillStyles();
-	
 	$groupKey = 'bbcode';
 	$sender->addJSFile($this->getResource("emoticons.js"), false, $groupKey);
 	$sender->addCSSFile($this->getResource("emoticons.css"), false, $groupKey);
@@ -128,6 +126,7 @@ public function handler_memberController_renderBefore($sender)
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
 	$this->fillStyles();
+	
 	$smilesListHTML = "<ul class='smiles-list' data-id='$id'><li>";
 	$prev = "";
 	$i = 0;
@@ -135,7 +134,7 @@ public function handler_conversationController_getEditControls($sender, &$contro
 		if ($v != $prev) {
 			if ($i % 3 == 0 and $i > 0) $smilesListHTML .= "</li><li>";
 			$sk = sanitizeHTML($k);
-			$smilesListHTML .= "<a href='javascript:Emoticons.smile(\"$id\", \"$sk\");void(0)'>"."<span class='emoticon' style='$v'>$sk</span>"."</a>";
+			$smilesListHTML .= "<span class='emoticon' style='$v'>$sk</span>";
 			$prev = $v;
 			$i++;
 		}
@@ -147,6 +146,7 @@ public function handler_conversationController_getEditControls($sender, &$contro
 
 public function handler_format_format($sender)
 {
+	$this->fillStyles();
 
 	$from = $to = array();
 	foreach ($this->styles as $k => $v) {
