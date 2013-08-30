@@ -1,0 +1,4 @@
+.emoticon {display:inline-block; text-indent:-9999px; width:16px; height:16px; background:url(emoticons.png); background-repeat:no-repeat}
+.smiles-list {display:none; position:absolute; margin-left:219px; height:210px; overflow-y:auto; width:80px; overflow-x:hidden; color:#666; background-color:#fff; list-style-type:none; cursor:pointer; padding:3px 6px 3px 6px; border:1px solid #aaa; border-radius:3px; z-index:300; opacity:0.9}
+.smiles-list > li > a {margin:4px}
+.smiles-box:hover .smiles-list {display:block}
