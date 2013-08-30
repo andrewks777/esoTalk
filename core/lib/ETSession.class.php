@@ -61,7 +61,7 @@ public function __construct()
 
 	// Complicate session highjacking - check the current user agent against the one that initiated the session.
 	$curr_ip = getUserIP(true, true);
-	if (md5($curr_ip) != $_SESSION["userIP"] or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
+	if ((C("esoTalk.cookie.checkIdent") and md5($curr_ip) != $_SESSION["userIP"]) or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
 		writeAdminLog('cookieTheft', $_SESSION["userId"], $_SESSION["userId"], "session;".$_SESSION["userIP"].";".$_SESSION["userAgent"], $curr_ip.";".$_SERVER["HTTP_USER_AGENT"]);
 		session_destroy();
 		$this->setCookie("persistent", false, -1);
