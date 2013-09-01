@@ -209,66 +209,57 @@ function minifyJS($js)
  *
  * @package esoTalk
  */
-/* - andrewks {
-function sendEmail($to, $subject, $body)
-{
-	$phpmailer = PATH_LIBRARY.'/vendor/class.phpmailer.php';
-	require_once($phpmailer);
-	$mail = new PHPMailer(true);
-
-	if (($return = ET::trigger("sendEmailBefore", array($mail, &$to, &$subject, &$body))) and !empty($return))
-		return reset($return);
-
-	$mail->CharSet = 'UTF-8';
-	$mail->IsHTML(true);
-	$mail->AddAddress($to);
-	$mail->SetFrom(C("esoTalk.emailFrom"), sanitizeForHTTP(C("esoTalk.forumTitle")));
-	$mail->Subject = sanitizeForHTTP($subject);
-	$mail->Body = $body;
-
-	return $mail->Send();
-}
-- andrewks } */
-// + andrewks {
 function sendEmail($to, $subject, $body, $forceHTML = false)
 {
 	$phpmailer = PATH_LIBRARY.'/vendor/class.phpmailer.php';
 	require_once($phpmailer);
-	require_once(PATH_CONFIG.'/config.smtp.php');
+	
 	$mail = new PHPMailer(true);
 
 	if (($return = ET::trigger("sendEmailBefore", array($mail, &$to, &$subject, &$body))) and !empty($return))
 		return reset($return);
 
-	try {
-
-		$mail->IsSMTP();
-		$mail->SMTPDebug = $config["smtp.debug"];
-		$mail->SMTPAuth = $config["smtp.auth"];
-		$mail->Host = $config["smtp.host"];
-		$mail->Port = $config["smtp.port"];
-		$mail->Username = $config["smtp.username"];
-		$mail->Password = $config["smtp.password"];
+	$method = C("esoTalk.emailMethod");
 		
-		$mail->CharSet = 'UTF-8';
-		$mail->AddAddress($to);
-		$mail->SetFrom($config["smtp.from"], sanitizeForHTTP(C("esoTalk.forumTitle")));
-		$mail->Subject = sanitizeForHTTP($subject);
-		$mail->IsHTML($forceHTML);
-		$mail->Body = $body;
-		//$mail->MsgHTML($body);
-	
-		return $mail->Send();
+	try {
+		if ($method == 'smtp') {
+			require_once(PATH_CONFIG.'/config.smtp.php');
+			
+			$mail->IsSMTP();
+			$mail->SMTPDebug = $config["smtp.debug"];
+			$mail->SMTPAuth = $config["smtp.auth"];
+			$mail->Host = $config["smtp.host"];
+			$mail->Port = $config["smtp.port"];
+			$mail->Username = $config["smtp.username"];
+			$mail->Password = $config["smtp.password"];
+			
+			$mail->CharSet = 'UTF-8';
+			$mail->AddAddress($to);
+			$mail->SetFrom($config["smtp.from"], sanitizeForHTTP(C("esoTalk.forumTitle")));
+			$mail->Subject = sanitizeForHTTP($subject);
+			$mail->IsHTML($forceHTML);
+			$mail->Body = $body;
+		
+			return $mail->Send();
+		} else { // if 'mail' or incorrect value
+			$mail->CharSet = 'UTF-8';
+			$mail->IsHTML(true);
+			$mail->AddAddress($to);
+			$mail->SetFrom(C("esoTalk.emailFrom"), sanitizeForHTTP(C("esoTalk.forumTitle")));
+			$mail->Subject = sanitizeForHTTP($subject);
+			$mail->Body = $body;
+
+			return $mail->Send();
+		}
 		
 	} catch (phpmailerException $e) {
-		echo $e->errorMessage();
+		if (C("esoTalk.debug")) echo $e->errorMessage(), "\n";
 		return false;
 	} catch (Exception $e) {
-		echo $e->getMessage();
+		if (C("esoTalk.debug")) echo $e->getMessage(), "\n";
 		return false;
 	}
 }
-// + andrewks }
 
 
 /**

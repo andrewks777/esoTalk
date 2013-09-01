@@ -60,6 +60,18 @@ $config["esoTalk.baseURL"] = "/";
 $config["esoTalk.resourceURL"] = ""; // URL used for all resources (CSS+JS+images, including those from plugins and skins.) If blank, the base URL will be used.
 $config["esoTalk.rootAdmin"] = 1; // The member ID of the root administrator.
 $config["esoTalk.emailFrom"] = ""; // The email address to send forum emails (notifications etc.) from.
+$config["esoTalk.emailMethod"] = "mail"; // The email method. 'mail' (via sendmail) by defailt. Also are supported: 'smtp' (configuration settings in '/config/config.smtp.php' are necessary)
+	/* 'config.smtp.php' examle:
+	<?php
+	$config["smtp.host"] = 'smtp.mail.com';
+	$config["smtp.port"] = 25;
+	$config["smtp.auth"] = true;
+	$config["smtp.username"] = 'username@mail.com';
+	$config["smtp.password"] = 'password';
+	$config["smtp.from"] = 'username@mail.com';
+	$config["smtp.debug"] = 0; // 0 = none, 1 = errors and messages, 2 = messages only
+	?>
+	*/
 $config["esoTalk.debug"] = false; // Debug mode will show advanced information in errors. Turn this off in production.
 $config["esoTalk.aggregateCSS"] = true;
 $config["esoTalk.aggregateJS"] = true;
@@ -67,8 +79,9 @@ $config["esoTalk.gzipOutput"] = true; // Whether or not to compress the page out
 $config["esoTalk.https"] = false; // Whether or not to force HTTPS.
 $config["esoTalk.cache"] = false; // What type of cache to use.
 $config["esoTalk.includeFaviconTag"] = ""; // Include favicon tag. Set to empty if it isn't used.
-// example:
-//$config["esoTalk.includeFaviconTag"] = '<link rel="icon" type="image/png" href="/favicon.png">';
+	/* example:
+	$config["esoTalk.includeFaviconTag"] = '<link rel="icon" type="image/png" href="/favicon.png">';
+	*/
 $config["esoTalk.hostName"] = "http://127.0.0.1"; // host name with protocol, without URL (not used, if "esoTalk.hostNamePattern" is set)
 $config["esoTalk.hostNamePattern"] = ""; // PCRE pattern for host name with protocol, without URL (override "esoTalk.hostName"), i.e.: "^http:\/\/(?:www\.)?myforum\.com", "^http:\/\/(?:127.0.0.1|localhost)"
 
