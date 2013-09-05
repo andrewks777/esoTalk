@@ -299,7 +299,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		// Set up the reply form.
 		$replyForm = ETFactory::make("form");
 		$replyForm->action = URL("conversation/reply/".$conversation["conversationId"]);
-		$replyForm->setValue("content", $conversation["draft"]);
+		$replyForm->setValue("content", sanitizeHTML($conversation["draft"]));
 
 		$this->trigger("conversationIndexDefault", array(&$conversation, &$controls, &$replyForm, &$replyControls));
 
