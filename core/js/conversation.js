@@ -10,6 +10,7 @@ slug: "",
 startFrom: 0,
 searchString: null,
 postCount: 0,
+lastTextareaId: "",
 
 updateInterval: null,
 editingReply: false, // Are we typing a reply?
@@ -223,6 +224,11 @@ initReply: function() {
 		//$("#reply .postReply, #reply .saveDraft")[$(this).val() ? "enable" : "disable"]();
 		if ($(this).val()) $("#reply .postReply, #reply .saveDraft").enable(); else $("#reply .postReply, #reply .saveDraft").disable();
 		ETConversation.editingReply = $(this).val() ? true : false;
+	});
+	
+	$('body').on('focus', '.postBody textarea', function(e) {
+		var e = $(this);
+		ETConversation.lastTextareaId = e.parent().parent().parent().prop('id');
 	});
 
 	if (ET.mentions) new ETAutoCompletePopup($("#reply textarea"), "@");
@@ -825,18 +831,20 @@ cancelEditPost: function(postId) {
 // Quote a post.
 quotePost: function(postId, multi) {
 	var selection = ""+$.getSelection();
+	var replyId = ETConversation.lastTextareaId;
+	if (!replyId) replyId = "reply";
 	$.ETAjax({
 		url: "conversation/quotePost.json/" + postId,
 		success: function(data) {
 			var top = $(document).scrollTop();
-			ETConversation.quote("reply", selection ? selection : data.content, data.postId + ":" + data.member, null, true);
+			ETConversation.quote(replyId, selection ? selection : data.content, data.postId + ":" + data.member, null, true);
 
 			// If we're "multi" quoting (i.e. shift is being held down), keep our scroll position static.
 			// Otherwise, scroll down to the reply area.
 			if (!multi) {
-				$("#jumpToReply").click();
+				if (replyId == "reply") $("#jumpToReply").click();
 			} else {
-				$("#reply").change();
+				$("#"+replyId).change();
 				$.scrollTo(top);
 			}
 		},
