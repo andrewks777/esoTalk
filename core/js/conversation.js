@@ -371,11 +371,15 @@ addReply: function() {
 			ETConversation.redisplayAvatars();
 			ETConversation.collapseQuotes(items);*/
 			var view = $(data.view);
+			var replyId = view.children(".post").prop("id");
 			var items = view.filter("li").addClass("fromAddReply");
-			if ($("#conversationPosts div.timeMarker[data-now]").length) view.children("div.timeMarker").remove();
-			view.appendTo("#conversationPosts");
-			ETConversation.redisplayAvatars();
-			ETConversation.collapseQuotes(items);
+			
+			if (!$("#" + replyId).length) {
+				if ($("#conversationPosts div.timeMarker[data-now]").length) view.children("div.timeMarker").remove();
+				view.appendTo("#conversationPosts");
+				ETConversation.redisplayAvatars();
+				ETConversation.collapseQuotes(items);
+			}
 
 			// Star the conversation if the user has the "star on reply" option on.
 			if (data.starOnReply) {
@@ -507,11 +511,17 @@ update: function(fromAddReply) {
 		url: "conversation/index.ajax/"+ETConversation.id+"/"+ETConversation.postCount,
 		success: function(data) {
 
-			if (!fromAddReply || ETConversation.postCount < data.countPosts) $("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").remove();
+			//if (!fromAddReply || ETConversation.postCount < data.countPosts) $("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").remove();
+			if (!fromAddReply || ETConversation.postCount < data.countPosts) {
+				$("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").each(function(index, elem) {
+					var postId = $(elem).children(".post").prop("id");
+					var postNum = parseInt(postId.substr(postId.indexOf("-") + 1), 10);
+					if (postNum < data.countPosts) $(elem).remove();
+				});
+			}
 			// If there are new posts, add them.
 			if (ETConversation.postCount < data.countPosts) {
-
-				ETConversation.postCount = data.countPosts;
+				ETConversation.postCount = parseInt(data.countPosts, 10);
 
 				// Create a dud "more" block and then add the new post to it.
 				var moreItem = $("<li></li>").appendTo("#conversationPosts");
@@ -769,6 +779,7 @@ updateEditPost: function(postId, html) {
 // Save an edited post to the database.
 saveEditPost: function(postId, content) {
 
+	ETConversation.lastTextareaId = "reply";
 	// Disable the buttons.
 	var post = $("#p" + postId);
 	$(".button", post).disable();
@@ -809,6 +820,7 @@ saveEditPost: function(postId, content) {
 
 // Cancel editing a post.
 cancelEditPost: function(postId) {
+	ETConversation.lastTextareaId = "reply";
 	ETConversation.editingPosts--;
 	var post = $("#p" + postId);
 
@@ -833,6 +845,7 @@ quotePost: function(postId, multi) {
 	var selection = ""+$.getSelection();
 	var replyId = ETConversation.lastTextareaId;
 	if (!replyId) replyId = "reply";
+	if ($("#" + replyId + " textarea").length != 1) replyId = "reply";
 	$.ETAjax({
 		url: "conversation/quotePost.json/" + postId,
 		success: function(data) {
