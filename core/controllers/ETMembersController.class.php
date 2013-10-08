@@ -303,7 +303,7 @@ public function autocomplete($input = "")
 	// Construct a query to fetch matching members.
 	$results = ET::SQL()
 		->select("'member' AS type")
-		->select("memberId AS id")
+		->select("memberId")
 		->select("username AS name")
 		->select("avatarFormat")
 		->select("email")
@@ -322,8 +322,6 @@ public function autocomplete($input = "")
 		unset($results[$k]["email"]);
 
 		// Convert spaces in the member name to non-breaking spaces.
-		// (Spaces aren't usually allowed in esoTalk usernames, so this is a bit of a "hack" for 
-		// certain esoTalk installations that do allow them.)
 		$results[$k]["name"] = str_replace(" ", "\xc2\xa0", $results[$k]["name"]);
 	}
 

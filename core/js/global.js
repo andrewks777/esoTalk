@@ -244,7 +244,7 @@ $(function() {
 
 	// iOS Safari doesn't update position:fixed elements when the keyboard is up.
 	// So, whenever we focus on an input or textarea, change the header's position to absolute,
-	// and revert it when we lose focus.
+	// and revert it when we lose focus. 
 	var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
 	if (iOS) {
 		$("input, textarea").live('focus', function(){
@@ -253,6 +253,8 @@ $(function() {
 		$("input, textarea").live('blur', function(){
 			$("#hdr").css({position:''});
 		});
+		// Also hide tooltips.
+		$.fn.tooltip = function() { return this; };
 	}
 
 });
@@ -416,7 +418,7 @@ showSheet: function(id, content, callback) {
 
 	// Position the page wrapper so that the browser scrollbars will no longer affect it. The browser scrollbars will become connected to the sheet content.
 	$("#wrapper").addClass("sheetActive").css({position: "fixed", top: -$(document).scrollTop(), width: "100%"});
-	$("#hdr").css("top", $(document).scrollTop());
+	$("#hdr").css("top", 0);
 
 	// Position the sheet.
 	sheet.addClass("active").css({position: "absolute", left: "50%", marginLeft: -sheet.width() / 2});

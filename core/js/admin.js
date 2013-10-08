@@ -59,7 +59,7 @@ init: function() {
 	});
 
 	$("#adminGroups li .control-delete").click(function(e) {
-		return confirm("Are you sure?");
+		return confirm(T("message.confirmDelete"));
 	});
 
 },
@@ -160,6 +160,7 @@ init: function() {
 		toleranceElement: '> div',
 		update: function() {
 			$.ETAjax({
+				type: "POST",
 				url: "admin/channels/reorder.ajax",
 				data: {tree: $("#adminChannels .channelList").nestedSortable("toArray", {startDepthCount: -1})},
 				globalLoading: true
