@@ -42,6 +42,9 @@ if (!defined("IN_ESOTALK")) exit;
 <?php endif; ?>
 
 <h1 id='forumTitle'><a href='<?php echo URL(""); ?>'><?php echo $data["forumTitle"]; ?></a></h1>
+<?php if (isset($data["forumSlogan"])): ?>
+<h1 id='forumSlogan'><?php echo $data["forumSlogan"]; ?></h1>
+<?php endif; ?>
 
 <ul id='mainMenu' class='menu'>
 <?php if (!empty($data["mainMenuItems"])) echo $data["mainMenuItems"]; ?>

@@ -92,6 +92,8 @@ body {font-size:14px; color:#000}
 body, input, textarea, select {font-family:verdana,lucida grande,lucida sans unicode,helvetica,arial,sans-serif}
 pre {line-height:1.4em; white-space:pre}
 #hdr h1 {padding:6px 0px 0px 0px; margin:0; max-width:120%}
+/*h1#forumSlogan {display:inline-block; font-size:80%; color:#ddd; padding:3px 10px; margin:0; font-weight:normal; font-style:italic; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}*/
+h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10px; margin:0; font-family:sans serif; font-weight:normal; font-style:italic; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
 #hdr-inner {padding-right:760px}
 #userMenu {margin-right:-730px}
 #userMenu {padding:10px 0px}
