@@ -25,6 +25,8 @@ moreText: "Load more",
 // An array of positions within the scrubber that have been loaded.
 loadedItems: [],
 
+currentScrollTop: 0,
+
 // Initialize the scrubber.
 init: function() {
 
@@ -54,9 +56,19 @@ init: function() {
 			ETScrubber.scrubber.removeClass("floating").css({position: "", top: ""});
 		}
 
+		/*var e = $(this);
+		e.queue('qscr', []);
+		e.stop(true, true);
+		
+		e.delay(3000);
+		e.queue(function(){
+			ETScrubber.onWindowScroll(y);
+			e.dequeue();
+		}, 'qscr');*/
+		
 		// Now we need to work out where we are in the content and highlight the appropriate
 		// index in the scrubber. Go through each of the items on the page...
-		$("li", ETScrubber.items).each(function() {
+		/*$("li", ETScrubber.items).each(function() {
 			var item = $(this);
 
 			// If we've scrolled past this item, continue in the loop.
@@ -72,7 +84,7 @@ init: function() {
 				return false;
 
 			}
-		});
+		});*/
 
 		// Work out if the "next page" block is visible in the viewport. If it is, automatically load
 		// new items, starting from the last item position that we have loaded already.
@@ -328,6 +340,35 @@ addItems: function(startFrom, items, moreItem, animate) {
 		$(".scrubberNext").remove();
 
 	return items;
+},
+
+onWindowScroll: function(y) {
+	
+	if (this.currentScrollTop != y) {
+	
+		this.currentScrollTop = y;
+		
+		// Now we need to work out where we are in the content and highlight the appropriate
+		// index in the scrubber. Go through each of the items on the page...
+		$("li", ETScrubber.items).each(function() {
+			var item = $(this);
+
+			// If we've scrolled past this item, continue in the loop.
+			if (y > item.offset().top + item.outerHeight() - ETScrubber.header.outerHeight()) return true;
+			else {
+
+				// This must be the first item within our viewport. Get the index of it and highlight
+				// that index in the scrubber, then break out of the loop.
+				$(".scrubber li").removeClass("selected");
+				var index = item.data("index");
+				if ($(document).scrollTop() <= 0 && ETScrubber.loadedItems.indexOf(0) != -1) index = "op";
+				$(".scrubber-"+index, ETScrubber.scrubber).addClass("selected").parents("li").addClass("selected");
+				return false;
+
+			}
+		});
+	}
 }
 
 };
+

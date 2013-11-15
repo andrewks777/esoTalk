@@ -899,7 +899,12 @@ $(function() {
 			var browserWindow = $(window);
 			var width = browserWindow.width();
 			var scrubber = $(".scrubberColumn");
-			if (e.clientX >= browserWindow.width() - 20) scrubber.show("fast");
+			if (e.clientX >= browserWindow.width() - 20) {
+				if (scrubber.length > 0 && e.clientX < browserWindow.width()) {
+					ETScrubber.onWindowScroll(browserWindow.scrollTop());
+				}
+				scrubber.show("fast");
+			}
 			else if (e.clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
 		});
 	});
