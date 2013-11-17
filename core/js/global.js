@@ -906,6 +906,7 @@ $(function() {
 				scrubber.show("fast");
 			}
 			else if (e.clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
+			else if (scrubber.is(':visible') && e.clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());
 		});
 	});
 	

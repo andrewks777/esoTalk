@@ -350,7 +350,7 @@ onWindowScroll: function(y) {
 		
 		// Now we need to work out where we are in the content and highlight the appropriate
 		// index in the scrubber. Go through each of the items on the page...
-		$("li", ETScrubber.items).each(function() {
+		$("li[data-index]", ETScrubber.items).each(function() {
 			var item = $(this);
 
 			// If we've scrolled past this item, continue in the loop.
