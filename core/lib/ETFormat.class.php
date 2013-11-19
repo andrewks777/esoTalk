@@ -271,6 +271,12 @@ public function linksCallback($matches)
 			$height = 344; // smotri value: 360
 			return "<div class='video'><object id='smotriComVideoPlayer' classid='clsid:d27cdb6e-ae6d-11cf-96b8-444553540000' width='$width' height='$height'><param name='movie' value='http://pics.smotri.com/player.swf?file=$id&autoStart=false&str_lang=rus&xmlsource=http%3A%2F%2Fpics%2Esmotri%2Ecom%2Fcskins%2Fblue%2Fskin%5Fcolor%2Exml&xmldatasource=http%3A%2F%2Fpics.smotri.com%2Fskin_ng.xml' /><param name='allowScriptAccess' value='always' /><param name='allowFullScreen' value='true' /><param name='bgcolor' value='#ffffff' /><embed name='smotriComVideoPlayer' src='http://pics.smotri.com/player.swf?file=$id&autoStart=false&str_lang=rus&xmlsource=http%3A%2F%2Fpics%2Esmotri%2Ecom%2Fcskins%2Fblue%2Fskin%5Fcolor%2Exml&xmldatasource=http%3A%2F%2Fpics.smotri.com%2Fskin_ng.xml' quality='high' allowscriptaccess='always' allowfullscreen='true' wmode='window'  width='$width' height='$height' type='application/x-shockwave-flash'></embed></object></div>";
 		} else
+		if (C("esoTalk.format.vimeo") and preg_match("/^vimeo\.com\/([0-9]+)/i", $matches[2], $vimeo)) {
+			$id = $vimeo[1];
+			$width = 500; // vimeo value: 500
+			$height = 312; // vimeo value: 312
+			return "<div class='video'><iframe src='//player.vimeo.com/video/$id' width='$width' height='$height' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>";
+		} else
 		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video([0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
 			$oid = $vkvideo[1];
 			$id = $vkvideo[2];
