@@ -118,6 +118,7 @@ $config["esoTalk.urls.rewrite"] = false; // ex. example.com/conversation/1 (requ
 // Some features that can be disabled.
 $config["esoTalk.enableEmailNotifications"] = true;
 $config["esoTalk.notificationCheckInterval"] = 30;
+$config["esoTalk.warnAboutOutdatedVersionsIE"] = true;
 
 // Search view settings.
 $config["esoTalk.search.results"] = 50; // Number of conversations to list for a normal search.

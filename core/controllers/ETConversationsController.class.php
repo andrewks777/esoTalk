@@ -21,7 +21,7 @@ class ETConversationsController extends ETController {
  */
 function index($channelSlug = false)
 {
-	if (ET::$session->oldVersionIE) {
+	if (ET::$session->oldVersionIE && C("esoTalk.warnAboutOutdatedVersionsIE")) {
 		ET::$session->oldVersionIE = false;
 		$this->renderMessage(T("Warning"), T("message.oldVersionIE"));
 		return false;
