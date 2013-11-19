@@ -104,6 +104,8 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #conversationBody .scrubberContent .button {width:110px}
 #conversationsFilter {padding-bottom:10px}
 #onlineSheet {width:70%; margin-left:-35%; height:auto; max-height:75%; overflow:auto}
+#loginSheet {width:500px}
+#forgotPasswordSheet {width:500px}
 
 .conversationList .title a:visited {color:#333333}
 .conversationList > li {padding-top:4px; padding-bottom:4px}
@@ -145,3 +147,4 @@ blockquote a.expand {padding:0 8px; font-size:14px; width:16px}
 .avatar {width:45px; height:45px}
 .bodyHeader {padding:5px 0px 5px}
 .autoCompletePopup .popupMenu li > a {padding:3px 10px 3px 10px}
+
