@@ -342,7 +342,7 @@ public function start($member = false)
 
 	// If the user is suspended, show an error.
 	if (ET::$session->isSuspended()) {
-		$this->renderMessage("Error!", T("message.suspended"));
+		$this->renderMessage(T("Error"), T("message.suspended"));
 		return;
 	}
 

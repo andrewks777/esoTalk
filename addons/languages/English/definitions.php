@@ -420,6 +420,7 @@ $definitions["message.noSearchResultsMembers"] = "No members matching your searc
 $definitions["message.noSearchResultsPosts"] = "No posts matching your search were found.";
 $definitions["message.noSkinsInstalled"] = "No skins are currently installed.";
 $definitions["message.notWritable"] = "<code>%s</code> is not writeable. Try <code>chmod</code>ing it to <code>777</code>, or if it doesn't exist, <code>chmod</code> the folder it is contained within.";
+$definitions["message.oldVersionIE"] = "You are using an outdated version of Internet Explorer. For correct work of this forum you should upgrade your browser. You can download the latest version <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>here</a>.";
 $definitions["message.pageNotFound"] = "The page you're looking for could not be found.";
 $definitions["message.passwordChanged"] = "Alright, your password has been changed. Now you can log in! Hey, try not to forget it again, OK?";
 $definitions["message.passwordEmailSent"] = "Ok, we've sent you an email containing a link to reset your password. Check your spam folder if you don't receive it within the next minute or two. Yeah, some times we get put through to spam - can you believe it?!";

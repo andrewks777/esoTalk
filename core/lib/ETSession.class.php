@@ -41,6 +41,12 @@ public $token;
 public $ip;
 
 /**
+ * Old versions IE used?
+ * @var bool
+ */
+public $oldVersionIE;
+
+/**
  * The Ident of the current user.
  * @var string
  */
@@ -57,7 +63,10 @@ public function __construct()
 	// Start a session.
 	session_name(C("esoTalk.cookie.name")."_session");
 	session_start();
-	if (empty($_SESSION["token"])) $this->regenerateToken();
+	if (empty($_SESSION["token"])) {
+		$this->regenerateToken();
+		$this->oldVersionIE = isOldIE();
+	}
 
 	// Complicate session highjacking - check the current user agent against the one that initiated the session.
 	$curr_ip = getUserIP(true, true);

@@ -1178,6 +1178,11 @@ function checkCanonicalURI($canonicalURL)
 	return ($canonicalURL == $_SERVER['REQUEST_URI']);
 }
 
+function isOldIE()
+{
+	return (preg_match('/(?i)msie [1-7]\D/',getUserAgent()));
+}
+
 // write action to table 'adm_actions'
 function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0)
 {
