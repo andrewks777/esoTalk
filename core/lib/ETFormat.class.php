@@ -275,7 +275,7 @@ public function linksCallback($matches)
 			$id = $vimeo[1];
 			$width = 500; // vimeo value: 500
 			$height = 312; // vimeo value: 312
-			return "<div class='video'><iframe src='//player.vimeo.com/video/$id' width='$width' height='$height' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>";
+			return "<div class='video'><iframe onerror='$onerror' src='//player.vimeo.com/video/$id' width='$width' height='$height' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>";
 		} else
 		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video([0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
 			$oid = $vkvideo[1];
