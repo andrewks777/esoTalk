@@ -426,7 +426,7 @@ $definitions["Hide"] = "Скрыть";
 $definitions["Unhide"] = "Показать";
 
 // Messages.
-$definitions["message.404"] = "Запрошенная вами страница не найдена! Проверьте ваш запрос или перейдите по другой ссылке.";
+$definitions["message.404"] = "Запрошенная вами страница не найдена! Проверьте Ваш запрос или перейдите по другой ссылке.";
 $definitions["message.ajaxDisconnected"] = "Невозможно связаться с сервером. Подождите немного и <a href='javascript:jQuery.ETAjax.resumeAfterDisconnection()'>попробуйте снова</a>, или <a href='' onclick='window.location.reload();return false'>обновите страницу</a>.";
 $definitions["message.ajaxRequestPending"] = "Подождите! Ваш запрос обрабатывается! Если Вы уйдете с этой страницы, то все сделанные вами изменения будут утеряны.";
 $definitions["message.avatarError"] = "Не удалось загрузить ваш аватар. Проверьте тип используемого изображения (.jpg, .png, .gif) и его размер.";
