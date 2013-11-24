@@ -92,7 +92,6 @@ body {font-size:14px; color:#000}
 body, input, textarea, select {font-family:verdana,lucida grande,lucida sans unicode,helvetica,arial,sans-serif}
 pre {line-height:1.4em; white-space:pre}
 #hdr h1 {padding:6px 0px 0px 0px; margin:0; max-width:120%}
-/*h1#forumSlogan {display:inline-block; font-size:80%; color:#ddd; padding:3px 10px; margin:0; font-weight:normal; font-style:italic; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}*/
 h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10px; margin:0; font-family:sans serif; font-weight:normal; font-style:italic; overflow:hidden; white-space:nowrap; text-overflow:ellipsis}
 #hdr-inner {padding-right:760px}
 #userMenu {margin-right:-730px}
@@ -110,7 +109,6 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 .conversationList .title a:visited {color:#333333}
 .conversationList > li {padding-top:4px; padding-bottom:4px}
 .conversationList .mine {background-color:#fffbdb}
-/*.conversationList .popular {background-color:#fffbcb}*/
 .conversationList .popular .title a {font-weight:bold; color:#000}
 .channelList .unsubscribed {background:#ececec}
 .channelList .unsubscribed .channel {opacity:0.5}
@@ -147,4 +145,3 @@ blockquote a.expand {padding:0 8px; font-size:14px; width:16px}
 .avatar {width:45px; height:45px}
 .bodyHeader {padding:5px 0px 5px}
 .autoCompletePopup .popupMenu li > a {padding:3px 10px 3px 10px}
-
