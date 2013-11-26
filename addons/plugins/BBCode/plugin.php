@@ -121,9 +121,9 @@ public function handler_format_format($sender)
 	//$sender->content = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $sender->content);
 	// \[ (i|b|color|url|somethingelse) \=? ([^]]+)? \] (?: ([^]]*) \[\/\1\] )
 
-	// Images: [img]url[/img]
+	// Images: [img=description]url[/img]
 	$onerror = "javascript:ETConversation.onErrorLoadingImage(this);";
-	if (!$sender->basic) $sender->content = preg_replace("/\[img\](.*?)\[\/img\]/i", "<img onerror='$onerror' src='$1' alt='-image-'/>", $sender->content);
+	if (!$sender->basic) $sender->content = preg_replace_callback("/\[img(?:=(.*))?\](.*?)\[\/img\]/i", array($this, "imgCallback"), $sender->content);
 
 	// Links with display text: [url=http://url]text[/url]
 	$sender->content = preg_replace_callback("/\[url=(\w{2,6}:\/\/)?([^\]]*?)\](.*?)\[\/url\]/i", array($this, "linksCallback"), $sender->content);
@@ -143,6 +143,22 @@ public function handler_format_format($sender)
 	// Spoiler: [b]spoiler[/b]
 	$sender->content = preg_replace("|\[spoiler\] (.*?\n.*?) \[/spoiler\]|si", "<div class='spoiler-link'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block' style='display:none'>$1</div>" : "</a></div>"), $sender->content);
 	$sender->content = preg_replace("|\[spoiler\] (.*?) \[/spoiler\]|si", "<div class='spoiler-link spoiler-link-line'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block spoiler-line' style='display:none'>$1</div>" : "</a></div>"), $sender->content);
+}
+
+
+/**
+ * The callback function used to replace IMG BBCode with HTML anchor tags.
+ *
+ * @param array $matches An array of matches from the regular expression.
+ * @return string The replacement HTML anchor tag.
+ */
+public function imgCallback($matches)
+{
+	$onerror = "javascript:ETConversation.onErrorLoadingImage(this);";
+	$desc = $matches[1] ? $matches[1] : "-image-";
+	$title = $matches[1];
+	$url = $matches[2];
+	return "<img onerror='$onerror' src='$url' alt='$desc' title='$title'/>";
 }
 
 
