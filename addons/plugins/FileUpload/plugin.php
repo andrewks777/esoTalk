@@ -73,7 +73,7 @@ public function handler_memberController_renderBefore($sender)
  */
 public function handler_conversationController_getEditControls($sender, &$controls, $id)
 {
-	addToArrayString($controls, "upload", "<span class='upload'><input id='fileupload' type='file' name='files[]' multiple title='".T("plugin.FileUpload.uploadTitle")."'><span class='fileupload-process'></span></span>");
+	addToArrayString($controls, "upload", "<span class='upload'><input class='fileupload' id='fileupload-$id' type='file' name='files[]' multiple title='".T("plugin.FileUpload.uploadTitle")."'><span class='fileupload-process'></span></span>");
 }
 
 // Construct and process the settings form.

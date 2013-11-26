@@ -455,7 +455,13 @@ class UploadHandler
             preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)) {
             $name .= '.'.$matches[1];
         }
-        return $name;
+        
+		// translit unicode names
+		// Notice! Depend on the 'intl' (Internationalization extension) package; PHP >= 5.4.0, PECL intl >= 2.0.0
+		// See: www.php.net/manual/transliterator.transliterate.php
+		$name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+		
+		return $name;
     }
 
     protected function get_file_name($name,
@@ -993,6 +999,7 @@ class UploadHandler
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error,
             $index = null, $content_range = null) {
         $file = new stdClass();
+		$file->origName = htmlentities($name, ENT_QUOTES, "UTF-8"); // sanitizeHTML
         $file->name = $this->get_file_name($name, $type, $index, $content_range);
         $file->size = $this->fix_integer_overflow(intval($size));
         $file->type = $type;
