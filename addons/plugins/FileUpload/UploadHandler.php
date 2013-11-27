@@ -46,6 +46,7 @@ class UploadHandler
             'user_dirs' => false,
             'mkdir_mode' => 0755,
             'param_name' => 'files',
+			'transliterate_names' => false,
             // Set the following option to 'POST', if your server does not support
             // DELETE requests. This is a parameter sent to the client:
             'delete_type' => 'DELETE',
@@ -457,9 +458,11 @@ class UploadHandler
         }
         
 		// translit unicode names
-		// Notice! Depend on the 'intl' (Internationalization extension) package; PHP >= 5.4.0, PECL intl >= 2.0.0
-		// See: www.php.net/manual/transliterator.transliterate.php
-		$name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+		// Notice! Depend on the bundled 'intl' (Internationalization extension) package; PHP >= 5.4.0, PECL intl >= 2.0.0
+		// See: http://www.php.net/manual/transliterator.transliterate.php
+		// or PHP >= 5.2.4 with PECL version of 'intl'
+		// See: http://pecl.php.net/package/intl
+		if ($this->options['transliterate_names'] and extension_loaded("intl")) $name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
 		
 		return $name;
     }

@@ -70,6 +70,7 @@ class FileUploadController extends ETController {
 		$options = array(
 			'upload_dir' => $this->usr_path_img(),
 			'upload_url' => $this->usr_url_img(),
+			'transliterate_names' => true,
 			'accept_file_types' => $ftypes,
 			'max_file_size' => $maxFileSize ? $maxFileSize : null,
 			/*'image_versions' => array(
