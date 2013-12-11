@@ -2,7 +2,7 @@
 // Copyright 2013 andrewks
 // 
 
-// Russian Definitions for the FileUpload plugin.
+// English Definitions for the FileUpload plugin.
 
 $definitions["plugin.FileUpload.uploadTitle"] = "Upload an image";
 $definitions["plugin.FileUpload.allowedTypesLabel"] = "Allowed file types";
