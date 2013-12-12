@@ -1,0 +1,2 @@
+#stopSnowingButton {position:fixed; bottom:5px; left:5px; opacity:0.5; cursor:pointer; width:32px; height:32px; background:url(stopSnowing.png) no-repeat scroll 100% 100% transparent;}
+#stopSnowingButton:hover {opacity:1;}
