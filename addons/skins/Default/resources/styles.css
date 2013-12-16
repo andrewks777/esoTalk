@@ -117,6 +117,8 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 .memberList .col-lastActive {width:35%}
 .memberList .col-replies {width:12%}
 .scrubberColumn {font-size:13px}
+.conversationList .controls-first-post {position:absolute; margin-left:-11px; opacity:0.5; cursor:pointer}
+.controls-first-post:hover {opacity:0.75}
 
 .postHeader {margin-bottom:1px; padding:2px 2px 2px 12px}
 .postHeader h3 {display:inline; font-size:90%; margin:0}

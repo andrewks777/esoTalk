@@ -829,7 +829,8 @@ $(function() {
 		e.preventDefault();
 	});
 	
-	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
+	//var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
+	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post";
 	$(miniQuoteId).live("mouseenter", function(e) {
 		e.preventDefault();
 		$("#postToolTip").remove();
@@ -837,7 +838,7 @@ $(function() {
 		var em = e.parent().parent();
 		if (em.prop("class") == "col-conversation") {
 			var postId = em.parent().prop("id").substr(1) + "-0";
-			var delayTime = 3000;
+			var delayTime = 1000;
 		} else {
 			var postId = e.data("id");
 			var delayTime = 2000;
@@ -876,6 +877,16 @@ $(function() {
 	$(document).keydown(function(e) { 
 		if (e.which == 27) {
 			$("#postToolTip").remove();
+		}
+	});
+	
+	// Register the click out for the #postToolTip
+	$(document).mouseup(function(e) { 
+		var postToolTip = $("#postToolTip");
+		if (postToolTip.length > 0) {
+			if (postToolTip.has(e.target).length === 0) {
+				postToolTip.remove();
+			}
 		}
 	});
 	

@@ -28,6 +28,7 @@ if (C("esoTalk.conversation.popularTopicPostsCount") and $conversation["replies"
 $conversationURL = conversationURL($conversation["conversationId"], $conversation["title"]);
 
 // Output the conversation's labels.
+echo "<span class='controls controls-first-post'><i class='icon-eye-open view-first-post'></i></span>";
 echo "<span class='labels'>";
 foreach ($conversation["labels"] as $label) {
 	if ($label == "draft")
