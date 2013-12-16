@@ -35,6 +35,7 @@ protected function addResources($sender)
 	$sender->addJSVar("snowStorm_snowColor", C("plugin.SnowStorm.snowColor"));
 	$sender->addJSVar("snowStorm_flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
 	$sender->addJSVar("snowStorm_useTwinkleEffect", C("plugin.SnowStorm.useTwinkleEffect"));
+	$sender->addJSVar("snowStorm_enableSnowman", C("plugin.SnowStorm.enableSnowman"));
 	$sender->addJSLanguage("plugin.SnowStorm.message.stopSnowing");
 	
 }
@@ -70,6 +71,7 @@ public function settings($sender)
 	$form->setValue("snowColor", C("plugin.SnowStorm.snowColor"));
 	$form->setValue("flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
 	$form->setValue("useTwinkleEffect", (bool)C("plugin.SnowStorm.useTwinkleEffect"));
+	$form->setValue("enableSnowman", (bool)C("plugin.SnowStorm.enableSnowman"));
 
 	// If the form was submitted...
 	if ($form->validPostBack("snowStormSave")) {
@@ -79,6 +81,7 @@ public function settings($sender)
 		$config["plugin.SnowStorm.snowColor"] = $form->getValue("snowColor");
 		$config["plugin.SnowStorm.flakesMaxActive"] = $form->getValue("flakesMaxActive");
 		$config["plugin.SnowStorm.useTwinkleEffect"] = (bool)$form->getValue("useTwinkleEffect");
+		$config["plugin.SnowStorm.enableSnowman"] = (bool)$form->getValue("enableSnowman");
 
 		if (!$form->errorCount()) {
 

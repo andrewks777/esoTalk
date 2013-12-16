@@ -37,6 +37,12 @@ $form = $data["snowStormSettingsForm"];
 <small><?php echo T("plugin.SnowStorm.useTwinkleEffectDesc"); ?></small>
 </li>
 
+<li>
+<label><?php echo T("plugin.SnowStorm.enableSnowmanLabel"); ?></label>
+<?php echo $form->checkbox("enableSnowman"); ?>
+<small><?php echo T("plugin.SnowStorm.enableSnowmanDesc"); ?></small>
+</li>
+
 </ul>
 
 </div>
@@ -90,13 +96,11 @@ $(function() {
 		}).toggle(!!$("#"+id+" input").val());
 		
 		// Register the Esc hotkey.
-		//$(document).keydown(function(e) { 
 		$("#"+id).keydown(function(e) { 
 			if (e.which == 27) {
 				picker.hide();
 			}
 		});
-	
 
 	}
 	
@@ -107,7 +111,6 @@ $(function() {
 		color = color ? color : "#77aaff";
 
 	});
-
 
 });
 </script>
