@@ -33,6 +33,7 @@ protected function addResources($sender)
 	$sender->addJSFile($this->getResource("snowstorm.js"), false, $groupKey);
 	$sender->addCSSFile($this->getResource("snowstorm.css"), false, $groupKey);
 	$sender->addJSVar("snowStorm_snowColor", C("plugin.SnowStorm.snowColor"));
+	$sender->addJSVar("snowStorm_snowCharacter", C("plugin.SnowStorm.snowCharacter"));
 	$sender->addJSVar("snowStorm_flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
 	$sender->addJSVar("snowStorm_useTwinkleEffect", C("plugin.SnowStorm.useTwinkleEffect"));
 	$sender->addJSVar("snowStorm_enableSnowman", C("plugin.SnowStorm.enableSnowman"));
@@ -69,6 +70,7 @@ public function settings($sender)
 	$form = ETFactory::make("form");
 	$form->action = URL("admin/plugins");
 	$form->setValue("snowColor", C("plugin.SnowStorm.snowColor"));
+	$form->setValue("snowCharacter", C("plugin.SnowStorm.snowCharacter"));
 	$form->setValue("flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
 	$form->setValue("useTwinkleEffect", (bool)C("plugin.SnowStorm.useTwinkleEffect"));
 	$form->setValue("enableSnowman", (bool)C("plugin.SnowStorm.enableSnowman"));
@@ -79,6 +81,7 @@ public function settings($sender)
 		// Construct an array of config options to write.
 		$config = array();
 		$config["plugin.SnowStorm.snowColor"] = $form->getValue("snowColor");
+		$config["plugin.SnowStorm.snowCharacter"] = $form->getValue("snowCharacter");
 		$config["plugin.SnowStorm.flakesMaxActive"] = $form->getValue("flakesMaxActive");
 		$config["plugin.SnowStorm.useTwinkleEffect"] = (bool)$form->getValue("useTwinkleEffect");
 		$config["plugin.SnowStorm.enableSnowman"] = (bool)$form->getValue("enableSnowman");

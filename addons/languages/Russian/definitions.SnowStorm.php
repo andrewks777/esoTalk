@@ -6,6 +6,8 @@
 
 $definitions["plugin.SnowStorm.snowColorLabel"] = "snowColor";
 $definitions["plugin.SnowStorm.snowColorDesc"] = "Цвет снежинок";
+$definitions["plugin.SnowStorm.snowCharacterLabel"] = "snowCharacter";
+$definitions["plugin.SnowStorm.snowCharacterDesc"] = "Символ снежинок. Рекомендуемое значение: пусто";
 $definitions["plugin.SnowStorm.flakesMaxActiveLabel"] = "flakesMaxActive";
 $definitions["plugin.SnowStorm.flakesMaxActiveDesc"] = "Показывать больше снежинок на экране сразу. Рекомендуемое значение: 96";
 $definitions["plugin.SnowStorm.useTwinkleEffectLabel"] = "useTwinkleEffect";

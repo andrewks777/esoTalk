@@ -26,6 +26,12 @@ $form = $data["snowStormSettingsForm"];
 </li>
 
 <li>
+<label><?php echo T("plugin.SnowStorm.snowCharacterLabel"); ?></label>
+<?php echo $form->input("snowCharacter", "text"); ?>
+<small><?php echo T("plugin.SnowStorm.snowCharacterDesc"); ?></small>
+</li>
+
+<li>
 <label><?php echo T("plugin.SnowStorm.flakesMaxActiveLabel"); ?></label>
 <?php echo $form->input("flakesMaxActive", "text"); ?>
 <small><?php echo T("plugin.SnowStorm.flakesMaxActiveDesc"); ?></small>

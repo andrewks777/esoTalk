@@ -6,6 +6,8 @@
 
 $definitions["plugin.SnowStorm.snowColorLabel"] = "snowColor";
 $definitions["plugin.SnowStorm.snowColorDesc"] = "Snow color";
+$definitions["plugin.SnowStorm.snowCharacterLabel"] = "snowCharacter";
+$definitions["plugin.SnowStorm.snowCharacterDesc"] = "Snow character. Recommended value: empty";
 $definitions["plugin.SnowStorm.flakesMaxActiveLabel"] = "flakesMaxActive";
 $definitions["plugin.SnowStorm.flakesMaxActiveDesc"] = "Show more snow on screen at once. Recommended value: 96";
 $definitions["plugin.SnowStorm.useTwinkleEffectLabel"] = "useTwinkleEffect";
