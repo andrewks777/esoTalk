@@ -63,18 +63,23 @@ init: function() {
 					var items = success(data);
 					ETConversation.collapseQuotes(items);
 					ETConversation.redisplayAvatars();
+					if (ETConversation.replyShowing) {
+						console.log('replyShowing!');
+						$(".scrubber-now a").click();
+						$("#reply textarea").click();
+					}
 				},
 				global: true
 			});
 		}
 
 		// Set a callback that will run whenever we scroll to a specific index. We need it to change the URL.
-		ETScrubber.scrollToIndexCallback = function(index) {
+		/*ETScrubber.scrollToIndexCallback = function(index) {
 			var position;
 			if (index == Infinity) position = "last";
 			else position = (""+index).substr(0, 4)+"/"+(""+index).substr(4, 2);
 			//$.history.load("index.php/"+ETConversation.slug+"/"+position, true);
-		}
+		}*/
 
 		// Initialize the scrubber.
 		ETScrubber.init();
@@ -855,7 +860,7 @@ quotePost: function(postId, multi) {
 		url: "conversation/quotePost.json/" + postId,
 		success: function(data) {
 			var top = $(document).scrollTop();
-			ETConversation.quote(replyId, selection ? selection : data.content, data.postId + ":" + data.member, null, true);
+			ETConversation.quote(replyId, selection ? selection : data.content, data.postId + ":" + data.member, null, !ETConversation.replyShowing);
 
 			// If we're "multi" quoting (i.e. shift is being held down), keep our scroll position static.
 			// Otherwise, scroll down to the reply area.
@@ -872,17 +877,21 @@ quotePost: function(postId, multi) {
 
 miniQuotePost: function(postId, multi) {
 
+	var replyId = ETConversation.lastTextareaId;
+	if (!replyId) replyId = "reply";
+	if ($("#" + replyId + " textarea").length != 1) replyId = "reply";
+	
 	var top = $(document).scrollTop();
 	var arr = postId.toString().split("-");
 	var relativePostId = arr[1];
-	ETConversation.miniQuote("reply", relativePostId, false);
+	ETConversation.miniQuote(replyId, relativePostId, !ETConversation.replyShowing);
 
 	// If we're "multi" quoting (i.e. shift is being held down), keep our scroll position static.
 	// Otherwise, scroll down to the reply area.
 	if (!multi) {
-		$("#jumpToReply").click();
+		if (replyId == "reply") $("#jumpToReply").click();
 	} else {
-		$("#reply").change();
+		$("#"+replyId).change();
 		$.scrollTo(top);
 	}
 
@@ -1129,11 +1138,13 @@ quote: function(id, quote, name, postId, insert) {
 	var startTag = "[quote" + (argument ? "=" + argument : "") + "]" + (quote ? quote : "");
 	var endTag = "[/quote]";
 
-	// If we're inserting the quote, add it to the end of the textarea.
-	if (insert) ETConversation.insertText($("#" + id + " textarea"), startTag + endTag + "\n");
+	if (argument || quote) {
+		// If we're inserting the quote, add it to the end of the textarea.
+		if (insert) ETConversation.insertText($("#" + id + " textarea"), startTag + endTag + "\n");
 
-	// Otherwise, wrap currently selected text with the quote.
-	else ETConversation.wrapText($("#" + id + " textarea"), startTag, endTag);
+		// Otherwise, wrap currently selected text with the quote.
+		else ETConversation.replaceText($("#" + id + " textarea"), startTag + endTag + "\n");
+	} else ETConversation.wrapText($("#" + id + " textarea"), startTag, endTag);
 },
 
 miniQuote: function(id, postId, insert) {
@@ -1152,8 +1163,8 @@ insertText: function(textarea, text) {
 	textarea.val(textarea.val() + text);
 	textarea.focus();
 
-	// Trigger the textarea's keyup to emulate typing.
-	textarea.trigger("keyup");
+	// Trigger the textarea's input to emulate typing.
+	textarea.trigger("input");
 },
 
 // Add text to the reply area, with the options of wrapping it around a selection and selecting a part of it when it's inserted.
@@ -1192,8 +1203,8 @@ wrapText: function(textarea, tagStart, tagEnd, selectArgument, defaultArgumentVa
 	}
 	textarea.selectRange(newStart, newEnd);
 
-	// Trigger the textarea's keyup to emulate typing.
-	textarea.trigger("keyup");
+	// Trigger the textarea's input to emulate typing.
+	textarea.trigger("input");
 },
 
 replaceText: function(textarea, text) {
@@ -1212,9 +1223,13 @@ replaceText: function(textarea, text) {
 	// Scroll back down and refocus on the textarea.
 	textarea.scrollTo(scrollTop);
 	textarea.focus();
+	
+	// Set caret position
+	newStart = selectionInfo.start + text.length;
+	textarea.selectRange(newStart, newStart);
 
-	// Trigger the textarea's keyup to emulate typing.
-	textarea.trigger("keyup");
+	// Trigger the textarea's input to emulate typing.
+	textarea.trigger("input");
 },
 
 // Toggle preview on an editing area.
