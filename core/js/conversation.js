@@ -64,7 +64,6 @@ init: function() {
 					ETConversation.collapseQuotes(items);
 					ETConversation.redisplayAvatars();
 					if (ETConversation.replyShowing) {
-						console.log('replyShowing!');
 						$(".scrubber-now a").click();
 						$("#reply textarea").click();
 					}

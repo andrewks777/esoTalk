@@ -1183,6 +1183,12 @@ function isOldIE()
 	return (preg_match('/(?i)msie [1-7]\D/',getUserAgent()));
 }
 
+function validateDate($date, $format = 'Y-m-d H:i:s')
+{
+	$d = DateTime::createFromFormat($format, $date);
+	return $d && $d->format($format) == $date;
+}
+
 // write action to table 'adm_actions'
 function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0)
 {
