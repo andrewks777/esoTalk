@@ -20,7 +20,7 @@ protected $styles = array();
 
 protected function wrapSmileText($k)
 {
-	if ($k == ":)" or $k == ";)" or $k == ":(") return $k;
+	if ($k == ":)" or $k == ":-)" or $k == ";)" or $k == ";-)" or $k == ":(" or $k == ":-(") return $k;
 	else return "[smile=".$k."]";
 }
 
@@ -29,15 +29,18 @@ protected function fillStyles()
 	if (count($this->styles) == 0) {
 		$this->styles = array();
 		$this->styles[$this->wrapSmileText(":)")] = "background-position:0 0";
+		$this->styles[$this->wrapSmileText(":-)")] = "background-position:0 0";
 		$this->styles[$this->wrapSmileText("=)")] = "background-position:0 0";
 		$this->styles[$this->wrapSmileText(":D")] = "background-position:0 -20px";
 		$this->styles[$this->wrapSmileText("=D")] = "background-position:0 -20px";
 		$this->styles[$this->wrapSmileText("^_^")] = "background-position:0 -40px";
 		$this->styles[$this->wrapSmileText("^^")] = "background-position:0 -40px";
 		$this->styles[$this->wrapSmileText(":(")] = "background-position:0 -60px";
+		$this->styles[$this->wrapSmileText(":-(")] = "background-position:0 -60px";
 		$this->styles[$this->wrapSmileText("=(")] = "background-position:0 -60px";
 		$this->styles[$this->wrapSmileText("-_-")] = "background-position:0 -80px";
 		$this->styles[$this->wrapSmileText(";)")] = "background-position:0 -100px";
+		$this->styles[$this->wrapSmileText(";-)")] = "background-position:0 -100px";
 		$this->styles[$this->wrapSmileText("^_-")] = "background-position:0 -100px";
 		$this->styles[$this->wrapSmileText("~_-")] = "background-position:0 -100px";
 		$this->styles[$this->wrapSmileText("-_^")] = "background-position:0 -100px";
@@ -105,7 +108,6 @@ protected function addResources($sender)
 
 public function handler_conversationController_renderBefore($sender)
 {
-	//$sender->addToHead("<style type='text/css'>.emoticon {display:inline-block; text-indent:-9999px; width:16px; height:16px; background:url(".URL($this->getResource("emoticons.png"), false, false)."); background-repeat:no-repeat}</style>");
 	$this->addResources($sender);
 }
 
@@ -153,7 +155,7 @@ public function handler_format_format($sender)
 	$from = $to = array();
 	foreach ($this->styles as $k => $v) {
 		$quoted = preg_quote(sanitizeHTML($k), "/");
-		$from[] = "/(?<=^|[\s.,!<>]){$quoted}(?=[\s.,!<>)]|$)/i";
+		$from[] = "/(?<=^|[\s.,!<>]){$quoted}(?:(?<=\])|(?=[\s.,!<>)]|$))/i";
 		$to[] = "<span class='emoticon' style='$v'>$k</span>";
 	}
 	$sender->content = preg_replace($from, $to, $sender->content);
