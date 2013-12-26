@@ -312,6 +312,9 @@ public function init()
 		$this->addJSFile("core/js/global.js", true);
 		$this->addJSLanguage("message.ajaxRequestPending", "message.ajaxDisconnected", "Loading...", "Notifications");
 		$this->addJSVar("notificationCheckInterval", C("esoTalk.notificationCheckInterval"));
+		if (ET::$session->user) {
+			$this->addJSVar("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
+		}
 
 		// If config/custom.css contains something, add it to be included in the page.
 		if (file_exists($file = PATH_CONFIG."/custom.css") and filesize($file) > 0) $this->addCSSFile("config/custom.css", true);

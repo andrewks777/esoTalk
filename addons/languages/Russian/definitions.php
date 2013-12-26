@@ -613,3 +613,8 @@ $definitions["gambit.active last ? days"] = "{$definitions["gambit.active"]} {$d
 // This is similar to the regular expression for the active gambit, but for the "has n reply(s)" gambit.
 // Usually you just need to change the "has" and "repl".
 $definitions["gambit.gambitHasNReplies"] = "/^имеет *(?<a>>|<|>=|<=)? *(?<b>\d+) *сообщ/";
+
+$definitions["settings.topPanel.label"] = "Верхняя панель";
+$definitions["setting.topPanelBehavior.ordinary"] = "обычная";
+$definitions["setting.topPanelBehavior.movable"] = "выдвигающаяся";
+$definitions["setting.topPanelBehavior.automovable"] = "автоматически выдвигающаяся";

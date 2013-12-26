@@ -33,7 +33,9 @@ foreach ($form->getFieldsInSection($k) as $field): ?>
 <?php endforeach; ?>
 </div></li>
 
+<?php if (!preg_match("/.+-no-sep/", $k, $matches)): ?>
 <li class='sep'></li>
+<?php endif; ?>
 <?php endforeach; ?>
 
 <li><?php echo $form->saveButton(); ?></li>

@@ -118,6 +118,12 @@ public function general()
 		$form->addField("language", "language", array($this, "fieldLanguage"), array($this, "saveLanguage"));
 	}
 
+	$form->addSection("topPanel", T("settings.topPanel.label"));
+	
+	// Add the "top panel" field.
+	$form->setValue("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
+	$form->addField("topPanel", "topPanelBehavior", array($this, "fieldTopPanelBehavior"), array($this, "savePreference"));
+	
 	$form->addSection("notifications", T("Notifications"));
 
 	// Add the "email me when I'm added to a private conversation" field.
@@ -305,6 +311,18 @@ public function fieldStarPrivate($form)
 public function fieldHideOnline($form)
 {
 	return "<label class='checkbox'>".$form->checkbox("hideOnline")." ".T("Don't allow other users to see when I am online")."</label>";
+}
+
+/**
+ * Return the HTML to render the fieldTopPanelBehavior in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldTopPanelBehavior($form)
+{
+	return "<table><tr><td><label>".$form->radio("topPanelBehavior", "ordinary").T("setting.topPanelBehavior.ordinary")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "movable").T("setting.topPanelBehavior.movable")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "automovable").T("setting.topPanelBehavior.automovable")."</label></td></tr></table>";
 }
 
 /**

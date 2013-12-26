@@ -541,3 +541,7 @@ $definitions["gambit.gambitHasNReplies"] = "/^has *(?<a>>|<|>=|<=)? *(?<b>\d+) *
 $definitions["conversations.replies"] = "replies";
 $definitions["conversations.newreplies"] = "new";
 $definitions["conversation.replies"] = "Replies: ";
+$definitions["settings.topPanel.label"] = "Behavior of top panel";
+$definitions["setting.topPanelBehavior.ordinary"] = "ordinary";
+$definitions["setting.topPanelBehavior.movable"] = "movable";
+$definitions["setting.topPanelBehavior.automovable"] = "automovable";
