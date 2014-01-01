@@ -24,6 +24,9 @@ $url = $data["url"];
 		<li><label><?php echo T("plugin.AboutMe.sex.label"); ?></label> <div><?php echo $sex; ?></div></li>
 		<li><label><?php echo T("plugin.AboutMe.birthday.label"); ?></label> <div><?php echo $birthday; ?></div></li>
 		<li><label><?php echo T("plugin.AboutMe.location.label"); ?></label> <div><?php echo $location; ?></div></li>
+	<?php if (isset($data["timeZone"])): ?>
+		<li><label><?php echo T("plugin.TimeZones.timeZone.label"); ?></label> <div><?php echo $data["timeZone"]; ?></div></li>
+	<?php endif; ?>
 		<li><label><?php echo T("plugin.AboutMe.email.label"); ?></label> <div><?php echo "<a href='mailto:".$email."' class='link-email'>".$email."</a>"; ?></div></li>
 		<li><label><?php echo T("plugin.AboutMe.icq.label"); ?></label> <div><?php echo "<img src='http://status.icq.com/online.gif?icq=".$icq."&img=26' style='padding-right:5px'></img><a href='http://www.icq.com/people/".$icq."' rel='nofollow external' target='_blank' class='link-external'>".$icq." </a>"; ?></div></li>
 		<li><label><?php echo T("plugin.AboutMe.url.label"); ?></label> <div><?php echo "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$url." </a>"; ?></div></li>
