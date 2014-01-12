@@ -1180,7 +1180,7 @@ function checkCanonicalURI($canonicalURL)
 
 function isOldIE()
 {
-	return (preg_match('/(?i)msie [1-7]\D/',getUserAgent()));
+	return (preg_match('/(?i)msie [1-7]\D/', getUserAgent()));
 }
 
 function validateDate($date, $format = 'Y-m-d H:i:s')
@@ -1190,7 +1190,7 @@ function validateDate($date, $format = 'Y-m-d H:i:s')
 }
 
 // write action to table 'adm_actions'
-function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0)
+function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0, $adminId = false, $adminIP = false)
 {
 	if (C("esoTalk.admin.AdmActionsLog")) {
 		if (!$time) $time = time();
@@ -1199,8 +1199,8 @@ function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $tit
 			"objectId" => &$objectId,
 			"memberId" => &$memberId,
 			"time" => $time,
-			"adminId" => ET::$session->userId,
-			"adminIP" => getUserIP(),
+			"adminId" => ($adminId !== false) ? $adminId : ET::$session->userId,
+			"adminIP" => ($adminIP !== false) ? $adminIP : getUserIP(),
 			"adminUserAgent" => substr(getUserAgent(), 0, 80),
 			"titleOld" => &$titleOld,
 			"titleNew" => &$titleNew

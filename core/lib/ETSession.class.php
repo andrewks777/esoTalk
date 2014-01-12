@@ -52,6 +52,10 @@ public $oldVersionIE;
  */
 private $ident;
 
+private $isPrevToken = false;
+
+private $prevSessionToken = null;
+
 
 /**
  * Class constructor: starts the session and initializes class properties (ip, token, user, etc.)
@@ -71,7 +75,7 @@ public function __construct()
 	// Complicate session highjacking - check the current user agent against the one that initiated the session.
 	$curr_ip = getUserIP(true, true);
 	if ((C("esoTalk.cookie.checkIdent") and md5($curr_ip) != $_SESSION["userIP"]) or md5($_SERVER["HTTP_USER_AGENT"]) != $_SESSION["userAgent"]) {
-		writeAdminLog('cookieTheft', $_SESSION["userId"], $_SESSION["userId"], "session;".$_SESSION["userIP"].";".$_SESSION["userAgent"], $curr_ip.";".$_SERVER["HTTP_USER_AGENT"]);
+		writeAdminLog('cookieTheft', $_SESSION["userId"], $_SESSION["userId"], "session;".$_SESSION["userIP"].";".$_SESSION["userAgent"], $curr_ip.";".$_SERVER["HTTP_USER_AGENT"], 0, $memberId, getUserIP(true));
 		session_destroy();
 		$this->setCookie("persistent", false, -1);
 	}
@@ -102,9 +106,20 @@ public function __construct()
 		// If a matching record exists...
 		if ($row = $result->firstRow() and $row["series"] == $series) {
 
+			// process a situation with restoration of multiple sessions (i.e. Opera/Presto)
+			$this->isPrevToken = ($row["prevToken"] == $token && $row["ident"] == $this->ident);
+			if ($this->isPrevToken) {
+				$token = $row["token"];
+				$this->prevSessionToken = $row["sessionToken"];
+				if ($this->prevSessionToken) {
+					$_SESSION["token"] = $this->prevSessionToken;
+					$this->token = &$_SESSION["token"];
+				}
+			}
+			
 			// If the token doesn't match, the user's cookie has probably been stolen by someone else.
 			if ($row["token"] != $token or (C("esoTalk.cookie.checkIdent") and $row["ident"] != $this->ident)) {
-				writeAdminLog('cookieTheft', $memberId, $memberId, "persistent;".$row["series"].";".$row["token"].";".$row["ident"], $cookie.";".$this->ident);
+				writeAdminLog('cookieTheft', $memberId, $memberId, "persistent;".$row["series"].";".$row["token"].";".$row["ident"], $cookie.";".$this->ident, 0, $memberId, getUserIP(true));
 			
 				// Delete this member's cookie identifier for this series, so the attacker will not be able
 				// to log in again.
@@ -125,11 +140,13 @@ public function __construct()
 			else {
 				$this->loginWithMemberId($memberId);
 
-				// Generate a new token for the member.
-				$token = $this->createPersistentToken($memberId, $series);
+				if (!$this->isPrevToken) {
+					// Generate a new token for the member.
+					$token = $this->createPersistentToken($memberId, $series, $row["token"], $this->token);
 
-				// Set the cookie.
-				$this->setCookie("persistent", $memberId.$series.$token, time() + C("esoTalk.cookie.expire"));
+					// Set the cookie.
+					$this->setCookie("persistent", $memberId.$series.$token, time() + C("esoTalk.cookie.expire"));
+				}
 			}
 
 		}
@@ -263,7 +280,7 @@ public function login($name, $password, $remember = false)
  * @param string $series The series identifier.
  * @return string $token The token that was generated.
  */
-protected function createPersistentToken($memberId, $series)
+protected function createPersistentToken($memberId, $series, $prevToken = null, $sessionToken = null)
 {
 	// Generate a new token.
 	$token = md5(generateRandomString(32));
@@ -273,8 +290,10 @@ protected function createPersistentToken($memberId, $series)
 		"memberId" => $memberId,
 		"series" => $series,
 		"token" => $token,
+		"prevToken" => $prevToken,
+		"sessionToken" => $sessionToken,
 		"ident" => $this->ident
-	))->setOnDuplicateKey("token", $token)->exec();
+	))->setOnDuplicateKey("token", $token)->setOnDuplicateKey("prevToken", $prevToken)->setOnDuplicateKey("sessionToken", $sessionToken)->setOnDuplicateKey("ident", $this->ident)->exec();
 
 	return $token;
 }
@@ -376,7 +395,7 @@ public function validateToken($token)
 public function regenerateToken()
 {
 	session_regenerate_id(true);
-	$_SESSION["token"] = substr(md5(uniqid(rand())), 0, 13);
+	if (!$this->prevSessionToken) $_SESSION["token"] = substr(md5(uniqid(rand())), 0, 13);
 	$_SESSION["userAgent"] = md5($_SERVER["HTTP_USER_AGENT"]);
 	$_SESSION["userIP"] = md5(getUserIP(true, true));
 }
