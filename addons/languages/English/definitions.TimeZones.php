@@ -6,6 +6,7 @@
 
 $definitions["plugin.TimeZones.timeZone.label"] = "Time Zone";
 $definitions["plugin.TimeZones.timeZone.desc"] = "Current timezone offset from GMT (Greenwich Mean Time) is specified; DST - daylight saving time";
+$definitions["plugin.TimeZones.localTime.label"] = "Zone time";
 $definitions["plugin.TimeZones.none"] = "not selected";
 
 // time zones

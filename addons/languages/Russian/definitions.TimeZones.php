@@ -6,6 +6,7 @@
 
 $definitions["plugin.TimeZones.timeZone.label"] = "Часовой пояс";
 $definitions["plugin.TimeZones.timeZone.desc"] = "Указано текущее смещение зоны относительно GMT - среднего времени по Гринвичу; DST - летнее время";
+$definitions["plugin.TimeZones.localTime.label"] = "Поясное время";
 $definitions["plugin.TimeZones.none"] = "не указан";
 
 // time zones

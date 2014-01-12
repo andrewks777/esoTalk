@@ -47,7 +47,20 @@ class ETPlugin_AboutMe extends ETPlugin {
 		$sender->data("email", sanitizeHTML(@$member["preferences"]["about_email"]));
 		$sender->data("icq", sanitizeHTML(@$member["preferences"]["about_icq"]));
 		$sender->data("url", sanitizeHTML(@$member["preferences"]["about_url"]));
-		if (array_key_exists("TimeZones", ET::$plugins)) $sender->data("timeZone", sanitizeHTML(ETPlugin_TimeZones::getZoneDescription(@$member["preferences"]["timeZone"])));
+		if (array_key_exists("TimeZones", ET::$plugins)) {
+			$tz_id = @$member["preferences"]["timeZone"];
+			if ($tz_id == 'none') $tz_id = null;
+			
+			if ($tz_id) {
+				$tz = new DateTimeZone($tz_id);
+				$dateTime = new DateTime("now", $tz);
+				$local_time = $dateTime->format('Y-m-d H:i:s');
+				
+				$sender->data("timeZone", sanitizeHTML(ETPlugin_TimeZones::getZoneDescription($tz_id)));
+				$sender->data("localTime", sanitizeHTML($local_time));
+			}
+			
+		}
 		
 		if (ET::$session->user) $sender->addJSLanguage("Controls");
 		$sender->renderProfile($this->getView("about"));
