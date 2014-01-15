@@ -249,6 +249,7 @@ public function isFlooding()
 
 		// Get the user's IP address.
 		$ip = (int)ip2long(ET::$session->ip);
+		if ($ip === false) $ip = 0;
 
 		// Have they performed >= $config["searchesPerMinute"] searches in the last minute?
 		$sql = ET::SQL()
@@ -782,6 +783,17 @@ public static function gambitOrderByNewest(&$search, $term, $negate)
 
 
 /**
+ * The "KB" gambit callback. Applies a filter to fetch only stickied conversations.
+ *
+ * @see gambitUnread for parameter descriptions.
+ */
+public static function gambitKB(&$search, $term, $negate)
+{
+	$search->sql->where("KB=".($negate ? "0" : "1"));
+}
+
+
+/**
  * The "sticky" gambit callback. Applies a filter to fetch only stickied conversations.
  *
  * @see gambitUnread for parameter descriptions.
@@ -835,6 +847,7 @@ ETSearchModel::addGambit('return $term == strtolower(T("gambit.muted"));', array
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.draft"));', array("ETSearchModel", "gambitDraft"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.private"));', array("ETSearchModel", "gambitPrivate"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.sticky"));', array("ETSearchModel", "gambitSticky"));
+ETSearchModel::addGambit('return $term == strtolower(T("gambit.KB"));', array("ETSearchModel", "gambitKB"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.locked"));', array("ETSearchModel", "gambitLocked"));
 ETSearchModel::addGambit('return strpos($term, strtolower(T("gambit.author:"))) === 0;', array("ETSearchModel", "gambitAuthor"));
 ETSearchModel::addGambit('return strpos($term, strtolower(T("gambit.contributor:"))) === 0;', array("ETSearchModel", "gambitContributor"));

@@ -58,7 +58,7 @@ public function getAll()
 				->orderBy("c.lft ASC");
 
 			// Define the permission columns that we need to get.
-			$permissionColumns = array("view", "reply", "start", "moderate");
+			$permissionColumns = array("view", "reply", "start", "moderate", "manageKB");
 			foreach ($permissionColumns as $column)
 				$sql->select("GROUP_CONCAT(g.$column)", $column);
 

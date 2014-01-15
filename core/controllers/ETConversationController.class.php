@@ -215,6 +215,9 @@ public function index($conversationId = false, $year = false, $month = false)
 		if ($conversation["canModerate"]) {
 			$this->addJSLanguage("Lock", "Unlock", "Sticky", "Unsticky", "message.confirmDelete");
 		}
+		if ($conversation["canManageKB"]) {
+			$this->addJSLanguage("toKB", "fromKB");
+		}
 		if (ET::$session->user) $this->addJSLanguage("Controls", "Follow", "Following", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation", "Load more posts", "message.videoLoadingError", "message.imageLoadingError");
 
 		$this->addJSVar("postsPerPage", C("esoTalk.conversation.postsPerPage"));
@@ -245,6 +248,12 @@ public function index($conversationId = false, $year = false, $month = false)
 			$controls->add("changeChannel", "<a href='".URL("conversation/changeChannel/".$conversation["conversationId"]."/?return=".urlencode($this->selfURL))."' id='control-changeChannel'><i class='icon-tag'></i> ".T("Change channel")."</a>");
 		}
 
+		if ($conversation["canManageKB"]) {
+			
+			// Add the KB control.
+			$controls->add("KB", "<a href='".URL("conversation/kb/".$conversation["conversationId"]."/?token=".ET::$session->token."&return=".urlencode($this->selfURL))."' id='control-kb'><i class='icon-book'></i> ".T($conversation["KB"] ? "fromKB" : "toKB")."</a>");
+		}
+		
 		// If the user has permission to moderate this conversation...
 		if ($conversation["canModerate"]) {
 			
@@ -561,6 +570,17 @@ public function lock($conversationId = false)
 
 
 /**
+ * Toggle the KB flag on a conversation.
+ *
+ * @param int $conversationId The ID of the conversation.
+ * @return void
+ */
+public function kb($conversationId = false)
+{
+	$this->toggle($conversationId, "KB");
+}
+
+/**
  * Toggle a flag on a conversation.
  *
  * @param int $conversationId The ID of the conversation.
@@ -574,9 +594,16 @@ protected function toggle($conversationId, $type)
 	if (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
-	if (!$conversation["canModerate"]) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
-		return;
+	if ($type == 'KB') {
+		if (!$conversation["canManageKB"]) {
+			$this->renderMessage(T("Error"), T("message.noPermission"));
+			return;
+		}
+	} else {
+		if (!$conversation["canModerate"]) {
+			$this->renderMessage(T("Error"), T("message.noPermission"));
+			return;
+		}
 	}
 
 	$oldflag = $conversation[$type];
@@ -587,6 +614,9 @@ protected function toggle($conversationId, $type)
 	} else
 	if ($type == "sticky") {
 		writeAdminLog($oldflag ? 'unstickyConversation' : 'stickyConversation', $conversation["conversationId"], $conversation["startMemberId"], $conversation["title"], null);
+	} else
+	if ($type == "KB") {
+		writeAdminLog($oldflag ? 'fromKBConversation' : 'toKBConversation', $conversation["conversationId"], $conversation["startMemberId"], $conversation["title"], null);
 	}
 
 	// For the default response type, redirect back to the conversation.
@@ -1440,6 +1470,7 @@ protected function getEditControls($id)
 		array_unshift($controls, "<span class='formattingButtons'>");
 		$controls[] = "</span>";
 		$controls[] = "<label class='previewCheckbox'><input type='checkbox' id='$id-previewCheckbox' onclick='ETConversation.togglePreview(\"$id\",this.checked)' accesskey='p'/> ".T("Preview")."</label>";
+		array_unshift($controls, "<a class='control-pushpin' title='' href='#'><i class='icon-pushpin'></i></a>");
 	}
 
 	return $controls;

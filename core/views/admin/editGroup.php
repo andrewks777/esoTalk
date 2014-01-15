@@ -38,6 +38,7 @@ $group = $data["group"];
 <div class='checkboxGroup'>
 <label class='checkbox'><?php echo $form->checkbox("canSuspend"); ?> <?php echo T("Can suspend/unsuspend members"); ?></label>
 <?php if (!$group): ?><label class='checkbox'><?php echo $form->checkbox("giveModeratePermission"); ?> <?php echo T("Give this group the 'moderate' permission on all existing channels"); ?></label><?php endif; ?>
+<?php if (!$group): ?><label class='checkbox'><?php echo $form->checkbox("giveManageKBPermission"); ?> <?php echo T("Give this group the 'manage KB' permission on all existing channels"); ?></label><?php endif; ?>
 </div>
 <small><?php echo T("You can manage channel-specific permissions on the channels page."); ?></small>
 </li>

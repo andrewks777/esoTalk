@@ -488,6 +488,7 @@ public function canEditPost($post, $conversation)
 			or (C("esoTalk.conversation.editPostTimeLimit") === "reply" and $conversation["lastPostTime"] <= $post["time"] and $conversation["lastPostMemberId"] == $post["memberId"])
 			// Or users have permission to edit their posts for a certain number of seconds which hasn't yet passed...
 			or (time() - $post["time"] < C("esoTalk.conversation.editPostTimeLimit"))
+			or ($conversation["canManageKB"] || $conversation["KB"])
 		))
 		return true; // Then they can edit!
 

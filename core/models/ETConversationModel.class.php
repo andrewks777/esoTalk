@@ -180,13 +180,15 @@ public function get($wheres = array())
 	if (!ET::$session->isAdmin()) {
 		$sql->select("BIT_OR(p.reply)", "canReply")
 			->select("BIT_OR(p.moderate)", "canModerate")
+			->select("BIT_OR(p.manageKB)", "canManageKB")
 			->from("channel_group p", "c.channelId=p.channelId AND p.groupId IN (:groupIds)", "left")
 			->bind(":groupIds", ET::$session->getGroupIds());
 	}
 	// If the user is an administrator, they can always reply and moderate.
 	else {
 		$sql->select("1", "canReply")
-			->select("1", "canModerate");
+			->select("1", "canModerate")
+			->select("1", "canManageKB");
 	}
 
 	// Execute the query.
@@ -271,6 +273,7 @@ public function getEmptyConversation()
 		"channelPermissionView" => array(),
 		"labels" => array(),
 		"canModerate" => true,
+		"canManageKB" => true,
 		"canReply" => true
 	);
 	// Add the private label if there are entities in the membersAllowed session store.
@@ -986,6 +989,27 @@ public function setSticky(&$conversation, $sticky)
 
 
 /**
+ * Set the KB flag of a conversation.
+ *
+ * @param array $conversation The conversation to set the KB on. The conversation array's labels
+ * 		and KB attribute will be updated.
+ * @param bool $KB Whether or not the conversation is KB.
+ * @return void
+ */
+public function setKB(&$conversation, $KB)
+{
+	$KB = (bool)$KB;
+
+	$this->updateById($conversation["conversationId"], array(
+		"KB" => $KB
+	));
+
+	$this->addOrRemoveLabel($conversation, "KB", $KB);
+	$conversation["KB"] = $KB;
+}
+
+
+/**
  * Set the locked flag of a conversation.
  *
  * @param array $conversation The conversation to set the draft on. The conversation array's labels
@@ -1312,6 +1336,7 @@ protected function privateAddNotification($conversation, $memberIds, $notifyAll 
 
 
 // Add default labels.
+ETConversationModel::addLabel("KB", "IF(c.KB=1,1,0)", "icon-book");
 ETConversationModel::addLabel("sticky", "IF(c.sticky=1,1,0)", "icon-pushpin");
 ETConversationModel::addLabel("private", "IF(c.private=1,1,0)", "icon-envelope");
 ETConversationModel::addLabel("locked", "IF(c.locked=1,1,0)", "icon-lock");

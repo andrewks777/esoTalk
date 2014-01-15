@@ -98,6 +98,7 @@ protected function structure($drop = false)
 		->column("reply", "tinyint(1)", 0)
 		->column("start", "tinyint(1)", 0)
 		->column("moderate", "tinyint(1)", 0)
+		->column("manageKB", "tinyint(1)", 0)
 		->key(array("channelId", "groupId"), "primary")
 		->exec($drop);
 
@@ -109,6 +110,7 @@ protected function structure($drop = false)
 		->column("channelId", "int(11) unsigned")
 		->column("private", "tinyint(1)", 0)
 		->column("sticky", "tinyint(1)", 0)
+		->column("KB", "tinyint(1)", 0)
 		->column("locked", "tinyint(1)", 0)
 		->column("countPosts", "smallint(5)", 0)
 		->column("startMemberId", "int(11) unsigned", false)
@@ -118,6 +120,7 @@ protected function structure($drop = false)
 		->column("attributes", "mediumblob")
 		->key("conversationId", "primary")
 		->key(array("sticky", "lastPostTime")) // for the ordering of results
+		->key("KB") // for the KB gambit
 		->key("lastPostTime") // also for the ordering of results, and the last post gambit
 		->key("countPosts") // for the posts gambit
 		->key("startTime") // for the "order by newest" gambit
@@ -245,7 +248,7 @@ protected function structure($drop = false)
 	$structure
 		->table("adm_actions")
 		->column("actionId", "int(15) unsigned", false)
-		->column("actionType", "enum('none','lockMember','unlockMember','editPermissionsMember','renameMember','deleteMember','removeAvatarMember','changeChannelConversation','renameConversation','editPermissionsConversation','lockConversation','unlockConversation','stickyConversation','unstickyConversation','deleteConversation','deletePost','restorePost','editPost','cookieTheft','hackerAttack')", "none")
+		->column("actionType", "enum('none','lockMember','unlockMember','editPermissionsMember','renameMember','deleteMember','removeAvatarMember','changeChannelConversation','renameConversation','editPermissionsConversation','lockConversation','unlockConversation','stickyConversation','unstickyConversation','toKBConversation','fromKBConversation','deleteConversation','deletePost','restorePost','editPost','cookieTheft','hackerAttack')", "none")
 		->column("objectId", "int(15) unsigned") // member, conversation, post Id
 		->column("memberId", "int(15) unsigned") // memberId
 		->column("time", "int(11) unsigned", false)
@@ -283,7 +286,7 @@ protected function structure($drop = false)
 	$structure
 		->table("search")
 		->column("type", "enum('conversations')", "conversations")
-		->column("ip", "int(11) unsigned", false)
+		->column("ip", "int(11)", false)
 		->column("time", "int(11) unsigned", false)
 		->key(array("type", "ip"))
 		->exec($drop);

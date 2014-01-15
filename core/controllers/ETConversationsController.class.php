@@ -125,6 +125,7 @@ function index($channelSlug = false)
 		// Add the default gambits to the gambit cloud: gambit text => css class to apply.
 		$gambits = array(
 			"main" => array(
+				T("gambit.KB") => array("gambit-KB", "icon-book"),
 				T("gambit.sticky") => array("gambit-sticky", "icon-pushpin"),
 			),
 			"time" => array(

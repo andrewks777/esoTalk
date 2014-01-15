@@ -55,7 +55,7 @@ public function edit($channelId = "")
  	$groups = ET::groupModel()->getAll();
 
  	// Make a list of the types of permissions!
-	$permissions = array("view" => "View", "reply" => "Reply", "start" => "Start", "moderate" => "Moderate");
+	$permissions = array("view" => "View", "reply" => "Reply", "start" => "Start", "moderate" => "Moderate", "manageKB" => "Manage KB");
 
  	// Set which permission checkboxes should be checked on the form!
  	foreach ($channel["permissions"] as $type => $groupIds) {
@@ -165,7 +165,7 @@ public function create()
  	$groups = ET::groupModel()->getAll();
 
  	// Make a list of the types of permissions!
-	$permissions = array("view" => "View", "reply" => "Reply", "start" => "Start", "moderate" => "Moderate");
+	$permissions = array("view" => "View", "reply" => "Reply", "start" => "Start", "moderate" => "Moderate", "manageKB" => "Manage KB");
 
  	// Set which permission checkboxes should be checked on the form!
  	$form->setValue("permissions[".GROUP_ID_GUEST."][view]", 1);

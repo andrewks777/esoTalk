@@ -115,6 +115,7 @@ span.highlight {background:#fdef34; border:1px solid #fcef98; padding:1px 3px; b
 .label-private, .gambit-private {color:#a43fe7 !important}
 .label-sticky, .gambit-sticky {color:#f90 !important}
 .label-draft, .gambit-draft {color:#0b2 !important}
+.label-KB, .gambit-KB {color:#070 !important}
 .labels .label {margin-right:3px}
 
 
@@ -258,6 +259,7 @@ a.channel:hover {text-decoration:none; border-color:#aaa}
 .search input.text {width:250px; padding-right:30px; padding-left:25px; background:#fff url(icons.png) no-repeat -13px -292px; float:left}
 .search.big input.text {height:18px; font-size:100%; background-position:-13px -290px}
 .search .control-reset {margin-top:1px; margin-left:-25px; margin-right:0}
+
 .search .popupButton {margin-left:10px; vertical-align:2px}
 
 

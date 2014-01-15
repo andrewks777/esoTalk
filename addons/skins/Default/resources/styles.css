@@ -105,6 +105,8 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #onlineSheet {width:70%; margin-left:-35%; height:auto; max-height:75%; overflow:auto}
 #loginSheet {width:500px}
 #forgotPasswordSheet {width:500px}
+#editChannelSheet {top:10px; width:75%}
+#permissionsSheet {top:10px; width:650px}
 
 .conversationList .title a:visited {color:#333333}
 .conversationList > li {padding-top:4px; padding-bottom:4px}
@@ -129,6 +131,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 .postHeader h3 a {color:#444444}
 .postHeader .controls {margin:0px; padding:0px}
 .postHeader .controls > span a {color:#888}
+.postHeader .controls .control-pushpin {margin-right:20px}
 [class*=control-] {padding:6px; margin:0px}
 .postBody a.link-member {color:#444444; font-weight:bold}
 .postBody a.badVideo, .postBody a.badImage {color:#990000; font-size:120%; border:1px solid #ccc; border-radius:3px; box-shadow: 0 0 3px rgba(0,0,0,0.5); padding:3px 15px 3px}

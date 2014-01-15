@@ -108,21 +108,24 @@ public function create()
 		else {
 
 			// Do we want to give this group the moderate permission on all existing channels?
-			if ($form->getValue("giveModeratePermission")) {
+			if ($form->getValue("giveModeratePermission") || $form->getValue("giveManageKBPermission")) {
 
+				$moderate = (int)$form->getValue("giveModeratePermission");
+				$manageKB = (int)$form->getValue("giveManageKBPermission");
 				// Go through all the channels and construct an array of rows to insert into the channel_group table.
 				$channels = ET::channelModel()->getAll();
 				$inserts = array();
 				foreach ($channels as $id => $channel) {
-					$inserts[] = array($id, $groupId, 1, 1, 1, 1);
+					$inserts[] = array($id, $groupId, 1, 1, 1, $moderate, $manageKB);
 				}
 
 				// Insert them!
-				ET::SQL()
+				$req = ET::SQL()
 					->insert("channel_group")
-					->setMultiple(array("channelId", "groupId", "view", "reply", "start", "moderate"), $inserts)
-					->setOnDuplicateKey("moderate", 1)
-					->exec();
+					->setMultiple(array("channelId", "groupId", "view", "reply", "start", "moderate", "manageKB"), $inserts);
+				if ($form->getValue("giveModeratePermission")) $req->setOnDuplicateKey("moderate", $moderate);
+				if ($form->getValue("giveManageKBPermission")) $req->setOnDuplicateKey("manageKB", $manageKB);
+				$req->exec();
 
 			}
 

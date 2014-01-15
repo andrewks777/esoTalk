@@ -288,7 +288,7 @@ public function permissions($memberId = "")
 	// Get a list of all possible account types, groups, and permission types.
 	$accounts = array(ACCOUNT_ADMINISTRATOR, ACCOUNT_MEMBER);
 	$groups = ET::groupModel()->getAll();
-	$permissions = array("view" => T("View"), "reply" => T("Reply"), "start" => T("Start"), "moderate" => T("Moderate"));
+	$permissions = array("view" => "View", "reply" => "Reply", "start" => "Start", "moderate" => "Moderate", "manageKB" => "Manage KB");
 
 	// Set the value of the account field in the form to the member's current account.
 	$form->setValue("account", $member["account"]);
