@@ -39,6 +39,12 @@ init: function() {
 
 	// Add a tooltip to the online indicators.
 	$("#memberList .online").tooltip({alignment: "left", className: "withArrow withArrowBottom", offset: [-9, 0]}).css("cursor", "pointer");
+	
+	// Add a click handler to the 'search' button.
+	$("#memberSearch .control-start-search").click(function(e) {
+		$("#memberSearch").submit()
+		e.preventDefault();
+	});
 
 },
 

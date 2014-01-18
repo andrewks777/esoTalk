@@ -919,6 +919,7 @@ $(function() {
 				}
 			});
 		}
+		
 	}
 	
 	var scrubber = $(".scrubberColumn");

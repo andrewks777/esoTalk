@@ -10,6 +10,7 @@ currentChannels: [],
 form: null,
 formInput: null,
 formReset: null,
+formStartSearch: null,
 
 updateInterval: null,
 
@@ -27,6 +28,7 @@ init: function() {
 	ETSearch.form = $("#search");
 	ETSearch.formInput = $("#search .text");
 	ETSearch.formReset = $("#search .control-reset");
+	ETSearch.formStartSearch = $("#search .control-start-search");
 
 	new ETAutoCompletePopup(ETSearch.formInput, "author:");
 	new ETAutoCompletePopup(ETSearch.formInput, "contributor:");
@@ -77,6 +79,12 @@ init: function() {
 	ETSearch.formReset.click(function(e) {
 		ETSearch.search("");
 		ETSearch.formInput.focus();
+		e.preventDefault();
+	});
+	
+	// Add a click handler to the 'search' button.
+	ETSearch.formStartSearch.click(function(e) {
+		ETSearch.form.submit();
 		e.preventDefault();
 	});
 

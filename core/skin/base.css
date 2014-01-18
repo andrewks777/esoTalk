@@ -256,11 +256,13 @@ a.channel:hover {text-decoration:none; border-color:#aaa}
 
 /* Search boxes */
 .search {float:right}
-.search input.text {width:250px; padding-right:30px; padding-left:25px; background:#fff url(icons.png) no-repeat -13px -292px; float:left}
-.search.big input.text {height:18px; font-size:100%; background-position:-13px -290px}
-.search .control-reset {margin-top:1px; margin-left:-25px; margin-right:0}
-
-.search .popupButton {margin-left:10px; vertical-align:2px}
+.search input.text {width:250px; padding-right:25px; padding-left:25px; margin-top:-50px}
+.search.big input.text {height:18px; font-size:100%}
+.search .control-reset {margin-left:-28px; margin-right:0; position:absolute}
+.search .control-start-search {margin-left:0; margin-right:0; position:absolute}
+.search [class^=control-] {margin-top:-5px}
+.search .popupButton {margin-left:10px; margin-top:-6px}
+.search-controls-prop {display:inline-block}
 
 
 /* Notifications popup + list */
@@ -510,7 +512,7 @@ code {background:#eee}
 #memberListBody {margin-top:30px}
 #memberListFilter h1 {float:left; font-size:120%; margin-top:4px}
 #memberListOrderBy {float:left; margin-left:20px}
-#createMemberLink {float:right; margin-left:10px; margin-top:1px}
+#createMemberLink {float:right; margin-left:10px; margin-top:-3px}
 
 .letterScrubber {padding-top:0}
 .letterScrubber > li > a {padding:0 8px}

@@ -119,7 +119,7 @@ init: function() {
 		$("#control-delete").click(function(e) {
 			if (!ETConversation.confirmDelete()) e.preventDefault();
 		});
-
+		
 		// Initialize the posts.
 		this.initPosts();
 
@@ -189,6 +189,12 @@ init: function() {
 
 	// Add an onbeforeunload handler (to warn the user if they have an unsaved post/draft).
 	$(window).bind("beforeunload.ajax", ETConversation.beforeUnload);
+	
+	// Add a click handler to the 'search' button.
+	$("#searchWithinConversation .control-start-search").click(function(e) {
+		$("#searchWithinConversation").submit()
+		e.preventDefault();
+	});
 },
 
 
@@ -600,6 +606,32 @@ initPosts: function() {
 		ETConversation.miniQuotePost(postId, e.shiftKey);
 		e.preventDefault();
 	});
+	
+	// Add a click handler to the 'pushpin' button.
+	function onControlPushpin(e, el) {
+		e.preventDefault();
+		
+		var controls = $(el).parent('.controls');
+		var pushpinClassId = 'detached';
+		
+		if (controls.hasClass(pushpinClassId)) {
+			controls.removeClass(pushpinClassId);
+			controls.draggable('destroy');
+		} else {
+			$("." + pushpinClassId).removeClass(pushpinClassId);
+			controls.addClass(pushpinClassId);
+			var hdrHeight = $("#hdr").outerHeight();
+			if (!hdrHeight) hdrHeight = 40;
+			$(".postHeader .controls." + pushpinClassId).css("top", hdrHeight + 3);
+			controls.draggable();
+		}
+
+	}
+	pushpinSelector = '.post .controls .control-pushpin';
+	$('#conversationPosts, #reply .postHeader').on('click', pushpinSelector, function(e) {
+		onControlPushpin(e, this);
+	});
+	
 
 	// Add a click handler to any "post links" to scroll back up to the right post, if it's loaded.
 	$("#conversationPosts .postBody a[rel=post]").live("click", function(e) {

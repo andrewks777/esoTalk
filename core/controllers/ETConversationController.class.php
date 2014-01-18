@@ -226,6 +226,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		$this->addJSVar("conversationUpdateIntervalLimit", C("esoTalk.conversation.updateIntervalLimit"));
 		$this->addJSVar("mentions", C("esoTalk.format.mentions"));
 		$this->addJSVar("time", time());
+		$this->addJSFile("core/js/lib/jquery.ui.js");
 		$this->addJSFile("core/js/lib/jquery.autogrow.js");
 		$this->addJSFile("core/js/scrubber.js");
 		$this->addJSFile("core/js/autocomplete.js");
@@ -1470,7 +1471,7 @@ protected function getEditControls($id)
 		array_unshift($controls, "<span class='formattingButtons'>");
 		$controls[] = "</span>";
 		$controls[] = "<label class='previewCheckbox'><input type='checkbox' id='$id-previewCheckbox' onclick='ETConversation.togglePreview(\"$id\",this.checked)' accesskey='p'/> ".T("Preview")."</label>";
-		array_unshift($controls, "<a class='control-pushpin' title='' href='#'><i class='icon-pushpin'></i></a>");
+		array_unshift($controls, "<a class='control-pushpin' title='".T("Attach/detach panel")."' href='#'><i class='icon-pushpin'></i></a>");
 	}
 
 	return $controls;

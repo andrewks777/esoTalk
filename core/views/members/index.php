@@ -44,8 +44,10 @@ function makeURL($startFrom = 0, $searchString = "")
 
 <form class='search big' id='memberSearch' action='<?php echo URL(makeURL()); ?>' method='get'>
 <fieldset>
+<a class='control-start-search' href='#'><i class='icon-search'></i></a>
 <input name='search' type='text' class='text' value='<?php echo $data["searchString"]; ?>' spellcheck='false' placeholder='<?php echo T("Filter by name or group..."); ?>'/>
-<?php if ($data["searchString"]): ?><a class='control-reset' href='<?php echo URL(makeURL()); ?>'>x</a><?php endif; ?>
+<?php if ($data["searchString"]): ?><a class='control-reset' href='<?php echo URL(makeURL()); ?>'><i class='icon-remove'></i></a><?php endif; ?>
+<div class='search-controls-prop'/>
 </fieldset>
 </form>
 

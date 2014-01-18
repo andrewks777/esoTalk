@@ -140,6 +140,7 @@ $definitions["Enter a conversation title"] = "Enter a conversation title";
 $definitions["Error"] = "Error";
 $definitions["esoTalk version"] = "esoTalk version";
 $definitions["Everyone"] = "Everyone";
+$definitions["Attach/detach panel"] = "Attach/detach panel";
 
 $definitions["Fatal Error"] = "Uh oh! It's a fatal error...";
 $definitions["Feed"] = "Feed";

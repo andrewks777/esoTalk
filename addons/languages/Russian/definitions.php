@@ -194,6 +194,7 @@ $definitions["Older"] = "Ранее";
 $definitions["Newer"] = "Новее";
 $definitions["Load more posts"] = "Больше сообщений";
 $definitions["Back to administration"] = "Вернуться к администрированию";
+$definitions["Attach/detach panel"] = "Прикрепить/открепить панель";
 
 $definitions["Fatal Error"] = "Критическая ошибка!";
 $definitions["Feed"] = "Лента";

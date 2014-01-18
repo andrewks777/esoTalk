@@ -132,6 +132,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 .postHeader .controls {margin:0px; padding:0px}
 .postHeader .controls > span a {color:#888}
 .postHeader .controls .control-pushpin {margin-right:20px}
+.postHeader .controls.detached {position:fixed; top:50px; left:50%; width:80%; margin-left:-40%; background-color:#fff; border:1px solid #ccc; border-radius:3px; box-shadow: 0 0 3px rgba(0,0,0,0.5)}
 [class*=control-] {padding:6px; margin:0px}
 .postBody a.link-member {color:#444444; font-weight:bold}
 .postBody a.badVideo, .postBody a.badImage {color:#990000; font-size:120%; border:1px solid #ccc; border-radius:3px; box-shadow: 0 0 3px rgba(0,0,0,0.5); padding:3px 15px 3px}
