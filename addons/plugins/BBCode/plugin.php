@@ -171,9 +171,10 @@ public function imgCallback($matches)
 public function linksCallback($matches)
 {
 	// If this is an internal link...
-	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
+	$loc = (substr($matches[2], 0, 1) == "/" ? "" : "http://");
+	$url = ($matches[1] ? $matches[1] : $loc).$matches[2];
 	$baseURL = C("esoTalk.baseURL");
-	if (substr($url, 0, strlen($baseURL)) == $baseURL) {
+	if (substr($url, 0, strlen($baseURL)) == $baseURL || !$loc) {
 		return "<a href='".$url."' target='_blank' class='link-internal'>".$matches[3]."</a>";
 	}
 
