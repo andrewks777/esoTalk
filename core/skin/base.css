@@ -263,6 +263,7 @@ a.channel:hover {text-decoration:none; border-color:#aaa}
 .search [class^=control-] {margin-top:-5px}
 .search .popupButton {margin-left:10px; margin-top:-6px}
 .search-controls-prop {display:inline-block}
+.search input.text::-ms-clear {display:none;} /* for IE >= 10*/
 
 
 /* Notifications popup + list */
