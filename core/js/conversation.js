@@ -133,7 +133,7 @@ init: function() {
 		}
 
 		// If we scroll below the header, pop the conversation title up in the forum header.
-		$(window).scroll(function() {
+		/*$(window).scroll(function() {
 			var y = $(this).scrollTop();
 			var title = $("#forumTitle");
 			if (y > $("#hdr").height()) {
@@ -147,7 +147,7 @@ init: function() {
 			} else if (title.data("old")) {
 				title.html(title.data("old")).data("old", null);
 			}
-		});
+		});*/
 
 	}
 
