@@ -15,36 +15,52 @@ $(function() {
 		return uuid;
 	}
 	
-	function onFileUploadClick(elemSelector) {
-		$(elemSelector).fileupload({
-			url: ET.webPath+'/fileupload/upload',
+	function onFileUploadClick(e, el) {
+		var elem = $(el);
+		try {
+			var conversationId = ETConversation.id;
+		} catch(e) {
+			var conversationId = 0;
+		}
+		elem.fileupload({
+			url: ET.webPath + '/fileupload/upload/' + $(el).attr('data-uploadtype') + '/' + conversationId,
 			dataType: 'json',
-			acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
 			start: function (e, data) {
 				for (var msg in ETMessages.messages) {
 					if (msg.indexOf('fileUploadFail-') == 0) ETMessages.hideMessage(msg);
 				}
-				$(this).siblings('.fileupload-process').addClass('fileupload-process-active');
+				$('.fileupload-process').addClass('fileupload-process-active');
 			},
 			stop: function (e, data) {
-				$(this).siblings('.fileupload-process').removeClass('fileupload-process-active');
-				$(this).prop('title', T('plugin.FileUpload.uploadTitle'));
+				var elem = $(this);
+				$('.fileupload-process').removeClass('fileupload-process-active');
+				elem.prop('title', elem.attr('data-title'));
 			},
 			done: function (e, data) {
+				var elem = $(this);
+				var uploadType = elem.attr('data-uploadtype');
 				var insertText = '';
 				var errorText = '';
 
 				$.each(data.result.files, function (index, file) {
 					if (typeof(file.error) != 'undefined') {
-						var errDesc = T("plugin.FileUpload.message.uploadError");
+						var errDesc = T("plugin.FileUpload.message.uploadError." + elem.attr('data-uploadtype'));
 						var name = file.name;
 						if (typeof(file.origName) != 'undefined') name = file.origName;
 						errDesc = errDesc.replace('%1', name).replace('%2', file.error);
 						errorText = (errorText != '' ? '<br>' : '') + errorText + errDesc + '';
 					} else if (typeof(file.url) != 'undefined') {
 						var title = '';
-						if (typeof(file.origName) != 'undefined') title = '=' + file.origName;
-						insertText = insertText + '[img' + title + ']' + file.url + '[/img]\n'
+						if (typeof(file.origName) != 'undefined') title = file.origName;
+						
+						if (uploadType == 'image') {
+							if (title) title = '=' + title;
+							insertText = insertText + '[img' + title + ']' + file.url + '[/img]\n'
+						} else
+						if (uploadType == 'archive' || uploadType == 'file') {
+							insertText = insertText + '[url=' + file.url + ']' + title + '[/url]\n'
+						}
 					}
 				});
 				
@@ -58,7 +74,7 @@ $(function() {
 				}
 			},
 			fail: function (e, data) {
-				ETMessages.showMessage(T("plugin.FileUpload.message.serverDisconnected"), {className: "warning dismissable", id: "fileUploadFail"});
+				ETMessages.showMessage(T("plugin.FileUpload.message.serverDisconnected." + $(this).attr('data-uploadtype')), {className: "warning dismissable", id: "fileUploadFail"});
 			},
 			progressall: function (e, data) {
 				//var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -69,12 +85,8 @@ $(function() {
 	
 	$(".upload input").tooltip({alignment: "center"});
 	
-	// for dynamic content
-	$('body').on('click', '.edit:not(#reply) .fileupload', function(e) {
-		onFileUploadClick('.edit:not(#reply) .fileupload');
+	$('#conversationPosts, #reply .postHeader').on('click', '.fileupload', function(e) {
+		onFileUploadClick(e, this);
 	});
-	
-	// for static content
-	onFileUploadClick('#reply .fileupload');
 	
 });

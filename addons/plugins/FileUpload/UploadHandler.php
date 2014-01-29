@@ -13,7 +13,9 @@
 class UploadHandler
 {
 
-    protected $options;
+    public $uploaded_files = array();
+	
+	protected $options;
 
     // PHP File Upload error message codes:
     // http://php.net/manual/en/features.file-upload.errors.php
@@ -28,7 +30,7 @@ class UploadHandler
         'post_max_size' => 'The uploaded file exceeds the post_max_size directive in php.ini',
         'max_file_size' => 'File is too big',
         'min_file_size' => 'File is too small',
-        'accept_file_types' => 'Filetype not allowed',
+        'accept_file_types' => 'Filetype not in the list of allowed',
         'max_number_of_files' => 'Maximum number of files exceeded',
         'max_width' => 'Image exceeds maximum width',
         'min_width' => 'Image requires a minimum width',
@@ -47,6 +49,8 @@ class UploadHandler
             'mkdir_mode' => 0755,
             'param_name' => 'files',
 			'transliterate_names' => false,
+			'add_id_to_path' => false,
+			'accept_file_types_str' => '',
             // Set the following option to 'POST', if your server does not support
             // DELETE requests. This is a parameter sent to the client:
             'delete_type' => 'DELETE',
@@ -355,7 +359,8 @@ class UploadHandler
             return false;
         }
         if (!preg_match($this->options['accept_file_types'], $file->name)) {
-            $file->error = $this->get_error_message('accept_file_types');
+            $file->error = $this->get_error_message('accept_file_types') . ": " . $this->options['accept_file_types_str'];
+			//$file->error = $this->get_error_message('accept_file_types') . ": " . "TTT";
             return false;
         }
         if ($uploaded_file && is_uploaded_file($uploaded_file)) {
@@ -1036,7 +1041,13 @@ class UploadHandler
             }
             $file_size = $this->get_file_size($file_path, $append_file);
             if ($file_size === $file->size) {
-                $file->url = $this->get_download_url($file->name);
+				$file_name = $file->name;
+				// add id if need
+				if ($this->options['add_id_to_path']) {
+					$file->uploadId = uniqid('');
+					$file_name = $file->uploadId;
+				}
+                $file->url = $this->get_download_url($file_name);
                 if ($this->is_valid_image_file($file_path)) {
                     $this->handle_image_file($file_path, $file);
                 }
@@ -1049,6 +1060,7 @@ class UploadHandler
             }
             $this->set_additional_file_properties($file);
         }
+		
         return $file;
     }
 
@@ -1279,7 +1291,8 @@ class UploadHandler
                 $content_range
             );
         }
-        return $this->generate_response(
+        $this->uploaded_files = $files;
+		return $this->generate_response(
             array($this->options['param_name'] => $files),
             $print_response
         );

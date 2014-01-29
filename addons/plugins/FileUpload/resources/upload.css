@@ -1,5 +1,15 @@
-.upload {display:inline; padding:0; text-indent:-9999px; width:16px; height:16px; background:url(upload.png) no-repeat scroll 100% 100% transparent; cursor:pointer;}
-.upload input {padding:0; margin:0; opacity:0; -ms-filter:'alpha(opacity=0)'; width:16px; height:16px; direction:ltr; cursor:pointer;}
+span.upload {display:inline; padding:3px 0 0 0; width:16px; height:16px; cursor:pointer; background:url(upload.png) no-repeat scroll 100% 100% transparent;}
+span[class^=upload-] {display:inline; padding:3px 0 0 0;}
+
+[class^=upload] > input {padding:0; margin:0; opacity:0; -ms-filter:'alpha(opacity=0)'; width:16px; height:16px; direction:ltr; cursor:pointer;}
+[class^=upload-] > input {position:absolute; width:auto;}
+[class^=upload] > input::-webkit-file-upload-button {cursor:pointer;} /* for Chrome */
+.upload > input::-webkit-file-upload-button {width:16px;} /* for Chrome */
+[class^=upload-] > input::-webkit-file-upload-button {width:auto;} /* for Chrome */
+.upload-list {display:none; position:absolute; margin-left:277px; margin-top:-2px; height:auto; overflow-y:auto; width:auto; overflow-x:hidden; color:#666; background-color:#fff; list-style-type:none; /*cursor:pointer;*/ padding:5px 6px 3px 6px; border:1px solid #aaa; border-radius:3px; z-index:300; opacity:0.9}
+.upload-list > li > span {margin:4px}
+.upload-list > li:hover {color:#000; background-color:#ddd}
+.upload:hover .upload-list {display:block}
 
 .fileupload-process {
   display: none;
@@ -18,5 +28,3 @@
   background-size: contain;
   z-index: 500;
 }
-
-::-webkit-file-upload-button {cursor:pointer;}

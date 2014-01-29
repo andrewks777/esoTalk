@@ -7,38 +7,39 @@ if (!defined("IN_ESOTALK")) exit;
 
 class FileUploadController extends ETController {
 
-	public function usr_path()
+	
+	protected function usr_url()
 	{
-		return PATH_ROOT."/usr";
+		return URL(C("plugin.FileUpload.usrFolderName"));
 	}
 	
-	public function usr_path_img()
+	protected function usr_url_img()
 	{
 		$userId = ET::$session->userId;
-		return $this->usr_path()."/img/$userId/";
+		return $this->usr_url() . "/img/$userId/";
 	}
 	
-	public function usr_path_hotpic()
+	protected function usr_url_hotpic()
 	{
 		$userId = ET::$session->userId;
-		return $this->usr_path()."/hotpic/$userId/";
+		return $this->usr_url() . "/hotpic/$userId/";
+	}
+
+	protected function usr_url_files()
+	{
+		return URL("fileupload") . "/download/";
 	}
 	
-	public function usr_url()
+	protected function usr_url_files_real($userId = false)
 	{
-		return URL("usr");
+		if ($userId === false) $userId = ET::$session->userId;
+		return $this->usr_url() . "/files/$userId/";
 	}
-	
-	public function usr_url_img()
+
+	protected function usr_url_files_relative($userId = false)
 	{
-		$userId = ET::$session->userId;
-		return $this->usr_url()."/img/$userId/";
-	}
-	
-	public function usr_url_hotpic()
-	{
-		$userId = ET::$session->userId;
-		return $this->usr_url()."/hotpic/$userId/";
+		if ($userId === false) $userId = ET::$session->userId;
+		return "files/$userId/";
 	}
 
 	// Management of files.
@@ -53,25 +54,57 @@ class FileUploadController extends ETController {
 	}
 	
 	
-	// Upload an file.
-	public function upload()
+	// Upload a file.
+	public function upload($type = '', $conversationId = 0)
 	{
 		if (!ET::$session->user) return;
 		
 		require_once 'UploadHandler.php';
 		
-		$allowedFileTypes = C("plugin.FileUpload.allowedFileTypes");
+		if (!$type) $type = 'image';
+		$model = ET::getInstance("FileUploadModel");
+		
+		if ($type == 'image') {
+			$path = $model->usr_path_img();
+			$url = $this->usr_url_img();
+			$allowedFileTypes = C("plugin.FileUpload.allowedImageTypes");
+			$addId = false;
+		} else
+		if ($type == 'archive') {
+			$path = $model->usr_path_files();
+			$url = $this->usr_url_files();
+			$allowedFileTypes = C("plugin.FileUpload.allowedArchiveTypes");
+			$addId = true;
+		} else
+		if ($type == 'file') {
+			$path = $model->usr_path_files();
+			$url = $this->usr_url_files();
+			$allowedFileTypes = C("plugin.FileUpload.allowedFileTypes");
+			$addId = true;
+		} else {
+			$this->render404(T("plugin.FileUpload.message.invalidUploadType"), true);
+			return false;
+		}
+		
+		if ($allowedFileTypes == ".") {
+			$this->render404(T("plugin.FileUpload.message.invalidUploadType"), true);
+			return false;
+		}
+		
+		if (!isset($allowedFileTypes)) $allowedFileTypes = array();
 		$maxFileSize = C("plugin.FileUpload.maxFileSize");
 		$ftypes = '/.+$/i'; // all
-		if (isset($allowedFileTypes)) {
+		if ($allowedFileTypes) {
 			if (count($allowedFileTypes)) $ftypes = '/\.('.implode('|', $allowedFileTypes).')$/i';
 		}
 		
 		$options = array(
-			'upload_dir' => $this->usr_path_img(),
-			'upload_url' => $this->usr_url_img(),
+			'upload_dir' => $path,
+			'upload_url' => $url,
 			'transliterate_names' => true,
+			'add_id_to_path' => $addId,
 			'accept_file_types' => $ftypes,
+			'accept_file_types_str' => implode(" ", (array)$allowedFileTypes),
 			'max_file_size' => $maxFileSize ? $maxFileSize : null,
 			/*'image_versions' => array(
 			   '' => array(
@@ -80,10 +113,82 @@ class FileUploadController extends ETController {
 			)*/
 		);
 		
-		$upload_handler = new UploadHandler($options);
-		
+		$upload_handler = new UploadHandler($options, false);
+		$upload_handler->post();
+		if ($addId) $model->insertUploads($upload_handler->uploaded_files, (int)$conversationId);
 		
 	}
 
+	// Download a file.
+	public function download($id = '')
+	{
+
+		if (!ET::$session->user) {
+			$this->renderMessage(T("Error"), sprintf(T("plugin.FileUpload.message.logInToDownload"), URL("user/login"), URL("user/join")));
+			return false;
+		}
+		
+		$success = false;
+		if ($id) {
+			$model = ET::getInstance("FileUploadModel");
+			$upload = $model->findUpload($id);
+			if ($upload) {
+				// upload is exists
+				$path = $model->usr_path_files($upload['memberId']);
+				$file_name = $upload['filename'];
+				$file_name_orig = $upload['origFilename'];
+				$file_path = $path . $file_name;
+				if (is_file($file_path) && $file_name[0] !== '.') {
+					// file is exists
+					$success = true;
+					$url = $this->usr_url_files_relative($upload['memberId']) . $file_name;
+					header('X-SendFile: ' . $url);
+					header("Content-Type: application/octet-stream");
+					header("Content-Disposition: attachment; filename=\"$file_name_orig\"");
+					
+					$model->insertDownload($id);
+				}
+			}
+		}
+		
+		if (!$success) {
+			$this->renderMessage(T("Error"), T("plugin.FileUpload.message.fileNotFound"));
+			return false;
+		}
+		
+		/*
+		if (!$id) {
+			$this->renderMessage(T("Error"), T("plugin.FileUpload.message.fileNotFound"));
+			return false;
+		}
+		
+		require_once 'UploadHandler.php';
+		
+		$model = ET::getInstance("FileUploadModel");
+		$upload = $model->findUpload($id);
+		
+		if (!$upload) {
+			$this->renderMessage(T("Error"), T("plugin.FileUpload.message.fileNotFound"));
+			return false;
+		}
+		
+		$path = $model->usr_path_files($upload['memberId']);
+		$url = $this->usr_url_files_real($upload['memberId']);
+		$param_name = 'file';
+		
+		$options = array(
+			'upload_dir' => $path,
+			'upload_url' => $url,
+			'download_via_php' => 2,
+			'param_name' => $param_name . 's',
+		);
+		
+		$_GET['download'] = 1;
+		$_GET[$param_name] = $upload['filename'];
+		$upload_handler = new UploadHandler($options, false);
+		$upload_handler->get();
+		*/
+		
+	}
 
 }

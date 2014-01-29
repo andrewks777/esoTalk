@@ -20,9 +20,21 @@ $form = $data["fileUploadSettingsForm"];
 <ul class='form'>
 
 <li>
-<label><?php echo T("plugin.FileUpload.allowedTypesLabel"); ?></label>
+<label><?php echo T("plugin.FileUpload.allowedImageTypesLabel"); ?></label>
+<?php echo $form->input("allowedImageTypes", "text"); ?>
+<small><?php echo T("plugin.FileUpload.allowedImageTypesDesc"); ?></small>
+</li>
+
+<li>
+<label><?php echo T("plugin.FileUpload.allowedArchiveTypesLabel"); ?></label>
+<?php echo $form->input("allowedArchiveTypes", "text"); ?>
+<small><?php echo T("plugin.FileUpload.allowedArchiveTypesDesc"); ?></small>
+</li>
+
+<li>
+<label><?php echo T("plugin.FileUpload.allowedFileTypesLabel"); ?></label>
 <?php echo $form->input("allowedFileTypes", "text"); ?>
-<small><?php echo T("plugin.FileUpload.allowedTypesDesc"); ?></small>
+<small><?php echo T("plugin.FileUpload.allowedFileTypesDesc"); ?></small>
 </li>
 
 <li>
