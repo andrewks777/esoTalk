@@ -156,39 +156,6 @@ class FileUploadController extends ETController {
 			return false;
 		}
 		
-		/*
-		if (!$id) {
-			$this->renderMessage(T("Error"), T("plugin.FileUpload.message.fileNotFound"));
-			return false;
-		}
-		
-		require_once 'UploadHandler.php';
-		
-		$model = ET::getInstance("FileUploadModel");
-		$upload = $model->findUpload($id);
-		
-		if (!$upload) {
-			$this->renderMessage(T("Error"), T("plugin.FileUpload.message.fileNotFound"));
-			return false;
-		}
-		
-		$path = $model->usr_path_files($upload['memberId']);
-		$url = $this->usr_url_files_real($upload['memberId']);
-		$param_name = 'file';
-		
-		$options = array(
-			'upload_dir' => $path,
-			'upload_url' => $url,
-			'download_via_php' => 2,
-			'param_name' => $param_name . 's',
-		);
-		
-		$_GET['download'] = 1;
-		$_GET[$param_name] = $upload['filename'];
-		$upload_handler = new UploadHandler($options, false);
-		$upload_handler->get();
-		*/
-		
 	}
 
 }
