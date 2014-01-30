@@ -109,7 +109,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #permissionsSheet {top:10px; width:650px}
 
 .conversationList .title a:visited {color:#333333}
-.conversationList > li {padding-top:4px; padding-bottom:4px}
+.conversationList > li {padding-top:4px; padding-bottom:4px; padding-right:29em}
 .conversationList .mine {background-color:#fffbdb}
 .conversationList .popular .title a {font-weight:bold; color:#000}
 .channelList .unsubscribed {background:#ececec}
