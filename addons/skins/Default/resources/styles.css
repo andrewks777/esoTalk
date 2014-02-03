@@ -107,6 +107,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #forgotPasswordSheet {width:500px}
 #editChannelSheet {top:10px; width:75%}
 #permissionsSheet {top:10px; width:650px}
+.sheet .sheetBody {max-height:600px;}
 
 .conversationList .title a:visited {color:#333333}
 .conversationList > li {padding-top:4px; padding-bottom:4px; padding-right:29em}

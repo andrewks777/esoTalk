@@ -120,6 +120,7 @@ public function join()
 		// Make sure the passwords match. The model will do the rest of the validation.
 		if ($form->getValue("password") != $form->getValue("confirm"))
 			$form->error("confirm", T("message.passwordsDontMatch"));
+		$this->trigger("joinValidPostBack", array(&$form));
 
 		if (!$form->errorCount()) {
 
@@ -276,25 +277,29 @@ public function forgot()
 	// If they've submitted their email to get a password reset link, email one to them!
 	if ($form->validPostBack("submit")) {
 
-		// Find the member with this email.
-		$member = reset(ET::memberModel()->get(array("email" => $form->getValue("email"))));
-		if (!$member)
-			$form->error("email", T("message.emailDoesntExist"));
+		$this->trigger("forgotValidPostBack", array(&$form));
 
-		else {
+		if (!$form->errorCount()) {
+			// Find the member with this email.
+			$member = reset(ET::memberModel()->get(array("email" => $form->getValue("email"))));
+			if (!$member)
+				$form->error("email", T("message.emailDoesntExist"));
 
-			// Update their record in the database with a special password reset hash.
-			$hash = md5(uniqid(rand()));
-			ET::memberModel()->updateById($member["memberId"], array("resetPassword" => $hash));
+			else {
 
-			// Send them email containing the link, and redirect to the home page.
-			sendEmail($member["email"],
-				sprintf(T("email.forgotPassword.subject"), $member["username"]),
-				sprintf(T("email.header"), $member["username"]).sprintf(T("email.forgotPassword.body"), C("esoTalk.forumTitle"), URL("user/reset/".$member["memberId"].$hash, true, true, true))
-			);
-			$this->renderMessage(T("Success!"), T("message.passwordEmailSent"));
-			return;
+				// Update their record in the database with a special password reset hash.
+				$hash = md5(uniqid(rand()));
+				ET::memberModel()->updateById($member["memberId"], array("resetPassword" => $hash));
 
+				// Send them email containing the link, and redirect to the home page.
+				sendEmail($member["email"],
+					sprintf(T("email.forgotPassword.subject"), $member["username"]),
+					sprintf(T("email.header"), $member["username"]).sprintf(T("email.forgotPassword.body"), C("esoTalk.forumTitle"), URL("user/reset/".$member["memberId"].$hash, true, true, true))
+				);
+				$this->renderMessage(T("Success!"), T("message.passwordEmailSent"));
+				return;
+
+			}
 		}
 
 	}
