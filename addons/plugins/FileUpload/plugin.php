@@ -3,6 +3,7 @@
 // Copyright 2013 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 // Uses: jQuery File Upload https://github.com/blueimp/jQuery-File-Upload
+// Depends: Apache2 module 'mod_xsendfile.so'
 
 if (!defined("IN_ESOTALK")) exit;
 
