@@ -89,6 +89,7 @@ $definitions["%s will be able to:"] = "%s сможет:";
 $definitions["conversations.replies"] = "ответов";
 $definitions["conversations.newreplies"] = "новых";
 $definitions["conversation.replies"] = "Ответы: ";
+$definitions["%s others"] = "%s других";
 
 $definitions["A new version of esoTalk (%s) is available."] = "Новая версия esoTalk (%s) доступна!";
 $definitions["a private conversation"] = "частное обсуждение";
@@ -493,7 +494,7 @@ $definitions["message.loginToParticipate"] = "Для участия в обсу�
 $definitions["message.logInToReply"] = "<a href='%1\$s' class='link-login'>Войдите</a> или <a href='%2\$s' class='link-join'>зарегистрируйтесь</a> чтобы ответить!";
 $definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Войдите</a> для просмотра тем/обсуждений скрытых от гостей.";
 $definitions["message.memberNotFound"] = "Нет пользователя с таким именем.";
-$definitions["message.memberNoPermissionView"] = "Этот участник не может быть добавлен потому, что у него нет разрешения на просмотр темы, к которой принадлежит это обсуждение.";
+$definitions["message.memberNoPermissionView"] = "Этот участник не может быть добавлен потому, что у него нет разрешения на просмотр канала, к которому принадлежит это обсуждение.";
 $definitions["message.nameTaken"] = "Введенное Вами имя занято или зарезервировано. Попробуйте другое.";
 $definitions["message.newSearchResults"] =  "Появились новые обсуждения/сообщения, влияющие на результаты Вашего поиска. <a href='%s'>Обновить</a>";
 $definitions["message.noActivity"] = "%s еще ничего не сделал на этом форуме.";

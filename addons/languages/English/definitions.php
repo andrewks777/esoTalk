@@ -407,7 +407,8 @@ $definitions["message.invalidEmail"] = "Seems this email address isn't valid..."
 $definitions["message.invalidUsername"] = "You must choose a username between 3 and 20 alphanumeric characters.";
 $definitions["message.javascriptRequired"] = "This page requires JavaScript to function properly. Please enable it!";
 $definitions["message.languageUninstalled"] = "The language was uninstalled.";
-$definitions["message.locked"] = "Hm, looks like this conversation is <strong>locked</strong>, so you can't reply to it.";
+$definitions["message.locked"] = "This conversation is <strong>locked</strong>, so you can't reply to it.";
+$definitions["message.lockedCannotChange"] = "This conversation is <strong>locked</strong>, so you can't change it.";
 $definitions["message.loginToParticipate"] = "To start conversations or reply to posts, please log in.";
 $definitions["message.logInToReply"] = "<a href='%1\$s' class='link-login'>Log In</a> or <a href='%2\$s' class='link-join'>Sign Up</a> to reply!";
 $definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Log in</a> to expose some channels/conversations that may be hidden to guests.";

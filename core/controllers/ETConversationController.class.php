@@ -645,8 +645,9 @@ public function edit($conversationId = false)
 	if (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
-	if (!$conversation["canModerate"] and $conversation["startMemberId"] != ET::$session->userId) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+	if (!$conversation["canModerate"] and ($conversation["startMemberId"] != ET::$session->userId or $conversation["locked"])) {
+		if ($conversation["locked"]) $this->renderMessage(T("Error"), T("message.lockedCannotChange"));
+		else $this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
 
@@ -686,8 +687,9 @@ public function changeChannel($conversationId = "")
 	elseif (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
-	if (!$conversation["canModerate"] and $conversation["startMemberId"] != ET::$session->userId) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+	if (!$conversation["canModerate"] and ($conversation["startMemberId"] != ET::$session->userId or $conversation["locked"])) {
+		if ($conversation["locked"]) $this->renderMessage(T("Error"), T("message.lockedCannotChange"));
+		else $this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
 
@@ -733,8 +735,9 @@ public function save($conversationId = false)
 	elseif (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
-	if (!$conversation["canModerate"] and $conversation["startMemberId"] != ET::$session->userId) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+	if (!$conversation["canModerate"] and ($conversation["startMemberId"] != ET::$session->userId or $conversation["locked"])) {
+		if ($conversation["locked"]) $this->renderMessage(T("Error"), T("message.lockedCannotChange"));
+		else $this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
 
@@ -823,8 +826,9 @@ public function membersAllowed($conversationId = false)
 	elseif (!($conversation = $this->getConversation($conversationId))) return;
 
 	// Do we have permission to do this?
-	if (!$conversation["canModerate"] and ET::$session->userId != $conversation["startMemberId"]) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+	if (!$conversation["canModerate"] and ($conversation["startMemberId"] != ET::$session->userId or $conversation["locked"])) {
+		if ($conversation["locked"]) $this->renderMessage(T("Error"), T("message.lockedCannotChange"));
+		else $this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
 
@@ -1075,7 +1079,8 @@ public function reply($conversationId = false)
 
 	// Can the user reply?
 	if (!$conversation["canReply"]) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+		if ($conversation["locked"]) $this->renderMessage(T("Error"), T("message.locked"));
+		else $this->renderMessage(T("Error"), T("message.noPermission"));
 		return;
 	}
 
