@@ -405,7 +405,7 @@ public function setGroups($member, $account, $groups = array())
 
 	// Insert new member-group associations.
 	$inserts = array();
-	foreach ($groups as $id) $inserts[] = array($member["memberId"], $id);
+	foreach ($groups as $id) if ($id) $inserts[] = array((int)$member["memberId"], (int)$id);
 	if (count($inserts))
 		ET::SQL()
 			->insert("member_group")
