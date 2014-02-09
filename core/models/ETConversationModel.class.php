@@ -779,6 +779,8 @@ public function delete($wheres = array())
 	$result = ET::SQL()->select("conversationId")->from("conversation c")->where($wheres)->exec();
 	while ($row = $result->nextRow()) $ids[] = $row["conversationId"];
 
+	if (empty($ids)) return true;
+
 	// Decrease channel and member conversation counts for these conversations.
 	// There might be a more efficient way to do this than one query per conversation... but good enough for now!
 	foreach ($ids as $id) {
@@ -894,12 +896,13 @@ public function setDraft(&$conversation, $memberId, $draft = null)
  * 	lastRead attribute will be updated.
  * @param int $memberId The member to set the status for.
  * @param int $lastRead The position of the post that was last read.
+ * @param bool $force Whether or not to set the last read even if it is lower than the current last read.
  * @return bool Returns true on success, or false if there is an error.
  */
-public function setLastRead(&$conversation, $memberId, $lastRead)
+public function setLastRead(&$conversation, $memberId, $lastRead, $force = false)
 {
 	$lastRead = min($lastRead, $conversation["countPosts"]);
-	if ($lastRead <= $conversation["lastRead"]) return true;
+	if ($lastRead <= $conversation["lastRead"] and !$force) return true;
 
 	// Set the last read status.
 	$this->setStatus($conversation["conversationId"], $memberId, array("lastRead" => $lastRead));
@@ -1148,7 +1151,7 @@ public function getMemberFromName($name)
 	$lowerName = strtolower($name);
 	foreach ($groups as $id => $group) {
 		$group = $group["name"];
-		if ($lowerName == strtolower(T("group.$group.plural", $group)) or $lowerName == strtolower($group)) {
+		if ($lowerName == strtolower(T("group.$group.plural", $group))) {
 			return array("type" => "group", "id" => $id, "name" => $group);
 		}
 	}
@@ -1165,7 +1168,7 @@ public function getMemberFromName($name)
 		->from("member_group g", "m.memberId=g.memberId", "left")
 		->where("m.username=:name OR m.username LIKE :nameLike")
 		->bind(":name", $name)
-		->bind(":nameLike", $name."%")
+		->bind(":nameLike", "%".$name."%")
 		->groupBy("m.memberId")
 		->orderBy("m.username=:nameOrder DESC")
 		->bind(":nameOrder", $name)
