@@ -123,7 +123,8 @@ public function handler_format_format($sender)
 
 	// Images: [img=description]url[/img]
 	$onerror = "javascript:ETConversation.onErrorLoadingImage(this);";
-	if (!$sender->basic) $sender->content = preg_replace_callback("/\[img(?:=(.*))?\](.*?)\[\/img\]/i", array($this, "imgCallback"), $sender->content);
+	if (!$sender->basic) $imgCallbackName = 'imgCallback'; else $imgCallbackName = 'imgBasicCallback';
+	$sender->content = preg_replace_callback("/\[img(?:=(.*))?\](.*?)\[\/img\]/i", array($this, $imgCallbackName), $sender->content);
 
 	// Links with display text: [url=http://url]text[/url]
 	$sender->content = preg_replace_callback("/\[url=(\w{2,6}:\/\/)?([^\]]*?)\](.*?)\[\/url\]/i", array($this, "linksCallback"), $sender->content);
@@ -159,6 +160,21 @@ public function imgCallback($matches)
 	$title = $matches[1];
 	$url = $matches[2];
 	return "<img onerror='$onerror' src='$url' alt='$desc' title='$title'/>";
+}
+
+
+public function imgBasicCallback($matches)
+{
+	$loc = (substr($matches[2], 0, 1) == "/");
+	$url = $matches[2];
+	$linkText = ($matches[1] ? $matches[1] : $matches[2]);
+	$baseURL = C("esoTalk.baseURL");
+	if (substr($url, 0, strlen($baseURL)) == $baseURL || $loc) {
+		return "<a href='".$url."' target='_blank' class='link-internal'>".$linkText."</a>";
+	}
+
+	// Otherwise, return an external HTML anchor tag.
+	return "<a href='".$url."' rel='nofollow external' target='_blank' class='link-external'>".$linkText." <i class='icon-external-link'></i></a>";
 }
 
 

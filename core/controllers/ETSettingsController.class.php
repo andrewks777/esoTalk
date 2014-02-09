@@ -124,6 +124,18 @@ public function general()
 	$form->setValue("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
 	$form->addField("topPanel", "topPanelBehavior", array($this, "fieldTopPanelBehavior"), array($this, "savePreference"));
 	
+	$form->addSection("loadConversation", T("settings.loadConversation.label"));
+	
+	// Add the "load conversation" field.
+	$form->setValue("loadConversationMode", ET::$session->preference("loadConversationMode"));
+	$form->addField("loadConversation", "loadConversationMode", array($this, "fieldLoadConversationMode"), array($this, "savePreference"));
+	
+	$form->addSection("multimediaEmbedding", T("settings.multimediaEmbedding.label"));
+	
+	// Add the "multimedia embedding" field.
+	$form->setValue("forbidMultimediaEmbedding", ET::$session->preference("forbidMultimediaEmbedding"));
+	$form->addField("multimediaEmbedding", "forbidMultimediaEmbedding", array($this, "fieldForbidMultimediaEmbedding"), array($this, "saveBoolPreference"));
+	
 	$form->addSection("notifications", T("Notifications"));
 
 	// Add the "email me when I'm added to a private conversation" field.
@@ -313,6 +325,7 @@ public function fieldHideOnline($form)
 	return "<label class='checkbox'>".$form->checkbox("hideOnline")." ".T("Don't allow other users to see when I am online")."</label>";
 }
 
+
 /**
  * Return the HTML to render the fieldTopPanelBehavior in the general
  * settings form.
@@ -324,6 +337,33 @@ public function fieldTopPanelBehavior($form)
 {
 	return "<table><tr><td><label>".$form->radio("topPanelBehavior", "ordinary").T("setting.topPanelBehavior.ordinary")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "movable").T("setting.topPanelBehavior.movable")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "automovable").T("setting.topPanelBehavior.automovable")."</label></td></tr></table>";
 }
+
+
+/**
+ * Return the HTML to render the fieldLoadConversationMode in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldLoadConversationMode($form)
+{
+	return "<table><tr><td><label>".$form->radio("loadConversationMode", "top").T("setting.loadConversationMode.top")."</label></td><td style='width:10px'></td><td><label>".$form->radio("loadConversationMode", "unread").T("setting.loadConversationMode.unread")."</label></td><td style='width:10px'></td><td><label>".$form->radio("loadConversationMode", "bottom").T("setting.loadConversationMode.bottom")."</label></td></tr></table>";
+}
+
+
+/**
+ * Return the HTML to render the "fieldForbidMultimediaEmbedding" field in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldForbidMultimediaEmbedding($form)
+{
+	return "<label class='checkbox'>".$form->checkbox("forbidMultimediaEmbedding")." ".T("setting.forbidMultimediaEmbedding.label")."</label>";
+}
+
 
 /**
  * Save the contents of an "email me when ..." field when the general settings form is submitted.

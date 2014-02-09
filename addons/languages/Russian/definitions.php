@@ -627,3 +627,11 @@ $definitions["settings.topPanel.label"] = "Верхняя панель";
 $definitions["setting.topPanelBehavior.ordinary"] = "обычная";
 $definitions["setting.topPanelBehavior.movable"] = "выдвигающаяся";
 $definitions["setting.topPanelBehavior.automovable"] = "автоматически выдвигающаяся";
+
+$definitions["settings.loadConversation.label"] = "Загрузка обсуждения";
+$definitions["setting.loadConversationMode.top"] = "в начало";
+$definitions["setting.loadConversationMode.unread"] = "к непрочитанному";
+$definitions["setting.loadConversationMode.bottom"] = "в конец";
+
+$definitions["settings.multimediaEmbedding.label"] = "Встраивание мультимедиа";
+$definitions["setting.forbidMultimediaEmbedding.label"] = "Запретить встраивание мультимедиа";

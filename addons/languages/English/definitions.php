@@ -553,3 +553,11 @@ $definitions["settings.topPanel.label"] = "Behavior of top panel";
 $definitions["setting.topPanelBehavior.ordinary"] = "ordinary";
 $definitions["setting.topPanelBehavior.movable"] = "movable";
 $definitions["setting.topPanelBehavior.automovable"] = "automovable";
+
+$definitions["settings.loadConversation.label"] = "Conversation loading";
+$definitions["setting.loadConversationMode.top"] = "go to beginning";
+$definitions["setting.loadConversationMode.unread"] = "go to the unread";
+$definitions["setting.loadConversationMode.bottom"] = "go to ending";
+
+$definitions["settings.multimediaEmbedding.label"] = "Multimedia embedding";
+$definitions["setting.forbidMultimediaEmbedding.label"] = "To forbid multimedia embedding";

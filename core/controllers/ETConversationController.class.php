@@ -57,6 +57,13 @@ public function index($conversationId = false, $year = false, $month = false)
 		ET::$session->remove("highlight");
 	}
 
+	// Set up place
+	$initialPlace = ET::$session->preference("loadConversationMode");
+	if ($initialPlace && !$year) {
+		if ($initialPlace == 'unread') $year = 'unread';
+		else if ($initialPlace == 'bottom') $year = 'last';
+	}
+	
 	// Work out which post we are viewing from.
 	$startFrom = 0;
 	if ($year) {
@@ -1454,7 +1461,8 @@ protected function formatPostForTemplate($post, $conversation)
 protected function displayPost($content, $conversationId = 0, $relativePostId = 0)
 {
 	$words = ET::$session->get("highlight");
-	return ET::formatter()->init($content, true, $conversationId, $relativePostId)->highlight($words)->format()->get();
+	$basic = (bool)ET::$session->preference("forbidMultimediaEmbedding");
+	return ET::formatter()->init($content, true, $conversationId, $relativePostId)->highlight($words)->basic($basic)->format()->get();
 }
 
 
