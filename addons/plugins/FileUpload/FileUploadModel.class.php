@@ -163,16 +163,18 @@ class FileUploadModel extends ETModel {
 	{
 		if (!$time) $time = time();
 		foreach ($files as $file) {
-			$id = $file->uploadId;
-			ET::SQL()->insert("uploaded_files")->set(array(
-				"id" => $id,
-				"memberId" => ($memberId !== false) ? $memberId : ET::$session->userId,
-				"conversationId" => $conversationId,
-				"time" => $time,
-				"memberIP" => ($memberIP !== false) ? $memberIP : getUserIP(),
-				"filename" => $file->name,
-				"origFilename" => $file->origName
-			))->setOnDuplicateKey("id", $id)->exec();
+			if (isset($file->uploadId)) {
+				$id = $file->uploadId;
+				ET::SQL()->insert("uploaded_files")->set(array(
+					"id" => $id,
+					"memberId" => ($memberId !== false) ? $memberId : ET::$session->userId,
+					"conversationId" => $conversationId,
+					"time" => $time,
+					"memberIP" => ($memberIP !== false) ? $memberIP : getUserIP(),
+					"filename" => $file->name,
+					"origFilename" => $file->origName
+				))->setOnDuplicateKey("id", $id)->exec();
+			}
 		}
 	}
 

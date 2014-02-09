@@ -488,6 +488,7 @@ $definitions["message.invalidUsername"] = "Имя пользователя мо�
 $definitions["message.javascriptRequired"] = "Эта страница требует включенного JavaScript для корректной работы!";
 $definitions["message.languageUninstalled"] = "Язык был удален.";
 $definitions["message.locked"] = "Это обсуждение <strong>заблокировано</strong>, поэтому Вы не можете в нём участвовать.";
+$definitions["message.lockedCannotChange"] = "Это обсуждение <strong>заблокировано</strong>, поэтому его нельзя изменять.";
 $definitions["message.loginToParticipate"] = "Для участия в обсуждениях и размещения сообщений, пожалуйста, войдите на форум.";
 $definitions["message.logInToReply"] = "<a href='%1\$s' class='link-login'>Войдите</a> или <a href='%2\$s' class='link-join'>зарегистрируйтесь</a> чтобы ответить!";
 $definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Войдите</a> для просмотра тем/обсуждений скрытых от гостей.";
