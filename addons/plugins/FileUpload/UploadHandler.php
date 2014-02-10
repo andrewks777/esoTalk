@@ -467,7 +467,10 @@ class UploadHandler
 		// See: http://www.php.net/manual/transliterator.transliterate.php
 		// or PHP >= 5.2.4 with PECL version of 'intl'
 		// See: http://pecl.php.net/package/intl
-		if ($this->options['transliterate_names'] and extension_loaded("intl")) $name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+		if ($this->options['transliterate_names'] and extension_loaded("intl")) {
+			$name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+			$name = preg_replace(array("/([^\w\s\d\-_~,\.;\[\]\(\)])/", "/(\.{2,})/", "/^(\.)/"), array('', '.', ''), $name); // sanitizeFileName
+		}
 		
 		return $name;
     }
