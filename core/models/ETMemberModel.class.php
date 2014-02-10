@@ -267,6 +267,35 @@ public function checkPassword($password, $hash)
 	return $hasher->CheckPassword($password, $hash);
 }
 
+/**
+ * Convert a username to regexp pattern for MySQL.
+ *
+ * @param string $username The username to convert.
+ * @return string Pattern.
+ */
+protected function nameToPattern($username)
+{
+	$regex = array(
+		'[АA]', '[аa]', '[б6]', '[ВB]', '[гr]', '[ЕE]', '[еe]',
+		'[Зз3]', '[КK]', '[кk]', '[МM]', '[НH]', '[ОO0]', '[оo]',
+		'[пn]', '[РP]', '[рp]', '[СC]', '[сс]', '[ТT]', '[уy]',
+		'[ХX]', '[хx]', '[Ьb]'
+	);
+	$regexSQL = array(
+		'(А|A)', '(а|a)', '(б|6)', '(В|B)', '(г|r)', '(Е|E)', '(е|e)',
+		'(З|з|3)', '(К|K)', '(к|k)', '(М|M)', '(Н|H)', '(О|O|0)', '(о|o)',
+		'(п|n)', '(Р|P)', '(р|p)', '(С|C)', '(с|с)', '(Т|T)', '(у|y)',
+		'(Х|X)', '(х|x)', '(Ь|b)'
+	);
+	
+    //$pattern = str_replace('-', '\-', $username);
+	$pattern = $username;
+    for ($i = 0; $i < count($regex); $i++)
+        $pattern = preg_replace('/'.$regex[$i].'/u', $regexSQL[$i], $pattern);
+	$pattern = str_replace(' ', '[[:space:]]', $pattern);
+	
+    return $pattern;
+}
 
 /**
  * Validate a username.
@@ -286,8 +315,13 @@ public function validateUsername($username, $checkForDuplicate = true)
 	if ($namelen < C("esoTalk.minUserName") or $namelen > C("esoTalk.maxUserName") or !preg_match("/^[\w]{1,1}(?:\w|-| )*[\w]{1,1}$/".($use_unicode ? "u" : "" ), $username)) return "invalidUsername";
 
 	// Make sure there's no other member with the same username.
-	if ($checkForDuplicate and ET::SQL()->select("1")->from("member")->where("username=:username")->where("confirmedEmail=1")->bind(":username", $username)->exec()->numRows())
-		return "nameTaken";
+	if ($checkForDuplicate) {
+		if (ET::SQL()->select("1")->from("member")->where("username=:username")->where("confirmedEmail=1")->bind(":username", $username)->exec()->numRows()) return "nameTaken";
+		if (C("esoTalk.strongUserNameChecking")) {
+			$pattern = "^".mb_strtolower($this->nameToPattern($username), "UTF-8")."$";
+			if (ET::SQL()->select("1")->from("member")->where("LOWER(username) REGEXP :pattern")->where("confirmedEmail=1")->bind(":pattern", $pattern)->exec()->numRows()) return "nameTaken";
+		}
+	}
 }
 
 
