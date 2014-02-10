@@ -59,9 +59,10 @@ public function index($conversationId = false, $year = false, $month = false)
 
 	// Set up place
 	$initialPlace = ET::$session->preference("loadConversationMode");
-	if ($initialPlace && !$year) {
+	if ($initialPlace && ($year === false) && !$searchString) {
 		if ($initialPlace == 'unread') $year = 'unread';
 		else if ($initialPlace == 'bottom') $year = 'last';
+		else if ($initialPlace == 'top') $year = '0';
 	}
 	
 	// Work out which post we are viewing from.
