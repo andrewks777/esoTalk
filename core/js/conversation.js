@@ -255,12 +255,18 @@ initReply: function() {
 	$("#reply .saveDraft").disable();
 
 	// Add event handlers on the textarea to enable/disable buttons.
-	/*textarea.keyup(function(e) {
-		if (e.ctrlKey) return;
-		//$("#reply .postReply, #reply .saveDraft")[$(this).val() ? "enable" : "disable"]();
-		if ($(this).val()) $("#reply .postReply, #reply .saveDraft").enable(); else $("#reply .postReply, #reply .saveDraft").disable();
-		ETConversation.editingReply = $(this).val() ? true : false;
-	});*/
+	try { // for IE 8-9
+		rmsie89 = /(msie) ([8-9][\D])/;
+		ua = navigator.userAgent.toLowerCase();
+		if (rmsie89.exec(ua)) {
+			textarea.keyup(function(e) {
+				//if (e.ctrlKey) return;
+				//$("#reply .postReply, #reply .saveDraft")[$(this).val() ? "enable" : "disable"]();
+				if ($(this).val()) $("#reply .postReply, #reply .saveDraft").enable(); else $("#reply .postReply, #reply .saveDraft").disable();
+				ETConversation.editingReply = $(this).val() ? true : false;
+			});
+		}
+	} catch(e) {}
 	
 	textarea.on('input', function(e) {
 		if ($(this).val()) $("#reply .postReply, #reply .saveDraft").enable(); else $("#reply .postReply, #reply .saveDraft").disable();
