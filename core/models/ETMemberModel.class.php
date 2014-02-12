@@ -407,7 +407,7 @@ public function canSuspend($member)
 		ET::$session->isAdmin()
 		or (ET::$session->user["canSuspend"] and ($member["account"] == ACCOUNT_MEMBER or $member["account"] == ACCOUNT_SUSPENDED))
 	)
-	and $member["memberId"] != C("esoTalk.rootAdmin") and $member["memberId"] != ET::$session->userId;
+	and $member["memberId"] != C("esoTalk.rootAdmin") and $member["memberId"] != ET::$session->userId and !$member["canSuspend"];
 }
 
 
