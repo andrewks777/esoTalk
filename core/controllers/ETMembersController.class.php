@@ -81,6 +81,7 @@ public function index($orderBy = false, $start = 0)
 	// Make an array of possible orders for the list.
 	$orders = array(
 		"name" => array(T("Name"), "username ASC"),
+		"id" => array("id", "memberId DESC"),
 		"posts" => array(T("Posts"), "countPosts DESC"),
 		"activity" => array(T("Last active"), "lastActionTime DESC")
 	);
