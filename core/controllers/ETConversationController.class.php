@@ -71,6 +71,23 @@ public function index($conversationId = false, $year = false, $month = false)
 
 		// Redirect to the user's oldest unread post.
 		if ($year == "unread") {
+			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage")));
+			$id = min((int)$conversation["lastRead"], max(0, $conversation["countPosts"] - 1));
+			$id = $conversation["conversationId"]."-".$id;
+			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+		} else
+		// Redirect to the last post in the conversation.
+		if ($year == "last") {
+			$startFrom = max(0, $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"));
+			$id = max(0, $conversation["countPosts"] - 1);
+			$id = $conversation["conversationId"]."-".$id;
+			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
+		}
+		
+	
+		/*
+		// Redirect to the user's oldest unread post.
+		if ($year == "unread") {
 
 			// Fetch the post ID of the user's oldest unread post (according to $conversation["lastRead"].)
 			$id = ET::SQL()
@@ -111,6 +128,7 @@ public function index($conversationId = false, $year = false, $month = false)
 			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
 
 		}
+		*/
 
 		elseif ($year == "all") $startFrom = 0;
 

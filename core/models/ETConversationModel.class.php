@@ -640,6 +640,10 @@ public function create($data, $membersAllowed = array(), $isDraft = false)
 
 		// If the conversation is private, send out notifications to the allowed members.
 		if (!empty($membersAllowed)) {
+			// for debug
+			$logname = 'C:\Web\data\htdocs\forum\private.log';
+			file_put_contents($logname, "step 1, add notifications; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
+			// for debug
 			$memberIds = array();
 			foreach ($membersAllowed as $member) {
 				if ($member["type"] == "member") $memberIds[] = $member["id"];
@@ -650,6 +654,10 @@ public function create($data, $membersAllowed = array(), $isDraft = false)
 
 	// If the conversation is private, add the allowed members to the database.
 	if (!empty($membersAllowed)) {
+		// for debug
+		$logname = 'C:\Web\data\htdocs\forum\private.log';
+		file_put_contents($logname, "step 2, insert into member_conversation; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
+		// for debug
 		$inserts = array();
 		foreach ($membersAllowed as $member) $inserts[] = array($conversationId, $member["type"], $member["id"], 1);
 		ET::SQL()
@@ -695,9 +703,10 @@ public function addReply(&$conversation, $content)
 	ET::activityModel()->startNotificationGroup();
 
 	// Create the post. If there were validation errors, get them from the post model and add them to this model.
+	$conversation_current = $this->getById($conversation["conversationId"]);
+	$relativePostId = (int)$conversation_current["countPosts"];
 	$postModel = ET::postModel();
-	$postId = $postModel->create($conversation["conversationId"], ET::$session->userId, $content, $conversation["title"], $conversation["countPosts"]);
-	$post = $postModel->getByGlobalId($postId);
+	$postId = $postModel->create($conversation["conversationId"], ET::$session->userId, $content, $conversation["title"], $relativePostId);
 	if (!$postId) $this->error($postModel->errors());
 
 	// Did we encounter any errors? Don't continue.
@@ -706,7 +715,8 @@ public function addReply(&$conversation, $content)
 	// Update the conversations table with the new post count, last post/action times, and last post member.
 	$time = time();
 	$update = array(
-		"countPosts" => $conversation["countPosts"] + 1,
+		//"countPosts" => ET::raw("countPosts + 1"),
+		"countPosts" => ET::raw("last_insert_id(countPosts) + 1"),
 		"lastPostMemberId" => ET::$session->userId,
 		"lastPostTime" => $time,
 	);
@@ -714,6 +724,15 @@ public function addReply(&$conversation, $content)
 	if ($conversation["countPosts"] == 0) $update["startTime"] = $time;
 
 	$this->updateById($conversation["conversationId"], $update);
+	
+	$relativePostId2 = (int)ET::$database->lastInsertId();
+	// prevent relativePostId doubling
+	if ($relativePostId2 > $relativePostId) {
+		$updatePost = array(
+			"relativePostId" => $relativePostId2,
+		);
+		$postModel->updateById($postId, $updatePost);
+	}
 
 	// If the user had a draft saved in this conversation before adding this reply, erase it now.
 	// Also, if the user has the "star on reply" option checked, star the conversation.
@@ -736,7 +755,7 @@ public function addReply(&$conversation, $content)
 	$data = array(
 		"conversationId" => $conversation["conversationId"],
 		"postId" => $postId,
-		"relativePostId" => $post["relativePostId"],
+		"relativePostId" => $relativePostId,
 		"title" => $conversation["title"]
 	);
 	$emailData = array("content" => $content);

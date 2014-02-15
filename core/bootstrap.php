@@ -109,6 +109,7 @@ ETFactory::register("database", "ETDatabase", PATH_LIBRARY."/ETDatabase.class.ph
 ETFactory::register("databaseStructure", "ETDatabaseStructure", PATH_LIBRARY."/ETDatabaseStructure.class.php");
 ETFactory::register("sqlQuery", "ETSQLQuery", PATH_LIBRARY."/ETSQLQuery.class.php");
 ETFactory::register("sqlResult", "ETSQLResult", PATH_LIBRARY."/ETSQLResult.class.php");
+ETFactory::register("sqlRaw", "ETSQLRaw", PATH_LIBRARY."/ETSQLRaw.class.php");
 ETFactory::register("session", "ETSession", PATH_LIBRARY."/ETSession.class.php");
 ETFactory::register("cache", "ETCache", PATH_LIBRARY."/ETCache.class.php");
 ETFactory::register("form", "ETForm", PATH_LIBRARY."/ETForm.class.php");
@@ -295,6 +296,9 @@ ET::$controller->responseType = $responseType;
 
 // Initialize plugins.
 foreach (ET::$plugins as $plugin) $plugin->init();
+
+// Include the config/custom.php file, a convenient way to override things.
+if (file_exists($file = PATH_CONFIG."/custom.php")) include $file;
 
 // Include render functions. We do this after we initialize plugins so that they can override any functions if they want.
 require PATH_LIBRARY."/functions.render.php";
