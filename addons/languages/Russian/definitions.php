@@ -635,3 +635,8 @@ $definitions["setting.loadConversationMode.bottom"] = "в конец";
 
 $definitions["settings.multimediaEmbedding.label"] = "Встраивание мультимедиа";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "Запретить встраивание мультимедиа";
+
+$definitions["settings.mainPageRefresh.label"] = "Новые обсуждения на главной";
+$definitions["setting.mainPageRefreshMode.refresh"] = "показывать автоматически";
+$definitions["setting.mainPageRefreshMode.notify"] = "уведомлять";
+$definitions["setting.mainPageRefreshMode.ignore"] = "игнорировать";

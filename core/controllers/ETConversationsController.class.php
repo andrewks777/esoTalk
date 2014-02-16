@@ -400,10 +400,21 @@ public function update($channelSlug = "", $query = "")
 		$newConversationIds = array_slice((array)$newConversationIds, 0, C("esoTalk.search.updateResults"));
 
 		// Get the difference of the two sets of conversationId's.
+		$refreshMode = ET::$session->preference("mainPageRefreshMode");
+		if (!$refreshMode) $refreshMode = "notify";
 		$diff = array_diff((array)$newConversationIds, (array)$conversationIds);
-		if (count($diff)) $this->message(sprintf(T("message.newSearchResults"), "javascript:ETSearch.showNewActivity();void(0)"), array("id" => "newSearchResults"));
+		if (count($diff)) {
+			if ($refreshMode == "notify") {
+				$this->message(sprintf(T("message.newSearchResults"), "javascript:ETSearch.showNewActivity();void(0)"), array("id" => "newSearchResults"));
+			}
+		}
 		// Reorder conversations IDs
-		$conversationIds = array_merge(array_intersect((array)$newConversationIds, (array)$conversationIds), array_diff((array)$conversationIds, (array)$newConversationIds));
+		if ($refreshMode == "refresh") {
+			$conversationIds = array_merge((array)$newConversationIds, (array)$conversationIds);
+			$this->json("refreshMode", true);
+		} else {
+			$conversationIds = array_merge(array_intersect((array)$newConversationIds, (array)$conversationIds), array_diff((array)$conversationIds, (array)$newConversationIds));
+		}
 
 	}
 

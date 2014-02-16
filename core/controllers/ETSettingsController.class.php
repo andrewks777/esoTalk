@@ -124,6 +124,12 @@ public function general()
 	$form->setValue("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
 	$form->addField("topPanel", "topPanelBehavior", array($this, "fieldTopPanelBehavior"), array($this, "savePreference"));
 	
+	$form->addSection("mainPageRefresh", T("settings.mainPageRefresh.label"));
+	
+	// Add the "main page refresh mode" field.
+	$form->setValue("mainPageRefreshMode", ET::$session->preference("mainPageRefreshMode"));
+	$form->addField("mainPageRefresh", "mainPageRefreshMode", array($this, "fieldMainPageRefreshMode"), array($this, "savePreference"));
+	
 	$form->addSection("loadConversation", T("settings.loadConversation.label"));
 	
 	// Add the "load conversation" field.
@@ -336,6 +342,19 @@ public function fieldHideOnline($form)
 public function fieldTopPanelBehavior($form)
 {
 	return "<table><tr><td><label>".$form->radio("topPanelBehavior", "ordinary").T("setting.topPanelBehavior.ordinary")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "movable").T("setting.topPanelBehavior.movable")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "automovable").T("setting.topPanelBehavior.automovable")."</label></td></tr></table>";
+}
+
+
+/**
+ * Return the HTML to render the fieldMainPageRefreshMode in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldMainPageRefreshMode($form)
+{
+	return "<table><tr><td><label>".$form->radio("mainPageRefreshMode", "refresh").T("setting.mainPageRefreshMode.refresh")."</label></td><td style='width:10px'></td><td><label>".$form->radio("mainPageRefreshMode", "notify").T("setting.mainPageRefreshMode.notify")."</label></td><td style='width:10px'></td><td><label>".$form->radio("mainPageRefreshMode", "ignore").T("setting.mainPageRefreshMode.ignore")."</label></td></tr></table>";
 }
 
 

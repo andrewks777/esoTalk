@@ -413,10 +413,11 @@ update: function() {
 			if (!data.conversations) return;
 
 			// For each of the conversation rows returned, replace them in the results table.
+			var refreshMode = data.refreshMode;
 			var convList = $("#conversations ul");
 			var curConv = null;
 			for (var i in data.conversations) {
-				if (!$("#"+i).length) continue;
+				if (!$("#"+i).length && !refreshMode) continue;
 				$("#"+i).remove();
 				if (!curConv) curConv = convList.prepend(data.conversations[i]).children("li:first");
 				else curConv = curConv.after(data.conversations[i]).next();

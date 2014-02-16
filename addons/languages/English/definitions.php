@@ -561,3 +561,8 @@ $definitions["setting.loadConversationMode.bottom"] = "go to ending";
 
 $definitions["settings.multimediaEmbedding.label"] = "Multimedia embedding";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "To forbid multimedia embedding";
+
+$definitions["settings.mainPageRefresh.label"] = "New conversations on main page";
+$definitions["setting.mainPageRefreshMode.refresh"] = "autoload";
+$definitions["setting.mainPageRefreshMode.notify"] = "notify";
+$definitions["setting.mainPageRefreshMode.ignore"] = "ignore";
