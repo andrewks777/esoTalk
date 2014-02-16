@@ -201,7 +201,7 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 	if ($this->errorCount()) return false;
 
 	// Prepare the post details for the query.
-		$ip = getUserIP();
+	$ip = getUserIP();
 	$data = array(
 		"conversationId" => $conversationId,
 		"relativePostId" => $relativePostId,
@@ -488,7 +488,7 @@ public function canEditPost($post, $conversation)
 			or (C("esoTalk.conversation.editPostTimeLimit") === "reply" and $conversation["lastPostTime"] <= $post["time"] and $conversation["lastPostMemberId"] == $post["memberId"])
 			// Or users have permission to edit their posts for a certain number of seconds which hasn't yet passed...
 			or (time() - $post["time"] < C("esoTalk.conversation.editPostTimeLimit"))
-			or ($conversation["canManageKB"] || $conversation["KB"])
+			or ($conversation["canManageKB"] && $conversation["KB"])
 		))
 		return true; // Then they can edit!
 
