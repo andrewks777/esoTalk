@@ -728,8 +728,9 @@ public function addReply(&$conversation, $content)
 	$relativePostId2 = (int)ET::$database->lastInsertId();
 	// prevent relativePostId doubling
 	if ($relativePostId2 > $relativePostId) {
+		$relativePostId = $relativePostId2;
 		$updatePost = array(
-			"relativePostId" => $relativePostId2,
+			"relativePostId" => $relativePostId,
 		);
 		$postModel->updateById($postId, $updatePost);
 	}
