@@ -298,7 +298,7 @@ public function permissions($memberId = "")
 	if (!in_array($currentAccount, $accounts)) $currentAccount = ACCOUNT_MEMBER;
 
 	// Get the currently selected groups from the form input, and a list of collective group IDs.
-	$currentGroups = (array)$form->getValue("groups", array_keys($member["groups"]));
+	$currentGroups = (array)$form->getValue("groups", array());
 	$groupIds = ET::groupModel()->getGroupIds($currentAccount, $currentGroups);
 
 	// Get a list of all channels and their permissions, which we can use to construct a permissions grid.
