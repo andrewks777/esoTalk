@@ -177,9 +177,13 @@ public function join()
  */
 protected function sendConfirmationEmail($email, $username, $hash)
 {
+	$disclaimer = "";
+	if (C("esoTalk.forumRulesURL") or C("esoTalk.forumDescriptionURL")) {
+		$disclaimer = sprintf(T("email.confirmEmail.disclaimer"), URL(C("esoTalk.forumRulesURL"), true, true, true), URL(C("esoTalk.forumDescriptionURL"), true, true, true));
+	}
 	sendEmail($email,
 		sprintf(T("email.confirmEmail.subject"), $username),
-		sprintf(T("email.header"), $username).sprintf(T("email.confirmEmail.body"), C("esoTalk.forumTitle"), URL("user/confirm/".$hash, true, true, true))
+		sprintf(T("email.header"), $username).sprintf(T("email.confirmEmail.body"), C("esoTalk.forumTitle"), URL("user/confirm/".$hash, true, true, true)).$disclaimer
 	);
 }
 

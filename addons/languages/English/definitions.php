@@ -460,6 +460,7 @@ $definitions["message.waitToSearch"] = "Woah, slow down! Looks like you're tryin
 
 // Emails.
 $definitions["email.confirmEmail.body"] = "<p>Someone (hopefully you!) has signed up to the forum '%1\$s' with this email address.</p><p>If this was you, simply visit the following link and your account will be activated:<br>%2\$s</p>";
+$definitions["email.confirmEmail.disclaimer"] = "\n\n----------------------------------------\n\nForum rules: %1\$s \n\nDescription of the features: %2\$s";
 $definitions["email.confirmEmail.subject"] = "%1\$s, please confirm your email address";
 $definitions["email.footer"] = "<p>(If you don't want to receive any emails like this again, you can <a href='%s'>change your notification preferences</a>.)</p>";
 $definitions["email.forgotPassword.body"] = "<p>Someone (hopefully you!) has submitted a forgotten password request for your account on the forum '%1\$s'. If you do not wish to change your password, just ignore this email and nothing will happen.</p><p>However, if you did forget your password and wish to set a new one, visit the following link:<br>%2\$s</p>";
