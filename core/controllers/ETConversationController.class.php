@@ -1336,7 +1336,8 @@ public function showPost($postId = false)
  */
 protected function formatPostForTemplate($post, $conversation)
 {
-	if ($post["deleteMemberId"] && !$conversation["canModerate"]) {
+	$canViewDeleted = ($conversation["canModerate"] || $post["deleteMemberId"] == ET::$session->userId);
+	if ($post["deleteMemberId"] && !$canViewDeleted) {
 		return false;
 	}
 	
@@ -1346,7 +1347,7 @@ protected function formatPostForTemplate($post, $conversation)
 	$relativePostIdShortURL = postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"], false);
 	$replies = "";
 	$repliesCount = 0;
-	if (!$post["deleteMemberId"] || $conversation["canModerate"]) {
+	if (!$post["deleteMemberId"] || $canViewDeleted) {
 		$quotes = ET::postModel()->getPostQuotes((int)$conversation["conversationId"], (int)$post["relativePostId"]);
 		$repliesCount = count($quotes);
 		$replies = T("conversation.replies");
@@ -1366,7 +1367,7 @@ protected function formatPostForTemplate($post, $conversation)
 		"info" => array(),
 		"controls" => array(),
 		"bodyClass" => $post["deleteMemberId"] ? array("deleted") : array(),
-		"body" => !$post["deleteMemberId"] || $conversation["canModerate"] ? $this->displayPost($post["content"], $conversation["conversationId"], $post["relativePostId"]) : false,
+		"body" => !$post["deleteMemberId"] || $canViewDeleted ? $this->displayPost($post["content"], $conversation["conversationId"], $post["relativePostId"]) : false,
 		"repliesCount" => $repliesCount,
 		"replies" => $replies,
 
@@ -1460,7 +1461,7 @@ protected function formatPostForTemplate($post, $conversation)
 		if ($canEdit)
 			$formatted["controls"][] = "<a href='".URL("conversation/restorePost/".$relativePostIdShortURL."?token=".ET::$session->token)."' title='".T("Restore")."' class='control-restore'><i class='icon-reply'></i></a>";
 			
-		if ($conversation["canModerate"]) 
+		if ($canViewDeleted) 
 			$formatted["controls"][] = "<a href='#' title='".T("View")."' class='control-view'><i class='icon-eye-open'></i></a>";
 
 	}
