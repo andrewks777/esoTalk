@@ -81,7 +81,7 @@ public function format()
 	$this->links();
 
 	// Format bullet and numbered lists.
-	$this->lists();
+	//$this->lists();
 
 	// Trigger the "format" event, where all regular formatting can be applied (bold, italic, etc.)
 	$this->trigger("format");
@@ -376,7 +376,7 @@ public function quotes()
 {
 	// Starting from the innermost quote, work our way to the outermost, replacing them one-by-one using a
 	// callback function. This is the only simple way to do nested quotes without a lexer.
-	$regexp = "/(.*?)\n?\[quote(?:=(.*?)(]?))?\]\n?(.*?)\n?\[\/quote\]\n{0,2}/ise";
+	$regexp = "/(\n?)\[quote(?:=(.*?)(]?))?\]\n?(.*?)\n?\[\/quote\]\n{0,2}/ise";
 	while (preg_match($regexp, $this->content)) {
 		$this->content = preg_replace($regexp, "'$1</p>'.\$this->makeQuote('$4', '$2$3').'<p>'", $this->content);
 	}
