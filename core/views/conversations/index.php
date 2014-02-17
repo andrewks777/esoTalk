@@ -18,7 +18,7 @@ if (!defined("IN_ESOTALK")) exit;
 <a class='control-start-search' href='<?php echo URL("conversations/".$data["channelSlug"]); ?>'><i class='icon-search'></i></a>
 <input name='search' type='text' class='text' value='<?php echo sanitizeHTML($data["searchString"]); ?>' spellcheck='false' placeholder='<?php echo T("Filter conversations..."); ?>'/>
 <a class='control-reset' href='<?php echo URL("conversations/".$data["channelSlug"]); ?>'><i class='icon-remove'></i></a>
-<div class='search-controls-prop'/>
+<div class='search-controls-prop'></div>
 </fieldset>
 </form>
 
