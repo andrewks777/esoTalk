@@ -228,6 +228,7 @@ function sendEmail($to, $subject, $body, $forceHTML = false)
 			$mail->IsSMTP();
 			$mail->SMTPDebug = $config["smtp.debug"];
 			$mail->SMTPAuth = $config["smtp.auth"];
+			if (isset($config["smtp.secure"])) $mail->SMTPSecure = $config["smtp.secure"];
 			$mail->Host = $config["smtp.host"];
 			$mail->Port = $config["smtp.port"];
 			$mail->Username = $config["smtp.username"];
