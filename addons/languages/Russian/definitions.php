@@ -481,7 +481,7 @@ $definitions["message.incorrectLogin"] = "Ваш логин неправильн
 $definitions["message.incorrectPassword"] = "Ваш пароль неправильный.";
 $definitions["message.installerAdminHelp"] = "Форум esoTalk будет использовать эту информацию для настройки аккаунта Администратора форума.";
 $definitions["message.installerFilesNotWritable"] = "Форум esoTalk не имеет прав записи в эти файлы/папки: <strong>%s</strong>.<br/><small>Чтобы исправить это, Вам нужно перейти к этим файлам/папкам в FTP клиенте и выполнить на них команду <strong>chmod</strong> изменив права доступа на <strong>777</strong>.</small>";
-$definitions["message.installerMySQLHelp"] = "Форуму esoTalk необходим доступ к базе MySQL для хранения сообщений и других данных форума. Если Вы не уверены в параметрах доступа, то проконсультируйтесь с вашим администратором или хостинг-провайдером.";
+$definitions["message.installerMySQLHelp"] = "Форуму esoTalk необходим доступ к базе MySQL для хранения сообщений и других данных форума. Если Вы не уверены в параметрах доступа, то проконсультируйтесь с Вашим администратором или хостинг-провайдером.";
 $definitions["message.installerWelcome"] = "<p>Добро пожаловать в установщик форума esoTalk! Нам необходимо уточнить у Вас некоторые параметры для установки форума.</p>\n<p>Если у Вас возникнут трудности в установке, обращайтесь за помощью на <a href='%s'>форум поддержки esoTalk</a>.</p>";
 $definitions["message.invalidChannel"] = "Вы выбрали неправильный канал!";
 $definitions["message.invalidEmail"] = "Этот e-mail адрес неправильный.";
@@ -529,7 +529,7 @@ $definitions["message.safeModeWarning"] = "<strong>Безопасный режи
 $definitions["message.searchAllConversations"] = "Попробуйте поискать это значение по всем обсуждениям.";
 $definitions["message.setNewPassword"] = "Какой Вы хотите установить новый пароль?";
 $definitions["message.skinUninstalled"] = "Тема оформления была удалена.";
-$definitions["message.suspended"] = "Администрация форума <strong>заблокировала</strong> ваш аккаунт.";
+$definitions["message.suspended"] = "Администрация форума <strong>заблокировала</strong> Ваш аккаунт.";
 $definitions["message.suspendMemberHelp"] = "Блокировка аккаунта %s запретит ему участвовать в обсуждениях на форуме. После этого аккаунт будет иметь привилегии гостя форума.";
 $definitions["message.tablePrefixConflict"] = "Установщик определил, что другая инсталяция esoTalk использует ту же MySQL базу с аналогичными таблицами.<br/>Чтобы перезаписать (удалить) эту инсталяцию esoTalk, нажмите 'Установить мой форум' снова.<strong>Все данные будут утеряны!</strong><br/>Если Вы хотите создать другую инсталяцию esoTalk вместе с существующей, <strong>измените префикс таблиц</strong>.";
 $definitions["message.unsuspendMemberHelp"] = "Разблокировка аккаунта %s позволит ему снова участвовать в обсуждениях на форуме.";
@@ -544,13 +544,13 @@ $definitions["email.confirmEmail.disclaimer"] = "\n\n---------------------------
 $definitions["email.confirmEmail.subject"] = "Подтверждение регистрации пользователя %1\$s";
 $definitions["email.footer"] = "\n\nЕсли Вы не хотите получать никаких уведомлений, то <a href='%s'>нажмите тут</a>.";
 $definitions["email.forgotPassword.body"] = "Кто-то (надеемся, что Вы) разместил запрос на восстановление пароля к Вашему аккаунту на форуме '%1\$s'. Если это были не Вы, или у Вас нет желания менять пароль, то просто проигнорируйте это сообщение.\n\nЕсли же Вы действительно забыли пароль и хотите его поменять, то перейдите по этой ссылке:\n%2\$s";
-$definitions["email.forgotPassword.subject"] = "Вы забыли ваш пароль, %1\$s?";
+$definitions["email.forgotPassword.subject"] = "Вы забыли Ваш пароль, %1\$s?";
 $definitions["email.header"] = "Здравствуйте, %s!\n\n";
 $definitions["email.mention.body"] = "%1\$s упомянул Вас в сообщении в обсуждении '%2\$s'.\n\nДля просмотра этого сообщения перейдите по этой ссылке:\n%3\$s";
 $definitions["email.mention.subject"] = "%1\$s упомянул Вас в сообщении";
 $definitions["email.privateAdd.body"] = "Вас добавили к частному обсуждению, озаглавленному '%1\$s'.\n\nДля просмотра этого обсуждения перейдите по этой ссылке:\n%2\$s";
 $definitions["email.privateAdd.subject"] = "Вас добавили к частному обсуждению";
-$definitions["email.replyToStarred.body"] = "%1\$s ответил на сообщение из вашего избранного: '%2\$s'.\n\nДля просмотра этого сообщения перейдите по этой ссылке:\n%3\$s";
+$definitions["email.replyToStarred.body"] = "%1\$s ответил на сообщение из Вашего избранного: '%2\$s'.\n\nДля просмотра этого сообщения перейдите по этой ссылке:\n%3\$s";
 $definitions["email.replyToStarred.subject"] = "Есть новый ответ на '%1\$s'";
 
 // Translating the gambit system can be quite complex, but we'll do our best to get you through it. :)
