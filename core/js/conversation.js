@@ -453,12 +453,13 @@ startConversation: function(draft) {
 	var title = $("#conversationTitle input").val();
 	var content = $("#reply textarea").val();
 	var channel = $("#conversationHeader .channels :radio:checked").val();
+	var toKB = $("#conversationHeader input#toKB");
 
 	// Disable the post reply and save draft buttons.
 	$("#reply .postReply, #reply .saveDraft").disable();
 
 	// Make the ajax request.
-	var data = {title: title, content: content, channel: channel};
+	var data = {title: title, content: content, channel: channel, toKB: toKB};
 	if (draft) data.saveDraft = "1";
 	$.ETAjax({
 		url: "conversation/start.ajax",

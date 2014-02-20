@@ -438,6 +438,7 @@ public function start($member = false)
 			"title" => $_POST["title"],
 			"channelId" => ET::$session->get("channelId"),
 			"content" => $_POST["content"],
+			"KB" => (int)$form->getValue("toKB", 0),
 		), ET::$session->get("membersAllowed"), $form->isPostBack("saveDraft"));
 
 		if ($model->errorCount()) {
@@ -467,6 +468,7 @@ public function start($member = false)
 	$this->data("form", $form);
 	$this->data("membersAllowedForm", $membersAllowedForm);
 	$this->data("replyControls", $this->getEditControls("reply"));
+	$this->data("toKBCheckbox", true);
 
 	$this->render("conversation/edit");
 }

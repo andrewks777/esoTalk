@@ -28,9 +28,15 @@ echo $form->open(); ?>
 
 // Channel 
 $this->renderView("conversation/channelPath", array("conversation" => $conversation));
+
 ?>
 
 <a href='<?php echo URL("conversation/changeChannel/".$conversation["conversationId"]); ?>' id='control-changeChannel'><?php echo T("Change channel"); ?></a>
+
+<?php
+// toKB checkbox
+if ($data["toKBCheckbox"]) echo "<label class='checkbox checkboxInline'>".$form->checkbox("toKB")." ".T("toKB")."</label>";
+?>
 
 </div>
 

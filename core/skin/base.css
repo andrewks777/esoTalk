@@ -598,8 +598,10 @@ form {margin:0}
 
 input[type=checkbox], input[type=radio] {padding:0; margin:4px 2px 0 0; cursor:pointer; font-size:11px}
 .radio, .checkbox {padding-left:23px; display:block}
+.checkbox.checkboxInline {padding-left:33px; display:inline}
 .radio, .radio label, .checkbox, .checkbox label {cursor:pointer}
 .radio input[type=radio], .checkbox input[type=checkbox] {float:left; margin-left:-20px}
+.checkbox.checkboxInline input[type=checkbox] {float:none}
 
 input.error, input.error:focus {border-color:#f59e79 !important}
 .form div.error {color:#db3000; font-size:85%}
