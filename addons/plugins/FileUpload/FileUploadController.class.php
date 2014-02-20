@@ -114,6 +114,7 @@ class FileUploadController extends ETController {
 		);
 		
 		$upload_handler = new UploadHandler($options, false);
+		set_time_limit(60);
 		$upload_handler->post();
 		if ($addId) $model->insertUploads($upload_handler->uploaded_files, (int)$conversationId);
 		

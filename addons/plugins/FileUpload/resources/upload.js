@@ -23,6 +23,8 @@ $(function() {
 			var conversationId = 0;
 		}
 		elem.fileupload({
+			global: false,
+			timeout: 0,
 			url: ET.webPath + '/fileupload/upload/' + $(el).attr('data-uploadtype') + '/' + conversationId,
 			dataType: 'json',
 			//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
