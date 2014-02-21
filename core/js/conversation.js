@@ -453,7 +453,7 @@ startConversation: function(draft) {
 	var title = $("#conversationTitle input").val();
 	var content = $("#reply textarea").val();
 	var channel = $("#conversationHeader .channels :radio:checked").val();
-	var toKB = $("#conversationHeader input#toKB");
+	var toKB = $("#conversationHeader input[name=toKB]:checked").val();
 
 	// Disable the post reply and save draft buttons.
 	$("#reply .postReply, #reply .saveDraft").disable();
