@@ -1,5 +1,4 @@
 <?php
-// Copyright 2013 Toby Zerner, Simon Zerner
 // Copyright 2013 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 // Uses: DHTML Snowstorm! JavaScript-based Snow for web pages http://www.schillmania.com/projects/snowstorm/

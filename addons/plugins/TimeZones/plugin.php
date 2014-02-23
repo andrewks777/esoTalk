@@ -1,5 +1,4 @@
 <?php
-// Copyright 2013 Toby Zerner, Simon Zerner
 // Copyright 2013 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 
