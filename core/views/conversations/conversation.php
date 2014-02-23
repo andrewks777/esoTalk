@@ -17,7 +17,7 @@ $className = "channel-".$conversation["channelId"];
 if ($conversation["starred"]) $className .= " starred";
 if ($conversation["unread"] and ET::$session->user) $className .= " unread";
 if ($conversation["startMemberId"] == ET::$session->userId) $className .= " mine";
-if (C("esoTalk.conversation.popularTopicPostsCount") and $conversation["replies"] >= C("esoTalk.conversation.popularTopicPostsCount")) $className .= " popular";
+if (C("esoTalk.conversation.popularTopicPostsCount") and $conversation["replies"] >= C("esoTalk.conversation.popularTopicPostsCount") and !$conversation["locked"]) $className .= " popular";
 
 ?>
 <li id='c<?php echo $conversation["conversationId"]; ?>' class='<?php echo $className; ?>'>
