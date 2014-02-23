@@ -277,7 +277,7 @@ public function linksCallback($matches)
 			$height = 312; // vimeo value: 312
 			return "<div class='video'><iframe onerror='$onerror' src='//player.vimeo.com/video/$id' width='$width' height='$height' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>";
 		} else
-		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video([0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
+		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video(\-?[0-9]+)_([0-9]+)(?:\?(hash=[\S]*))/i", $matches[2], $vkvideo)) {
 			$oid = $vkvideo[1];
 			$id = $vkvideo[2];
 			$params = (count($vkvideo) >= 4) ? "&".$vkvideo[3] : "";
@@ -285,7 +285,7 @@ public function linksCallback($matches)
 			$height = 344; // vk.com value: 410
 			return "<div class='video'><iframe onerror='$onerror' width='$width' height='$height' src='http://vk.com/video_ext.php?oid=$oid&id=$id$params' frameborder='0'></iframe></div>";
 		} else
-		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video_ext\.php\?oid=([0-9]+)&amp;id=([0-9]+)(&amp;hash=[\S]*)/i", $matches[2], $vkvideo)) {
+		if (C("esoTalk.format.vkvideo") and preg_match("/^vk\.com\/video_ext\.php\?oid=(\-?[0-9]+)&amp;id=([0-9]+)(&amp;hash=[\S]*)/i", $matches[2], $vkvideo)) {
 			$oid = $vkvideo[1];
 			$id = $vkvideo[2];
 			$params = (count($vkvideo) >= 4) ? $vkvideo[3] : "";
