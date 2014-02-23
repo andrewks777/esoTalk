@@ -28,3 +28,9 @@ $definitions["plugin.FileUpload.message.invalidUploadType"] = "Invalid upload ty
 $definitions["plugin.FileUpload.message.logInToDownload"] = "<a href='%1\$s' class='link-login'>Log In</a> or <a href='%2\$s' class='link-join'>Sign Up</a> to download this file!";
 $definitions["plugin.FileUpload.message.noPermissionToDownload"] = "You don't have permission to download this file.";
 $definitions["plugin.FileUpload.message.fileNotFound"] = "File not found.";
+
+$definitions["plugin.FileUpload.message.vendor.uploadedBytes"] = "Uploaded bytes exceed file size";
+$definitions["plugin.FileUpload.message.vendor.maxNumberOfFiles"] = "Maximum number of files exceeded";
+$definitions["plugin.FileUpload.message.vendor.acceptFileTypes"] = "File type not allowed (allowed: %3)";
+$definitions["plugin.FileUpload.message.vendor.maxFileSize"] = "File is too large";
+$definitions["plugin.FileUpload.message.vendor.minFileSize"] = "File is too small";

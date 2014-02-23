@@ -1,6 +1,6 @@
 <?php
 /*
- * jQuery File Upload Plugin PHP Class 7.1.4
+ * jQuery File Upload Plugin PHP Class 7.0.1
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2010, Sebastian Tschan
@@ -35,9 +35,7 @@ class UploadHandler
         'max_width' => 'Image exceeds maximum width',
         'min_width' => 'Image requires a minimum width',
         'max_height' => 'Image exceeds maximum height',
-        'min_height' => 'Image requires a minimum height',
-        'abort' => 'File upload aborted',
-        'image_resize' => 'Failed to resize image'
+        'min_height' => 'Image requires a minimum height'
     );
 
     protected $image_objects = array();
@@ -231,8 +229,7 @@ class UploadHandler
         if (!$direct && $this->options['download_via_php']) {
             $url = $this->options['script_url']
                 .$this->get_query_separator($this->options['script_url'])
-                .$this->get_singular_param_name()
-                .'='.rawurlencode($file_name);
+                .'file='.rawurlencode($file_name);
             if ($version) {
                 $url .= '&version='.rawurlencode($version);
             }
@@ -276,13 +273,10 @@ class UploadHandler
 
     protected function get_file_size($file_path, $clear_stat_cache = false) {
         if ($clear_stat_cache) {
-            if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-                clearstatcache(true, $file_path);
-            } else {
-                clearstatcache();
-            }
+            clearstatcache(true, $file_path);
         }
         return $this->fix_integer_overflow(filesize($file_path));
+
     }
 
     protected function is_valid_file_object($file_name) {
@@ -385,10 +379,9 @@ class UploadHandler
             $file->error = $this->get_error_message('min_file_size');
             return false;
         }
-        if (is_int($this->options['max_number_of_files']) &&
-                ($this->count_file_objects() >= $this->options['max_number_of_files']) &&
-                // Ignore additional chunks of existing files:
-                !is_file($this->get_upload_path($file->name))) {
+        if (is_int($this->options['max_number_of_files']) && (
+                $this->count_file_objects() >= $this->options['max_number_of_files'])
+            ) {
             $file->error = $this->get_error_message('max_number_of_files');
             return false;
         }
@@ -435,8 +428,8 @@ class UploadHandler
         );
     }
 
-    protected function get_unique_filename($file_path, $name, $size, $type, $error,
-            $index, $content_range) {
+    protected function get_unique_filename($name,
+            $type = null, $index = null, $content_range = null) {
         while(is_dir($this->get_upload_path($name))) {
             $name = $this->upcount_name($name);
         }
@@ -452,8 +445,8 @@ class UploadHandler
         return $name;
     }
 
-    protected function trim_file_name($file_path, $name, $size, $type, $error,
-            $index, $content_range) {
+    protected function trim_file_name($name,
+            $type = null, $index = null, $content_range = null) {
         // Remove path information and dots around the filename, to prevent uploading
         // into different directories or replacing hidden system files.
         // Also remove control characters and spaces (\x00..\x20) around the filename:
@@ -464,33 +457,10 @@ class UploadHandler
         }
         // Add missing file extension for known image types:
         if (strpos($name, '.') === false &&
-                preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)) {
+            preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)) {
             $name .= '.'.$matches[1];
         }
-        if (function_exists('exif_imagetype')) {
-            switch(@exif_imagetype($file_path)){
-                case IMAGETYPE_JPEG:
-                    $extensions = array('jpg', 'jpeg');
-                    break;
-                case IMAGETYPE_PNG:
-                    $extensions = array('png');
-                    break;
-                case IMAGETYPE_GIF:
-                    $extensions = array('gif');
-                    break;
-            }
-            // Adjust incorrect image file extensions:
-            if (!empty($extensions)) {
-                $parts = explode('.', $name);
-                $extIndex = count($parts) - 1;
-                $ext = strtolower(@$parts[$extIndex]);
-                if (!in_array($ext, $extensions)) {
-                    $parts[$extIndex] = $extensions[0];
-                    $name = implode('.', $parts);
-                }
-            }
-        }
-		
+        
 		// translit unicode names
 		// Notice! Depend on the bundled 'intl' (Internationalization extension) package; PHP >= 5.4.0, PECL intl >= 2.0.0
 		// See: http://www.php.net/manual/transliterator.transliterate.php
@@ -501,18 +471,14 @@ class UploadHandler
 			$name = preg_replace(array("/([^\w\s\d\-_~,\.;\[\]\(\)])/", "/(\.{2,})/", "/^(\.)/"), array('', '.', ''), $name); // sanitizeFileName
 		}
 		
-        return $name;
+		return $name;
     }
 
-    protected function get_file_name($file_path, $name, $size, $type, $error,
-            $index, $content_range) {
+    protected function get_file_name($name,
+            $type = null, $index = null, $content_range = null) {
         return $this->get_unique_filename(
-            $file_path,
-            $this->trim_file_name($file_path, $name, $size, $type, $error,
-                $index, $content_range),
-            $size,
+            $this->trim_file_name($name, $type, $index, $content_range),
             $type,
-            $error,
             $index,
             $content_range
         );
@@ -1022,12 +988,19 @@ class UploadHandler
                     $file->size = $this->get_file_size($file_path, true);
                 }
             } else {
-                $failed_versions[] = $version ? $version : 'original';
+                $failed_versions[] = $version;
             }
         }
-        if (count($failed_versions)) {
-            $file->error = $this->get_error_message('image_resize')
-                    .' ('.implode($failed_versions,', ').')';
+        switch (count($failed_versions)) {
+            case 0:
+                break;
+            case 1:
+                $file->error = 'Failed to create scaled version: '
+                    .$failed_versions[0];
+                break;
+            default:
+                $file->error = 'Failed to create scaled versions: '
+                    .implode($failed_versions,', ');
         }
         // Free memory:
         $this->destroy_image_object($file_path);
@@ -1037,8 +1010,7 @@ class UploadHandler
             $index = null, $content_range = null) {
         $file = new stdClass();
 		$file->origName = htmlentities($name, ENT_QUOTES, "UTF-8"); // sanitizeHTML
-        $file->name = $this->get_file_name($uploaded_file, $name, $size, $type, $error,
-            $index, $content_range);
+        $file->name = $this->get_file_name($name, $type, $index, $content_range);
         $file->size = $this->fix_integer_overflow(intval($size));
         $file->type = $type;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
@@ -1085,11 +1057,12 @@ class UploadHandler
                 $file->size = $file_size;
                 if (!$content_range && $this->options['discard_aborted_uploads']) {
                     unlink($file_path);
-                    $file->error = $this->get_error_message('abort');
+                    $file->error = 'abort';
                 }
             }
             $this->set_additional_file_properties($file);
         }
+		
         return $file;
     }
 
@@ -1320,8 +1293,8 @@ class UploadHandler
                 $content_range
             );
         }
-		$this->uploaded_files = $files;
-        return $this->generate_response(
+        $this->uploaded_files = $files;
+		return $this->generate_response(
             array($this->options['param_name'] => $files),
             $print_response
         );

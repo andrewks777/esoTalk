@@ -1,5 +1,4 @@
 <?php
-// Copyright 2013 Toby Zerner, Simon Zerner
 // Copyright 2013 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 // Uses: jQuery File Upload https://github.com/blueimp/jQuery-File-Upload
@@ -78,15 +77,54 @@ class ETPlugin_FileUpload extends ETPlugin {
 	}
 
 
+	protected function getFileTypesJS($fileTypesName)
+	{
+		$allowedFileTypes = C($fileTypesName);
+		if (!isset($allowedFileTypes)) $allowedFileTypes = array();
+		$pattern = '.+$'; // all
+		$types = '';
+		if ($allowedFileTypes) {
+			if (count($allowedFileTypes)) {
+				$pattern = '\\.('.implode('|', $allowedFileTypes).')$';
+				$types = implode(' ', $allowedFileTypes);
+			}
+		}
+		
+		return array('types' => $types, 'pattern' => $pattern);
+	}
+	
+	
 	protected function addResources($sender)
 	{
 		$groupKey = 'FileUpload';
+		$sender->addJSVar("fileUploadPluginMaxFileSize", C("plugin.FileUpload.maxFileSize"));
+		$fileTypes = array(
+			'image' => $this->getFileTypesJS("plugin.FileUpload.allowedImageTypes"),
+			'archive' => $this->getFileTypesJS("plugin.FileUpload.allowedArchiveTypes"),
+			'file' => $this->getFileTypesJS("plugin.FileUpload.allowedFileTypes")
+		);
+		$sender->addJSVar("fileUploadPluginAllowedTypes", $fileTypes);
 		$sender->addJSFile($this->getResource("vendor/jquery.ui.widget.js"), false, $groupKey);
 		$sender->addJSFile($this->getResource("vendor/jquery.iframe-transport.js"), false, $groupKey);
 		$sender->addJSFile($this->getResource("vendor/jquery.fileupload.js"), false, $groupKey);
+		$sender->addJSFile($this->getResource("vendor/jquery.fileupload-process.js"), false, $groupKey);
+		$sender->addJSFile($this->getResource("vendor/jquery.fileupload-validate.js"), false, $groupKey);
 		$sender->addJSFile($this->getResource("upload.js"), false, $groupKey);
 		$sender->addCSSFile($this->getResource("upload.css"), false, $groupKey);
-		$sender->addJSLanguage("plugin.FileUpload.message.serverDisconnected.file", "plugin.FileUpload.message.serverDisconnected.image", "plugin.FileUpload.message.serverDisconnected.archive", "plugin.FileUpload.uploadTitle", "plugin.FileUpload.message.uploadError.file", "plugin.FileUpload.message.uploadError.image", "plugin.FileUpload.message.uploadError.archive");
+		$sender->addJSLanguage(
+			"plugin.FileUpload.message.serverDisconnected.file",
+			"plugin.FileUpload.message.serverDisconnected.image",
+			"plugin.FileUpload.message.serverDisconnected.archive",
+			"plugin.FileUpload.uploadTitle",
+			"plugin.FileUpload.message.uploadError.file",
+			"plugin.FileUpload.message.uploadError.image",
+			"plugin.FileUpload.message.uploadError.archive",
+			"plugin.FileUpload.message.vendor.uploadedBytes",
+			"plugin.FileUpload.message.vendor.maxNumberOfFiles",
+			"plugin.FileUpload.message.vendor.acceptFileTypes",
+			"plugin.FileUpload.message.vendor.maxFileSize",
+			"plugin.FileUpload.message.vendor.minFileSize"
+		);
 		
 	}
 

@@ -28,3 +28,10 @@ $definitions["plugin.FileUpload.message.invalidUploadType"] = "Неверный 
 $definitions["plugin.FileUpload.message.logInToDownload"] = "<a href='%1\$s' class='link-login'>Войдите</a> или <a href='%2\$s' class='link-join'>зарегистрируйтесь</a> чтобы скачать данный файл!";
 $definitions["plugin.FileUpload.message.noPermissionToDownload"] = "У Вас нет разрешения для скачки данного файла.";
 $definitions["plugin.FileUpload.message.fileNotFound"] = "Файл не найден.";
+
+$definitions["plugin.FileUpload.message.vendor.uploadedBytes"] = "Размер загруженных данных превысил размер файла";
+$definitions["plugin.FileUpload.message.vendor.maxNumberOfFiles"] = "Превышено максимальное количество файлов";
+$definitions["plugin.FileUpload.message.vendor.acceptFileTypes"] = "Недопустимый тип файла (допустимые: %3)";
+$definitions["plugin.FileUpload.message.vendor.maxFileSize"] = "Файл слишком большой";
+$definitions["plugin.FileUpload.message.vendor.minFileSize"] = "Файл слишком маленький";
+

@@ -15,8 +15,34 @@ $(function() {
 		return uuid;
 	}
 	
+	function extractError(uploadType, fileTypes, file, errorText) {
+		var errDesc = T("plugin.FileUpload.message.uploadError." + uploadType);
+		var name = file.name;
+		if (typeof(file.origName) != 'undefined') name = file.origName;
+		errDesc = errDesc.replace('%1', name).replace('%2', file.error).replace('%3', fileTypes);
+		return (errorText != '' ? '<br>' : '') + errorText + errDesc + '';
+	}
+	
+	function showError(errorText) {
+		if (errorText != '') {
+			ETMessages.showMessage(errorText, {className: "warning dismissable", id: "fileUploadFail-" + createUUID()});
+		}
+	}
+	
 	function onFileUploadClick(e, el) {
 		var elem = $(el);
+		var uploadType = $(el).attr('data-uploadtype');
+		var fileTypes = undefined;
+		if (typeof(ET.fileUploadPluginAllowedTypes[uploadType]) != 'undefined') fileTypes = ET.fileUploadPluginAllowedTypes[uploadType];
+		var fileTypesPattern = undefined;
+		var fileTypesStr = undefined;
+		if (fileTypes) {
+			if (typeof(fileTypes['pattern']) != 'undefined') fileTypesPattern = fileTypes['pattern'];
+			if (fileTypes) if (typeof(fileTypes['types']) != 'undefined') fileTypesStr = fileTypes['types'];
+		}
+		var fileTypesRegexp = undefined;
+		if (fileTypesPattern) fileTypesRegexp = new RegExp(fileTypesPattern, 'i');
+		
 		try {
 			var conversationId = ETConversation.id;
 		} catch(e) {
@@ -25,9 +51,18 @@ $(function() {
 		elem.fileupload({
 			global: false,
 			timeout: 0,
-			url: ET.webPath + '/fileupload/upload/' + $(el).attr('data-uploadtype') + '/' + conversationId,
+			url: ET.webPath + '/fileupload/upload/' + uploadType + '/' + conversationId,
 			dataType: 'json',
 			//acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+			acceptFileTypes: fileTypesRegexp,
+			maxFileSize: ET.fileUploadPluginMaxFileSize,
+			messages: {
+				uploadedBytes: T("plugin.FileUpload.message.vendor.uploadedBytes"),
+				maxNumberOfFiles: T("plugin.FileUpload.message.vendor.maxNumberOfFiles"),
+				acceptFileTypes: T("plugin.FileUpload.message.vendor.acceptFileTypes"),
+				maxFileSize: T("plugin.FileUpload.message.vendor.maxFileSize"),
+				minFileSize: T("plugin.FileUpload.message.vendor.minFileSize"),
+			},
 			start: function (e, data) {
 				for (var msg in ETMessages.messages) {
 					if (msg.indexOf('fileUploadFail-') == 0) ETMessages.hideMessage(msg);
@@ -47,11 +82,7 @@ $(function() {
 
 				$.each(data.result.files, function (index, file) {
 					if (typeof(file.error) != 'undefined') {
-						var errDesc = T("plugin.FileUpload.message.uploadError." + elem.attr('data-uploadtype'));
-						var name = file.name;
-						if (typeof(file.origName) != 'undefined') name = file.origName;
-						errDesc = errDesc.replace('%1', name).replace('%2', file.error);
-						errorText = (errorText != '' ? '<br>' : '') + errorText + errDesc + '';
+						errorText = extractError(uploadType, fileTypesStr, file, errorText);
 					} else if (typeof(file.url) != 'undefined') {
 						var title = '';
 						if (typeof(file.origName) != 'undefined') title = file.origName;
@@ -71,15 +102,24 @@ $(function() {
 					ETConversation.replaceText(textarea, insertText);
 					textarea.trigger('input');
 				}
-				if (errorText != '') {
-					ETMessages.showMessage(errorText, {className: "warning dismissable", id: "fileUploadFail-" + createUUID()});
-				}
+				showError(errorText);
 			},
 			fail: function (e, data) {
 				ETMessages.showMessage(T("plugin.FileUpload.message.serverDisconnected." + $(this).attr('data-uploadtype')), {className: "warning dismissable", id: "fileUploadFail"});
 			},
 			progressall: function (e, data) {
 				//var progress = parseInt(data.loaded / data.total * 100, 10);
+			},
+			processfail: function (e, data) {
+				var errorText = '';
+
+				$.each(data.files, function (index, file) {
+					if (typeof(file.error) != 'undefined') {
+						errorText = extractError(uploadType, fileTypesStr, file, errorText);
+					}
+				});
+				
+				showError(errorText);
 			}
 
 		});
