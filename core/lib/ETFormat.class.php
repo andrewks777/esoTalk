@@ -218,7 +218,7 @@ public function links()
 	
 	// Convert mini-quotes
 	$this->content = preg_replace_callback(
-		"/\((0|[1-9]{1,1}\d*)\)/",
+		"/(?<=\s|^|\))\((0|[1-9]{1,1}\d*)\)/",
 		array($this, "linksCallback2"), $this->content);
 
 	return $this;
