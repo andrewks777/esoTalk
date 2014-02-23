@@ -49,7 +49,7 @@ class ETPlugin_MemberNotifications extends ETPlugin {
 		$starred = @$member["follow"];
 		
 		$url = URL("member/follow/".$member["memberId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL));
-		$actions->add("follow", "<a href='$url' class='button' title='".T("Follow to receive notifications")."' data-id='{$member["memberId"]}'><i class='star icon-star".($starred ? "" : "-empty")."'></span> <span>".($starred ? T("Following") : T("Follow"))."</span></a>", 0);
+		$actions->add("follow", "<a href='$url' class='button' title='".T("Follow to receive notifications")."' data-id='{$member["memberId"]}'><i class='star icon-star".($starred ? "" : "-empty")."'></i> <span>".($starred ? T("Following") : T("Follow"))."</span></a>", 0);
 	}
 
 	// Add an action to toggle the following status of a member.
@@ -147,7 +147,7 @@ class ETPlugin_MemberNotifications extends ETPlugin {
 	// Format the postMember email.
 	public static function postMemberEmail($item, $member)
 	{
-		$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+		$content = ET::formatter()->init($item["data"]["content"])->format()->get();
 		$url = URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"])."/unread", true);
 		return array(
 			sprintf(T("email.postMember.subject"), name($item["fromMemberName"], false)),

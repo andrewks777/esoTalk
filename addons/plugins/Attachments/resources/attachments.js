@@ -9,7 +9,7 @@ $(function() {
 			debug: true,
 			button: $post.find('.attachments-button')[0],
 			request: {
-				endpoint: ET.webPath+'/attachment/upload',
+				endpoint: ET.webPath+'/?p=attachment/upload',
 				params: {
 					postId: postId == "reply" ? (ETConversation.id ? "c"+ETConversation.id : "c0") : postId
 				}
@@ -33,7 +33,7 @@ $(function() {
 				onComplete: function(id, fileName, responseJSON) {
 					if (responseJSON.success) {
 						$('#file-'+postId+'-' + id).removeClass('attachment-uploading')
-							.html('<a href="#" class="control-delete" title="Delete" data-id="'+id+'">Delete</a> <strong>' + fileName + '</strong>');
+							.html('<a href="#" class="control-delete" title="Delete" data-id="'+id+'"><i class="icon-remove"></i></a> <strong>' + fileName + '</strong>');
 					} else {
 						$('#file-'+postId+'-' + id).remove();
 						ETMessages.showMessage('Error uploading "'+fileName+'": '+responseJSON.error, {className: "warning dismissable", id: "attachmentUploadError"});
