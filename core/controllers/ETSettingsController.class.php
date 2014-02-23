@@ -136,6 +136,12 @@ public function general()
 	$form->setValue("loadConversationMode", ET::$session->preference("loadConversationMode"));
 	$form->addField("loadConversation", "loadConversationMode", array($this, "fieldLoadConversationMode"), array($this, "savePreference"));
 	
+	$form->addSection("loadPosts", T("settings.loadPosts.label"));
+	
+	// Add the "load posts" field.
+	$form->setValue("autoLoadNextPagePosts", ET::$session->preference("autoLoadNextPagePosts"));
+	$form->addField("loadPosts", "autoLoadNextPagePosts", array($this, "fieldAutoLoadNextPagePosts"), array($this, "saveBoolPreference"));
+	
 	$form->addSection("multimediaEmbedding", T("settings.multimediaEmbedding.label"));
 	
 	// Add the "multimedia embedding" field.
@@ -368,6 +374,19 @@ public function fieldMainPageRefreshMode($form)
 public function fieldLoadConversationMode($form)
 {
 	return "<table><tr><td><label>".$form->radio("loadConversationMode", "top").T("setting.loadConversationMode.top")."</label></td><td style='width:10px'></td><td><label>".$form->radio("loadConversationMode", "unread").T("setting.loadConversationMode.unread")."</label></td><td style='width:10px'></td><td><label>".$form->radio("loadConversationMode", "bottom").T("setting.loadConversationMode.bottom")."</label></td></tr></table>";
+}
+
+
+/**
+ * Return the HTML to render the "fieldAutoLoadNextPagePosts" field in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldAutoLoadNextPagePosts($form)
+{
+	return "<label class='checkbox'>".$form->checkbox("autoLoadNextPagePosts")." ".T("setting.autoLoadNextPagePosts.label")."</label>";
 }
 
 

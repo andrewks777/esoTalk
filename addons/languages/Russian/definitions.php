@@ -634,6 +634,9 @@ $definitions["setting.loadConversationMode.top"] = "в начало";
 $definitions["setting.loadConversationMode.unread"] = "к непрочитанному";
 $definitions["setting.loadConversationMode.bottom"] = "в конец";
 
+$definitions["settings.loadPosts.label"] = "Загрузка сообщений";
+$definitions["setting.autoLoadNextPagePosts.label"] = "Автоматическая загрузка следующей страницы сообщений";
+
 $definitions["settings.multimediaEmbedding.label"] = "Встраивание мультимедиа";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "Запретить встраивание мультимедиа";
 

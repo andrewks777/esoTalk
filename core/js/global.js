@@ -829,7 +829,6 @@ $(function() {
 		e.preventDefault();
 	});
 	
-	//var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList li .col-conversation a";
 	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post";
 	$(miniQuoteId).live("mouseenter", function(e) {
 		e.preventDefault();
@@ -855,10 +854,6 @@ $(function() {
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
-		/*var em = e.parent().parent();
-		if (em.prop("class") == "col-conversation") {
-			$("#postToolTip").remove();
-		}*/
 	});
 	
 	$(miniQuoteId).live("click", function(e) {

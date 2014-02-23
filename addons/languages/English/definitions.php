@@ -560,6 +560,9 @@ $definitions["setting.loadConversationMode.top"] = "go to beginning";
 $definitions["setting.loadConversationMode.unread"] = "go to the unread";
 $definitions["setting.loadConversationMode.bottom"] = "go to ending";
 
+$definitions["settings.loadPosts.label"] = "Posts loading";
+$definitions["setting.autoLoadNextPagePosts.label"] = "Automatic loading of the next page of posts";
+
 $definitions["settings.multimediaEmbedding.label"] = "Multimedia embedding";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "To forbid multimedia embedding";
 

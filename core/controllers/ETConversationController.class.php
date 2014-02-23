@@ -252,6 +252,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		$this->addJSVar("conversationUpdateIntervalLimit", C("esoTalk.conversation.updateIntervalLimit"));
 		$this->addJSVar("mentions", C("esoTalk.format.mentions"));
 		$this->addJSVar("time", time());
+		$this->addJSVar("autoLoadNextPagePosts", ET::$session->preference("autoLoadNextPagePosts", true));
 		$this->addJSFile("core/js/lib/jquery.ui.js");
 		$this->addJSFile("core/js/lib/jquery.autogrow.js");
 		$this->addJSFile("core/js/scrubber.js");
