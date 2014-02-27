@@ -297,7 +297,7 @@ public function linksCallback($matches)
 	}
 	
 	$url = ($matches[1] ? $matches[1] : "http://").$matches[2];
-	$matches2_decoded = sanitizeHTML(urldecode($matches[2]));
+	$matches2_decoded = sanitizeHTML2(ansi_to_utf8(urldecode($matches[2])));
 	$url_decoded = ($matches[1] ? $matches[1] : "http://").$matches2_decoded;
 	
 	if (C("esoTalk.format.wikipedia") and preg_match("/^[a-z]{2,2}\.wikipedia\.org\/wiki\/([\S]+)/iu", $matches2_decoded, $wiki)) {
