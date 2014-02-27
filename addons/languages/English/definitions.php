@@ -122,6 +122,7 @@ $definitions["Delete member"] = "Delete member";
 $definitions["Delete Member"] = "Delete Member";
 $definitions["<strong>Delete this member's posts.</strong> All of this member's posts will be marked as deleted, but will be able to be restored manually."] = "<strong>Delete this member's posts.</strong> All of this member's posts will be marked as deleted, but will be able to be restored manually.";
 $definitions["Delete"] = "Delete";
+$definitions["deleted"] = "deleted";
 $definitions["Deleted %s by %s"] = "Deleted %s by %s";
 $definitions["Disable"] = "Disable";
 $definitions["Discard Draft"] = "Discard Draft";
@@ -350,6 +351,9 @@ $definitions["Yes"] = "Yes";
 $definitions["You can manage channel-specific permissions on the channels page."] = "You can manage channel-specific permissions on the channels page.";
 $definitions["Your current password"] = "Your current password";
 
+// Posts
+$definitions["post.byAuthor"] = "author";
+$definitions["post.byAdministrator"] = "administrator";
 
 // Messages.
 $definitions["message.404"] = "Oh dear - the page you requested could not be found! Try going back and clicking a different link. Or something else.";

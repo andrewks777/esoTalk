@@ -1340,7 +1340,7 @@ public function showPost($postId = false)
 protected function formatPostForTemplate($post, $conversation)
 {
 	$canViewDeleted = ($conversation["canModerate"] || $post["deleteMemberId"] == ET::$session->userId);
-	if ($post["deleteMemberId"] && !$canViewDeleted) {
+	if ($post["deleteMemberId"] && !ET::$session->user) {
 		return false;
 	}
 	
@@ -1360,10 +1360,16 @@ protected function formatPostForTemplate($post, $conversation)
 		}
 	}
 	
+	if ($post["deleteMemberId"] and !$canEdit and !$canViewDeleted) {
+		$post["username"] = null;
+		$post["deleteMemberName"] = null;
+		$memberLink = memberLink(null);
+	} else $memberLink = memberLink($post["memberId"], $post["username"]);
+	
 	// Construct the post array for use in the post view (conversation/post).
 	$formatted = array(
 		"id" => "p".$relativePostIdShortURL,
-		"title" => "<a id='relativePostId' href='".URL(postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"]))."'>#".$post["relativePostId"]."</a>\n".memberLink($post["memberId"], $post["username"]),
+		"title" => "<a id='relativePostId' href='".URL(postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"]))."'>#".$post["relativePostId"]."</a>\n".$memberLink,
 		"relativePostId" => (string)$post["relativePostId"], // relativePostId
 		"avatar" => (!$post["deleteMemberId"] and $avatar) ? "<a href='".URL(memberURL($post["memberId"], $post["username"]))."'>$avatar</a>" : false,
 		"class" => $post["deleteMemberId"] ? array("deleted") : array(),
@@ -1457,6 +1463,7 @@ protected function formatPostForTemplate($post, $conversation)
 				$whoisURL = getWhoisURL($ip);
 				$whoisLink = "\n"."<a href='".$whoisURL."' class='time'>".$ip."</a>";
 			} else $whoisLink = "";
+			if (!$canEdit and !$canViewDeleted) $post["deleteMemberName"] = ($post["memberId"] == $post["deleteMemberId"] ? T("post.byAuthor") : T("post.byAdministrator"));
 			$formatted["controls"][] = "<span>".sprintf(T("Deleted %s by %s"), "<span title='".date(T("date.full"), $post["deleteTime"])."'>".date("d.m.Y H:i:s", $post["deleteTime"]).$whoisLink."</span>", $post["deleteMemberName"])."</span>";
 		}
 		

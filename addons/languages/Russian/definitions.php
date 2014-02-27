@@ -162,6 +162,7 @@ $definitions["Delete member"] = "Удалить участника";
 $definitions["Delete Member"] = "Удалить участника";
 $definitions["<strong>Delete this member's posts.</strong> All of this member's posts will be marked as deleted, but will be able to be restored manually."] = "<strong>Удалить все сообщения данного участника.</strong> Все сообщения участника будут помечены удаленными, но смогут быть восстановлены вручную.";
 $definitions["Delete"] = "Удалить";
+$definitions["deleted"] = "удалено";
 $definitions["Deleted %s by %s"] = "%s удалено %s";
 $definitions["Disable"] = "Отключить";
 $definitions["Discard"] = "Удалить";
@@ -431,6 +432,10 @@ $definitions["Only allow members of this group to see who else is in it"] = "Т�
 $definitions["Members who are part of this group can be listed by searching for the group name in the member list."] = "Участники данной группы могут быть найдены поиском по имени группы в общем списке участников";
 $definitions["Hide"] = "Скрыть";
 $definitions["Unhide"] = "Показать";
+
+// Posts
+$definitions["post.byAuthor"] = "автором";
+$definitions["post.byAdministrator"] = "администратором";
 
 // Messages.
 $definitions["message.404"] = "Запрошенная Вами страница не найдена! Проверьте Ваш запрос или перейдите по другой ссылке.";
