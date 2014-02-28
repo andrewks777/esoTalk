@@ -1,5 +1,6 @@
 <?php
 // Copyright 2013 Toby Zerner, Simon Zerner
+// Copyright 2014 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 
 if (!defined("IN_ESOTALK")) exit;
@@ -13,9 +14,9 @@ $form = $data["wordFilterSettingsForm"];
 <ul class='form'>
 
 <li>
-<label>Word filters</label>
+<label><?php echo  T("plugin.WordFilter.wordFilters.label"); ?></label>
 <?php echo $form->input("filters", "textarea", array("style" => "height:200px; width:350px")); ?>
-<small>Enter each word on a new line. Optionally specify a replacement after a vertical bar (|) character; otherwise, the word will be replaced with asterisks (*). Words are case-insensitive. Regular expressions are allowed.</small>
+<small><?php echo  T("plugin.WordFilter.wordFilters.desc"); ?></small>
 </li>
 
 </ul>

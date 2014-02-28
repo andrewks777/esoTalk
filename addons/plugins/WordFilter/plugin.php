@@ -1,5 +1,6 @@
 <?php
 // Copyright 2011 Toby Zerner, Simon Zerner
+// Copyright 2014 andrewks
 // This file is part of esoTalk. Please see the included license file for usage information.
 
 if (!defined("IN_ESOTALK")) exit;
@@ -20,13 +21,16 @@ class ETPlugin_WordFilter extends ETPlugin {
 
 	public function handler_format_format($sender)
 	{
+		$disallow = ET::$session->preference("disallowWordFilter", false);
+		if ($disallow) return;
+
 		$filters = C("plugin.WordFilter.filters", array());
 
 		if (!count($filters)) return;
 
 		// Pass each instance of any filtered word to our callback.
 		$words = array_keys($filters);
-		$sender->content = preg_replace_callback('#\b('.implode('|', $words).')\b#i', array($this, "filterCallback"), $sender->content);
+		$sender->content = preg_replace_callback('#\b('.implode('|', $words).')\b#ium', array($this, "filterCallback"), $sender->content);
 	}
 
 
@@ -50,12 +54,42 @@ class ETPlugin_WordFilter extends ETPlugin {
 		elseif (!empty($filters[$map[strtolower($match)]])) $replacement = $filters[$map[strtolower($match)]];
 
 		// Otherwise, use asterisks.
-		else $replacement = str_repeat("*", strlen($match));
+		//else $replacement = str_repeat("*", strlen($match));
+		else $replacement = '[...]';
 
 		return $replacement;
 	}
 
 
+	public function handler_settingsController_initGeneral($sender, $form)
+	{
+		$sections = $form->sections;
+		$pos = array_search("multimediaEmbedding", array_keys($sections));
+		if ($pos) $pos++;
+		
+		$form->addSection("wordFilter", T("settings.wordFilter.label"), $pos++);
+	
+		// Add the "disallow WordFilter" field.
+		$form->setValue("disallowWordFilter", ET::$session->preference("disallowWordFilter", false));
+		$form->addField("wordFilter", "disallowWordFilter", array(__CLASS__, "fieldDisallowWordFilter"), array($sender, "saveBoolPreference"));
+		
+
+	}
+	
+
+	/**
+	 * Return the HTML to render the "fieldDisallowWordFilter" field in the general
+	 * settings form.
+	 *
+	 * @param ETForm $form The form object.
+	 * @return string
+	 */
+	public function fieldDisallowWordFilter($form)
+	{
+		return "<label class='checkbox'>".$form->checkbox("disallowWordFilter")." ".T("setting.disallowWordFilter.label")."</label>";
+	}
+
+	
 	// Construct and process the settings form.
 	public function settings($sender)
 	{
