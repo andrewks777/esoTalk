@@ -81,7 +81,7 @@ protected function profile($pane = "")
 	// Add a link to go back to the user's member profile.
 	$actions->add("viewProfile", "<a href='".URL("member/me")."'>".T("View your profile")."</a>");
 
-	$this->trigger("init", array($panes, $controls, $actions));
+	$this->trigger("profile", array($panes, $controls, $actions));
 
 	// Pass along these menus to the view.
 	$this->data("member", $member);
