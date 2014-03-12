@@ -737,7 +737,7 @@ protected function aggregateFiles($files, $type)
 		// Get the contents of each of the files, fixing up image URL paths for CSS files.
 		foreach ($files as $f) {
 			$content = file_get_contents(PATH_ROOT."/".$f);
-			if ($type == "css") $content = preg_replace("/url\(('?)/i", "url($1".getResource(pathinfo($f, PATHINFO_DIRNAME)."/"), $content);
+			if ($type == "css") $content = preg_replace("/url\((['\"]?+)(?!data:)/i", "url($1".getResource(pathinfo($f, PATHINFO_DIRNAME)."/"), $content);
 			$contents .= $content." ";
 		}
 
