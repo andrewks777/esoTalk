@@ -196,6 +196,9 @@ function minifyJS($js)
 {
 	require_once PATH_LIBRARY."/vendor/jsmin.php";
 	return JSMin::minify($js);
+	
+	/*require_once PATH_LIBRARY."/vendor/Minifier.php";
+	return JShrink\Minifier::minify($js, array('flaggedComments' => false));*/
 }
 
 
