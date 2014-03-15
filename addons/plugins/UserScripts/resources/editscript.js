@@ -18,6 +18,9 @@ $(function() {
 		styleActiveLine: true,
 		lineNumbers: true,
 		lineWrapping: true,
+		autofocus: true,
+		indentUnit: 4,
+		indentWithTabs: true,
 		viewportMargin: Infinity,
 		gutters: ["CodeMirror-lint-markers"],
 		lint: true
