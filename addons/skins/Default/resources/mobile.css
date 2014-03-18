@@ -17,7 +17,7 @@ body {font-size:12px}
 #hdr .button {margin:6px 0}
 #hdr .popupWrapper {float:right; margin:0 0 0 7px}
 #hdr #backButton {float:left; margin:13px 0 0 5px; line-height:1em}
-#userMenu {margin:0 !important; text-align:left}
+#userMenu {margin:0 !important; text-align:left; padding:0}
 #hdr #notifications {font-size:14px}
 
 
@@ -66,7 +66,7 @@ body {font-size:12px}
 .search input[type=text] {width:175px}
 #gambits.popup {width:235px; height:100px; overflow:auto !important; margin:0}
 
-#conversationsFilter .channels li:not(.channelListItem):not(.pathItem):not(.selected) {display:none}
+/*#conversationsFilter .channels li:not(.channelListItem):not(.pathItem):not(.selected) {display:none}*/
 #conversationsFilter .channels {padding-left:0}
 #conversationsFilter .channelListItem {margin-left:0}
 #conversationsFilter .pathItem {margin-left:0}
@@ -111,7 +111,7 @@ body {font-size:12px}
 .scrubberColumn {float:none; margin:0; padding:0 10px; width:auto}
 #conversationBody .scrubberContent .button {display:inline-block; width:auto; margin-right:5px}
 #conversationBody .scrubberContent .popupWrapper {display:inline-block}
-.scrubber {display:none}
+/*.scrubber {display:none}*/
 
 
 /* Make time markers horizontal. */
@@ -124,6 +124,7 @@ body {font-size:12px}
 .post div.avatar {margin:7px 0 0 10px; position:relative; z-index:50}
 .post div.avatar, .post div.avatar img {width:20px; height:20px}
 .post.edit .controls {float:none; margin-top:10px}
+.post .editButtons input {font-size:90%}
 
 
 /* Show controls by default, but hide unnecessary ones. */
