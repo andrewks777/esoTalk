@@ -468,7 +468,7 @@ $definitions["message.esoTalkUpdateAvailable"] = "Новая версия esoTal
 $definitions["message.esoTalkUpdateAvailableHelp"] = "Настоятельно рекомендуется поддерживать esoTalk всегда в обновленном состоянии. Это снижает риск взлома, исправляет ошибки и добавляет новые функции!";
 $definitions["message.esoTalkUpToDate"] = "Ваша версия esoTalk самая последняя.";
 $definitions["message.esoTalkUpToDateHelp"] = "Если Вам нравится форум, окажите материальную поддержку его <a href='%s' target='_blank'>автору</a>.";
-$definitions["message.fatalError"] = "<p>Обнаружена критическая ошибка! Возможно, отсутствует соединение с БД.</p>";
+$definitions["message.fatalError"] = "<p>Обнаружена критическая ошибка!</p>";
 $definitions["message.fatalErrorInstaller"] = "<p>Форум esoTalk обнаружил критическую ошибку, не позволяющую сделать то, что Вы хотели - установку.\n<li><p><strong>Проверьте Ваши настройки.</strong> Также, рекомендуется проверить Вашу базу данных форума.</p></li>";
 $definitions["message.fatalErrorUpgrader"] = "<p>Форум esoTalk обнаружил критическую ошибку, не позволяющую сделать то, что Вы хотели - обновление.\n<li><p><strong>Проверьте Ваши настройки.</strong> Также, рекомендуется проверить Вашу базу данных форума.</p></li>";
 $definitions["message.fileUploadFailed"] = "Выбранный Вами файл не может быть загружен. Он или слишком велик, или в неправильном формате.";
@@ -497,7 +497,7 @@ $definitions["message.locked"] = "Это обсуждение <strong>забло
 $definitions["message.lockedCannotChange"] = "Это обсуждение <strong>заблокировано</strong>, поэтому его нельзя изменять.";
 $definitions["message.loginToParticipate"] = "Для участия в обсуждениях и размещения сообщений, пожалуйста, войдите на форум.";
 $definitions["message.logInToReply"] = "<a href='%1\$s' class='link-login'>Войдите</a> или <a href='%2\$s' class='link-join'>зарегистрируйтесь</a> чтобы ответить!";
-$definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Войдите</a> для просмотра тем/обсуждений скрытых от гостей.";
+$definitions["message.logInToSeeAllConversations"] = "<a href='".URL("user/login")."' class='link-login'>Войдите</a> для просмотра обсуждений, скрытых от гостей.";
 $definitions["message.memberNotFound"] = "Нет пользователя с таким именем.";
 $definitions["message.memberNoPermissionView"] = "Этот участник не может быть добавлен потому, что у него нет разрешения на просмотр канала, к которому принадлежит это обсуждение.";
 $definitions["message.nameTaken"] = "Введенное Вами имя занято или зарезервировано. Попробуйте другое.";
