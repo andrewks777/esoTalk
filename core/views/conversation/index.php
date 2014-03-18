@@ -192,7 +192,7 @@ foreach ($recentMonths as $month) {
 }
 
 // If the latest post was in today's month, output a "Now" item. ?>
-<li class='scrubber-now' data-index='last'<?php if ($latestYear != $currentYear or $latestMonth != $currentMonth): ?> style='display:none'<?php endif; ?>><a href='<?php echo URL(makeURL("last")); ?>'><?php echo T("Now"); ?></a></li>
+<li class='scrubber-now' data-index='last'<?php if /*($latestYear != $currentYear or $latestMonth != $currentMonth)*/ (false): ?> style='display:none'<?php endif; ?>><a href='<?php echo URL(makeURL("last")); ?>'><?php echo T("Now"); ?></a></li>
 </ul>
 <?php endif; ?>
 
