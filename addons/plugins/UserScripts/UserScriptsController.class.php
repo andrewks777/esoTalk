@@ -50,6 +50,13 @@ class UserScriptsController extends ETSettingsController {
 		$form->setValue("usePersonalCSS", ET::$session->preference("usePersonalCSS", false));
 		$form->addField("personalCSS", "usePersonalCSS", array($this, "fieldUsePersonalCSS"), array($this, "saveBoolPreference"));
 		$form->addField("personalCSS", "personalCSS", array($this, "fieldPersonalCSS"), array($this, "savePersonalFile"));
+		
+		$form->addSection("personalCSSmob", T("setting.personalCSSmob.label"));
+		
+		// Add the "personal CSS mobile" field.
+		$form->setValue("usePersonalCSSmob", ET::$session->preference("usePersonalCSSmob", false));
+		$form->addField("personalCSSmob", "usePersonalCSSmob", array($this, "fieldUsePersonalCSSmob"), array($this, "saveBoolPreference"));
+		$form->addField("personalCSSmob", "personalCSSmob", array($this, "fieldPersonalCSSmob"), array($this, "savePersonalFile"));
 
 		// If the save button was clicked...
 		if ($form->validPostBack("save")) {
@@ -89,6 +96,20 @@ class UserScriptsController extends ETSettingsController {
 			$model = ET::getInstance("UserScriptsModel");
 			@unlink($model->getPathUserCSS());
 			$preferences = array('usePersonalCSS' => false);
+			ET::$session->setPreferences($preferences);
+
+			$this->message(T("message.changesSaved"), "success");
+			$this->redirect(URL("scripts/settings"));
+
+		}
+		
+		// If the "remove CSS mobile" button was clicked...
+		elseif ($form->validPostBack("removePersonalCSSmob")) {
+
+			// Delete the CSS mobile file
+			$model = ET::getInstance("UserScriptsModel");
+			@unlink($model->getPathUserCSSmob());
+			$preferences = array('usePersonalCSSmob' => false);
 			ET::$session->setPreferences($preferences);
 
 			$this->message(T("message.changesSaved"), "success");
@@ -152,11 +173,12 @@ class UserScriptsController extends ETSettingsController {
 	}
 	
 
-	public function editcss()
+	public function editcss($csstype = false)
 	{
 		$this->title = T("plugin.UserScripts.editCSS.title");
 		$model = ET::getInstance("UserScriptsModel");
-		$filename = $model->getPathUserCSS();
+		if ($csstype == "mob") $filename = $model->getPathUserCSSmob();
+		else $filename = $model->getPathUserCSS();
 		// Construct the form.
 		$form = ETFactory::make("form");
 		
@@ -177,7 +199,7 @@ class UserScriptsController extends ETSettingsController {
 			// If no errors occurred
 			if (!$form->errorCount()) {
 				$this->message(T("message.changesSaved"), "success");
-				$this->redirect(URL("scripts/editcss"));
+				$this->redirect(URL("scripts/editcss".($csstype ? "/".$csstype : "")));
 			}
 		}
 		
@@ -272,6 +294,44 @@ class UserScriptsController extends ETSettingsController {
 			($exists ? $form->button("removePersonalCSS", T("setting.personalCSS.remove")) : "").
 			"</div>";
 	}
+
+
+	/**
+	 * Return the HTML to render the "fieldUsePersonalCSSmob" field in the settings form.
+	 *
+	 * @param ETForm $form The form object.
+	 * @return string
+	 */
+	public function fieldUsePersonalCSSmob($form)
+	{
+		return "<label class='checkbox'>".$form->checkbox("usePersonalCSSmob")." ".T("setting.usePersonalCSSmob.label")."</label>";
+	}
+	
+	/**
+	 * Return the HTML to render the personalCSSmob field in the settings form.
+	 *
+	 * @param ETForm $form The form object.
+	 * @return string
+	 */
+	public function fieldPersonalCSSmob($form)
+	{
+		$model = ET::getInstance("UserScriptsModel");
+		$exists = $model->isResourceExists('css-mob');
+		if ($exists) {
+			$url = getResource($model->getUrlUserCSSmob());
+			$titleView = T("plugin.UserScripts.view.label");
+		}
+		$urlEdit = URL("scripts/editcss/mob");
+		$titleEdit = T("plugin.UserScripts.edit.label");
+		
+		return "<div class='avatarChooser'>".
+			"<div class='script-box'><a href='$urlEdit' target='_blank' class='control-edit' title='$titleEdit'><i class='icon-edit'></i></a>".($exists ? "<a href='$url' target='_blank' class='control-link' title='$titleView'><i class='icon-link'></i></a>" : "")."</div>".
+			$form->input("personalCSSmob", "file").
+			"<small>".sprintf(T("setting.personalJS.desc"), (ET::uploader()->maxUploadSize() / (1024*1024))." MB", "CSS")."</small>".
+			($exists ? $form->button("removePersonalCSSmob", T("setting.personalCSSmob.remove")) : "").
+			"</div>";
+	}
+
 	
 	/**
 	 * Save the contents of the file field when the settings form is submitted.
@@ -293,6 +353,11 @@ class UserScriptsController extends ETSettingsController {
 		elseif ($key == "personalCSS") {
 			$destFileName = $model->getPathUserCSS();
 			$prefName = 'usePersonalCSS';
+			$extPattern = '/\.css$/i';
+		}
+		elseif ($key == "personalCSSmob") {
+			$destFileName = $model->getPathUserCSSmob();
+			$prefName = 'usePersonalCSSmob';
 			$extPattern = '/\.css$/i';
 		}
 		else return;

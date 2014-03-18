@@ -18,6 +18,13 @@ class UserScriptsModel extends ETModel {
 		if (!$id) $id = ET::$session->userId;
 		return PATH_UPLOADS."/css/".$id.".css";
 	}
+
+
+	public function getPathUserCSSmob($id = false)
+	{
+		if (!$id) $id = ET::$session->userId;
+		return PATH_UPLOADS."/css-mob/".$id.".css";
+	}
 	
 
 	public function getUrlUserJS($id = false)
@@ -34,11 +41,19 @@ class UserScriptsModel extends ETModel {
 	}
 
 	
+	public function getUrlUserCSSmob($id = false)
+	{
+		if (!$id) $id = ET::$session->userId;
+		return "uploads/css-mob/$id.css";
+	}
+	
+	
 	public function isResourceExists($restype = false, $id = false)
 	{
 		if (!$id) $id = ET::$session->userId;
 		if ($restype == 'js') $file_name = $this->getPathUserJS();
 		elseif ($restype == 'css') $file_name = $this->getPathUserCSS();
+		elseif ($restype == 'css-mob') $file_name = $this->getPathUserCSSmob();
 		else return false;
 		
 		$ret = false;

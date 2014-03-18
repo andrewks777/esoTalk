@@ -10,8 +10,11 @@ $definitions["setting.personalJS.desc"] = "Загрузить файл. Макс
 $definitions["setting.personalJS.remove"] = "Удалить скрипт";
 $definitions["setting.personalCSS.label"] = "Персональный стиль";
 $definitions["setting.personalCSS.remove"] = "Удалить стиль";
+$definitions["setting.personalCSSmob.label"] = "Персональный мобильный стиль";
+$definitions["setting.personalCSSmob.remove"] = "Удалить стиль";
 $definitions["setting.usePersonalJS.label"] = "Использовать персональный скрипт (JS)";
 $definitions["setting.usePersonalCSS.label"] = "Использовать персональный стиль (CSS)";
+$definitions["setting.usePersonalCSSmob.label"] = "Использовать персональный мобильный стиль (CSS)";
 
 $definitions["plugin.UserScripts.view.label"] = "Просмотреть";
 $definitions["plugin.UserScripts.edit.label"] = "Редактировать";

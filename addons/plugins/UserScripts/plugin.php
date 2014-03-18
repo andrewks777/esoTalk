@@ -66,8 +66,14 @@ class ETPlugin_UserScripts extends ETPlugin {
 	{
 		if (ET::$session->userId) {
 			$model = ET::getInstance("UserScriptsModel");
-			if (ET::$session->preference("usePersonalCSS", false)) if ($model->isResourceExists('css')) {
+			$isMobile = isMobileBrowser();
+			if (ET::$session->preference("usePersonalCSS", false) and !$isMobile) if ($model->isResourceExists('css')) {
 				$url = getResource($model->getUrlUserCSS());
+				$sender->addToHead("<link rel='stylesheet' href='$url'>\n");
+			}
+			
+			if (ET::$session->preference("usePersonalCSSmob", false) and $isMobile) if ($model->isResourceExists('css-mob')) {
+				$url = getResource($model->getUrlUserCSSmob());
 				$sender->addToHead("<link rel='stylesheet' href='$url'>\n");
 			}
 			
