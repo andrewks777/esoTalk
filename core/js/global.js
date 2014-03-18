@@ -924,24 +924,41 @@ $(function() {
 	$(".hasScrubber").css("margin-right", "0px");
 	
 	$(document).ready( function() {
-		$(document).live("mousemove",  function(e) {
+		$(document).on("mousemove touchmove",  function(e) {
+			if (e.type == "touchmove") {
+				var touch = e.originalEvent.touches[0];
+				var clientX = touch.clientX;
+				var clientY = touch.clientY;
+				var target = touch.target;
+			} else {
+				var clientX = e.clientX;
+				var clientY = e.clientY;
+				var target = e.target;
+			}
 			if (ET.topPanelBehavior == 'automovable') {
-				var hdr = $("#hdr");
-				if (e.clientY <= 10) hdr.slideDown("fast");
-				else if (e.clientY > hdr.height()) hdr.slideUp("fast");
+				var userMenu = false;
+				var userPopupMenu = $("#popup-userMenu");
+				if (userPopupMenu.length > 0) {
+					userMenu = (userPopupMenu.has(target).length !== 0);
+				}
+				if (!userMenu) {
+					var hdr = $("#hdr");
+					if (clientY <= 10) hdr.slideDown("fast");
+					else if (clientY > hdr.height()) hdr.slideUp("fast");
+				}
 			}
 			
 			var browserWindow = $(window);
 			var width = browserWindow.width();
 			var scrubber = $(".scrubberColumn");
-			if (e.clientX >= browserWindow.width() - 20) {
-				if (scrubber.length > 0 && e.clientX < browserWindow.width()) {
+			if (clientX >= browserWindow.width() - 20) {
+				if (scrubber.length > 0 && clientX < browserWindow.width()) {
 					ETScrubber.onWindowScroll(browserWindow.scrollTop());
 				}
 				scrubber.show("fast");
 			}
-			else if (e.clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
-			else if (scrubber.is(':visible') && e.clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());
+			else if (clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
+			else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());
 		});
 	});
 	
