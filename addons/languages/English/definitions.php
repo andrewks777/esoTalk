@@ -372,7 +372,7 @@ $definitions["message.confirmLeave"] = "Woah, you haven't saved the stuff you ar
 $definitions["message.connectionError"] = "esoTalk could not connect to the MySQL server. The error returned was:<br/>%s";
 $definitions["message.conversationDeleted"] = "The conversation was deleted. Didn't that feel good?";
 $definitions["message.conversationNotFound"] = "For some reason this conversation cannot be viewed. It may not exist, or you may not have permission to view it.";
-$definitions["message.cookieAuthenticationTheft"] = "For security reasons, we couldn't log you in with your 'remember me' cookie. Please log in manually!";
+$definitions["message.cookieAuthenticationTheft"] = "For security reasons, we couldn't log you in with your 'remember me' cookie. Please log in manually!<br><br>The previous autologin was %s from IP %s. Current IP %s";
 $definitions["message.deleteChannelHelp"] = "Woah, hold up there! If you delete this channel, there'll be no way to get it back. Unless you build a time machine. But, uh, there'll be no <em>easy</em> way to get it back. All of the conversations in this channel can be moved to another of your choice.";
 $definitions["message.emailConfirmed"] = "Cool! Your account has been validated and you can now start participating in conversations. Why not <a href='".URL("conversation/start")."'>start one</a> yourself?";
 $definitions["message.emailDoesntExist"] = "That email address doesn't match any members in the database. Did you make a typo?";

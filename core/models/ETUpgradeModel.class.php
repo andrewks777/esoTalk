@@ -300,6 +300,8 @@ protected function structure($drop = false)
 		->column("prevToken", "char(32)")
 		->column("sessionToken", "char(32)")
 		->column("ident", "char(32)")
+		->column("time", "int(11) unsigned", false)
+		->column("memberIP", "int(11)", 0)
 		->key(array("memberId", "series"), "primary")
 		->exec($drop);
 }
