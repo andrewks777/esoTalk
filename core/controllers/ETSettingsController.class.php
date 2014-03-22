@@ -80,6 +80,8 @@ protected function profile($pane = "")
 
 	// Add a link to go back to the user's member profile.
 	$actions->add("viewProfile", "<a href='".URL("member/me")."'>".T("View your profile")."</a>");
+	if ($forumRulesURL = C("esoTalk.forumRulesURL")) $actions->add("forumRules", "<a href='".URL($forumRulesURL)."'>".T("settings.forumRules.label")."</a>");
+	if ($forumDescriptionURL = C("esoTalk.forumDescriptionURL")) $actions->add("forumDescription", "<a href='".URL($forumDescriptionURL)."'>".T("settings.forumDescription.label")."</a>");
 
 	$this->trigger("profile", array($panes, $controls, $actions));
 

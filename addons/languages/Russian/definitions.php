@@ -629,6 +629,9 @@ $definitions["gambit.active last ? days"] = "{$definitions["gambit.active"]} {$d
 // Usually you just need to change the "has" and "repl".
 $definitions["gambit.gambitHasNReplies"] = "/^имеет *(?<a>>|<|>=|<=)? *(?<b>\d+) *сообщ/";
 
+$definitions["settings.forumRules.label"] = "Правила форума";
+$definitions["settings.forumDescription.label"] = "Описание возможностей";
+
 $definitions["settings.topPanel.label"] = "Верхняя панель";
 $definitions["setting.topPanelBehavior.ordinary"] = "обычная";
 $definitions["setting.topPanelBehavior.movable"] = "выдвигающаяся";

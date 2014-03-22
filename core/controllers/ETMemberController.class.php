@@ -146,8 +146,11 @@ public function profile($member, $pane = "")
 	$actions = ETFactory::make("menu");
 
 	// If this is the logged-in user's profile, show a link to their settings page.
-	if ($member["memberId"] == ET::$session->userId)
+	if ($member["memberId"] == ET::$session->userId) {
 		$actions->add("settings", "<a href='".URL("settings")."'>".T("Edit your profile")."</a>");
+		if ($forumRulesURL = C("esoTalk.forumRulesURL")) $actions->add("forumRules", "<a href='".URL($forumRulesURL)."'>".T("settings.forumRules.label")."</a>");
+		if ($forumDescriptionURL = C("esoTalk.forumDescriptionURL")) $actions->add("forumDescription", "<a href='".URL($forumDescriptionURL)."'>".T("settings.forumDescription.label")."</a>");
+	}
 
 	// Otherwise, show links to do with the user's private conversations with this member.
 	elseif (ET::$session->userId) {
