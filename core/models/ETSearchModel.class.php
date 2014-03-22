@@ -418,7 +418,8 @@ public function getConversationIDs($channelIDs = array(), $searchString = "", $o
 
 	// Set a default limit if none has previously been set. Set it with one more result than we'll
 	// need so we can see if there are "more results."
-	if (!$this->limit) $this->limit = C("esoTalk.search.results") + 1;
+	$conversationsPerPage = $this->getConversationsPerPage();
+	if (!$this->limit) $this->limit = $conversationsPerPage + 1;
 
 	// Finish constructing the final query using the ID whitelist/blacklist we've come up with.
 	if ($idCondition) $this->sql->where($idCondition);
@@ -433,7 +434,7 @@ public function getConversationIDs($channelIDs = array(), $searchString = "", $o
 	while ($row = $result->nextRow()) $conversationIDs[] = reset($row);
 
 	// If there's one more result than we actually need, indicate that there are "more results."
-	if ($this->limit == C("esoTalk.search.results") + 1 and count($conversationIDs) == $this->limit) {
+	if ($this->limit == $conversationsPerPage + 1 and count($conversationIDs) == $this->limit) {
 		array_pop($conversationIDs);
 		$this->areMoreResults = true;
 	}
@@ -838,6 +839,11 @@ public static function gambitLocked(&$search, $term, $negate)
 	$search->sql->where("locked=".($negate ? "0" : "1"));
 }
 
+
+public static function getConversationsPerPage()
+{
+	return C("esoTalk.search.results");
+}
 
 }
 

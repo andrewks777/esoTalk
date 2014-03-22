@@ -197,7 +197,7 @@ function index($channelSlug = false)
 		// Add JavaScript language definitions and variables.
 		$this->addJSLanguage("Starred", "Unstarred", "gambit.member", "gambit.more results", "Filter conversations", "Jump to last");
 		$this->addJSVar("searchUpdateInterval", C("esoTalk.search.updateInterval"));
-		$this->addJSVar("searchUpdateResults", C("esoTalk.search.updateResults"));
+		$this->addJSVar("searchUpdateResults", $this->getConversationsPerPage());
 		$this->addJSVar("currentSearch", $searchString);
 		$this->addJSVar("currentChannels", $currentChannels);
 		$this->addJSFile("core/js/lib/jquery.cookie.js");
@@ -368,6 +368,7 @@ public function update($channelSlug = "", $query = "")
 {
 	// This must be done as an AJAX request.
 	$this->responseType = RESPONSE_TYPE_AJAX;
+	$conversationsPerPage = $this->getConversationsPerPage();
 
 	list($channelInfo, $currentChannels, $channelIds, $includeDescendants) = $this->getSelectedChannels($channelSlug);
 	$search = ET::searchModel();
@@ -381,7 +382,7 @@ public function update($channelSlug = "", $query = "")
 	}
 
 	if (!count($conversationIds)) return;
-	$conversationIds = array_slice((array)$conversationIds, 0, C("esoTalk.search.updateResults"));
+	$conversationIds = array_slice((array)$conversationIds, 0, $conversationsPerPage);
 
 	// Work out if there are any new results for this channel/search query.
 
@@ -397,7 +398,7 @@ public function update($channelSlug = "", $query = "")
 
 		// Get a list of conversation IDs for the channel/query.
 		$newConversationIds = $search->getConversationIDs($channelIds, $query, count($currentChannels));
-		$newConversationIds = array_slice((array)$newConversationIds, 0, C("esoTalk.search.updateResults"));
+		$newConversationIds = array_slice((array)$newConversationIds, 0, $conversationsPerPage);
 
 		// Get the difference of the two sets of conversationId's.
 		$refreshMode = ET::$session->preference("mainPageRefreshMode");
@@ -457,6 +458,11 @@ protected function highlight($terms)
 		$words = array_unique(array_merge($words, explode(" ", $term)));
 	}
 	ET::$session->store("highlight", $words);
+}
+
+protected function getConversationsPerPage()
+{
+	return C("esoTalk.search.updateResults");
 }
 
 }

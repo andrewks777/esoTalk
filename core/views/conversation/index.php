@@ -13,6 +13,7 @@ if (!defined("IN_ESOTALK")) exit;
 // Just to make things a bit easier.
 global $conversation;
 $conversation = $data["conversation"];
+$postsPerPage = $data["postsPerPage"];
 
 // Shortcut function to construct a URL to a position within the conversation, optionally with a search string.
 function makeURL($startFrom = 0, $searchString = "")
@@ -203,13 +204,13 @@ foreach ($recentMonths as $month) {
 <ol id='conversationPosts' class='postList' start='<?php echo $data["startFrom"] + 1; ?>'>
 
 <?php if ($data["startFrom"] > 0): ?>
-<li class='scrubberMore scrubberPrevious'><a href='<?php echo URL(makeURL("p".(ceil($data["startFrom"] / C("esoTalk.conversation.postsPerPage") + 1) - 1), $data["searchString"])); ?>'>&lsaquo; <?php echo T("Older"); ?></a></li>
+<li class='scrubberMore scrubberPrevious'><a href='<?php echo URL(makeURL("p".(ceil($data["startFrom"] / $postsPerPage + 1) - 1), $data["searchString"])); ?>'>&lsaquo; <?php echo T("Older"); ?></a></li>
 <?php endif; ?>
 
 <?php $this->renderView("conversation/posts", $data); ?>
 
-<?php if ($data["startFrom"] + C("esoTalk.conversation.postsPerPage") < $conversation["countPosts"]): ?>
-<li class='scrubberMore scrubberNext'><a href='<?php echo URL(makeURL("p".(floor($data["startFrom"] / C("esoTalk.conversation.postsPerPage") + 1) + 1), $data["searchString"])); ?>'><?php echo T("Newer"); ?> &rsaquo;</a></li>
+<?php if ($data["startFrom"] + $postsPerPage < $conversation["countPosts"]): ?>
+<li class='scrubberMore scrubberNext'><a href='<?php echo URL(makeURL("p".(floor($data["startFrom"] / $postsPerPage + 1) + 1), $data["searchString"])); ?>'><?php echo T("Newer"); ?> &rsaquo;</a></li>
 <?php endif; ?>
 
 </ol>

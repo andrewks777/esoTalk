@@ -34,6 +34,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		return false;
 	}
 
+	$postsPerPage = $this->getPostsPerPage();
 	// Are we searching within the conversation? If so, set the searchString and set the number of results as the post count.
 	$searchString = R("search");
 	if ($searchString) {
@@ -71,14 +72,14 @@ public function index($conversationId = false, $year = false, $month = false)
 
 		// Redirect to the user's oldest unread post.
 		if ($year == "unread") {
-			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage")));
+			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - $postsPerPage));
 			$id = min((int)$conversation["lastRead"], max(0, $conversation["countPosts"] - 1));
 			$id = $conversation["conversationId"]."-".$id;
 			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
 		} else
 		// Redirect to the last post in the conversation.
 		if ($year == "last") {
-			$startFrom = max(0, $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"));
+			$startFrom = max(0, $conversation["countPosts"] - $postsPerPage);
 			$id = max(0, $conversation["countPosts"] - 1);
 			$id = $conversation["conversationId"]."-".$id;
 			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
@@ -101,7 +102,7 @@ public function index($conversationId = false, $year = false, $month = false)
 				->result();
 
 			// If a post ID was found, redirect to its position within the conversation.
-			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage")));
+			$startFrom = max(0, min($conversation["lastRead"], $conversation["countPosts"] - $postsPerPage));
 			if ($id) {
 				$id = $conversation["conversationId"]."-".$id;
 				$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
@@ -123,7 +124,7 @@ public function index($conversationId = false, $year = false, $month = false)
 				->result();
 
 			// Redirect there.
-			$startFrom = max(0, $conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"));
+			$startFrom = max(0, $conversation["countPosts"] - $postsPerPage);
 			$id = $conversation["conversationId"]."-".$id;
 			$this->redirect(URL(conversationURL($conversation["conversationId"], $conversation["title"])."/$startFrom#p$id"));
 
@@ -152,7 +153,7 @@ public function index($conversationId = false, $year = false, $month = false)
 				->exec()
 				->result();
 
-			$startFrom = min($conversation["countPosts"] - C("esoTalk.conversation.postsPerPage"), $position);
+			$startFrom = min($conversation["countPosts"] - $postsPerPage, $position);
 
 			$this->data("month", $month);
 			$this->data("year", $year);
@@ -160,7 +161,7 @@ public function index($conversationId = false, $year = false, $month = false)
 
 		// Otherwise, interpret it is a plain page number, or position.
 		else {
-			if ($year[0] == "p") $startFrom = ((int)ltrim($year, "p") - 1) * C("esoTalk.conversation.postsPerPage");
+			if ($year[0] == "p") $startFrom = ((int)ltrim($year, "p") - 1) * $postsPerPage;
 			else $startFrom = (int)$year;
 		}
 	}
@@ -172,10 +173,10 @@ public function index($conversationId = false, $year = false, $month = false)
 	if (ET::$session->userId) {
 
 		// Update the user's last read.
-		ET::conversationModel()->setLastRead($conversation, ET::$session->userId, $startFrom + C("esoTalk.conversation.postsPerPage"));
+		ET::conversationModel()->setLastRead($conversation, ET::$session->userId, $startFrom + $postsPerPage);
 
 		// If we're on the last page, mark any notifications related to this conversation as read.
-		if ($startFrom + C("esoTalk.conversation.postsPerPage") >= $conversation["countPosts"]) {
+		if ($startFrom + $postsPerPage >= $conversation["countPosts"]) {
 			ET::activityModel()->markNotificationsAsRead($conversation["conversationId"]);
 		}
 
@@ -195,7 +196,7 @@ public function index($conversationId = false, $year = false, $month = false)
 	} else {
 		$options = array(
 			"startFrom" => $startFrom,
-			"limit" => C("esoTalk.conversation.postsPerPage")
+			"limit" => $postsPerPage
 		);
 	}
 
@@ -246,7 +247,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		}
 		if (ET::$session->user) $this->addJSLanguage("Controls", "Follow", "Following", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation", "Load more posts", "message.videoLoadingError", "message.imageLoadingError");
 
-		$this->addJSVar("postsPerPage", C("esoTalk.conversation.postsPerPage"));
+		$this->addJSVar("postsPerPage", $postsPerPage);
 		$this->addJSVar("conversationUpdateIntervalStart", C("esoTalk.conversation.updateIntervalStart"));
 		$this->addJSVar("conversationUpdateIntervalMultiplier", C("esoTalk.conversation.updateIntervalMultiplier"));
 		$this->addJSVar("conversationUpdateIntervalLimit", C("esoTalk.conversation.updateIntervalLimit"));
@@ -344,6 +345,7 @@ public function index($conversationId = false, $year = false, $month = false)
 		$this->data("replyControls", $this->getEditControls("reply"));
 		$this->data("conversation", $conversation);
 		$this->data("controlsMenu", $controls);
+		$this->data("postsPerPage", $postsPerPage);
 
 		$this->render("conversation/index");
 
@@ -514,7 +516,7 @@ public function post($postId = false)
 	list($pos, $conversationId, $title) = array_values($result->firstRow());
 
 	// Work out which page of the conversation this post is on, and redirect there.
-	$page = floor($pos / C("esoTalk.conversation.postsPerPage")) + 1;
+	$page = floor($pos / $this->getPostsPerPage()) + 1;
 	$this->redirect(URL(conversationURL($conversationId, $title)."/p".$page."#p".$conversationId."-".$relativePostId));
 }
 
@@ -1609,6 +1611,11 @@ protected function getPostForShowing($postId)
 	$post["conversation"] = $conversation;
 
 	return $post;
+}
+
+protected function getPostsPerPage()
+{
+	return C("esoTalk.conversation.postsPerPage");
 }
 
 }
