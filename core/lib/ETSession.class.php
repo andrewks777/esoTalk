@@ -127,7 +127,8 @@ public function __construct()
 				}
 				// for debug
 				$sessionToken = $row["sessionToken"];
-				file_put_contents($logname, "$time_log   multiple sessions, member:$memberId, token:$token, sessionToken:$sessionToken"."\n", FILE_APPEND);
+				$userAgent = getUserAgent();
+				file_put_contents($logname, "$time_log   multiple sessions, member:$memberId, token:$token, sessionToken:$sessionToken, userAgent:$userAgent"."\n", FILE_APPEND);
 				// for debug
 			}
 			
@@ -136,7 +137,8 @@ public function __construct()
 				writeAdminLog('cookieTheft', $memberId, $memberId, "persistent;".$row["series"].";".$row["token"].";".$row["ident"], $cookie.";".$this->ident, 0, $memberId, getUserIP(true));
 				// for debug
 				$sessionToken = $row["sessionToken"];
-				file_put_contents($logname, "$time_log   cookieTheft, member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB"."\n", FILE_APPEND);
+				$userAgent = getUserAgent();
+				file_put_contents($logname, "$time_log   cookieTheft, member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB, userAgent:$userAgent"."\n", FILE_APPEND);
 				// for debug
 			
 				// Delete this member's cookie identifier for this series, so the attacker will not be able
@@ -325,7 +327,8 @@ protected function createPersistentToken($memberId, $series, $prevToken = null, 
 	// for debug
 	$logname = 'C:\Web\data\htdocs\forum\cookie.log';
 	$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
-	file_put_contents($logname, "$time_log   createPersistentToken member:$memberId, series:$series, token:$token, prevToken:$prevToken, sessionToken:$sessionToken"."\n", FILE_APPEND);
+	$userAgent = getUserAgent();
+	file_put_contents($logname, "$time_log   createPersistentToken member:$memberId, series:$series, token:$token, prevToken:$prevToken, sessionToken:$sessionToken, userAgent:$userAgent"."\n", FILE_APPEND);
 	// for debug
 
 	return $token;
