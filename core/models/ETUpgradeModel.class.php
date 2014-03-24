@@ -302,6 +302,7 @@ protected function structure($drop = false)
 		->column("ident", "char(32)")
 		->column("time", "int(11) unsigned", false)
 		->column("memberIP", "int(11)", 0)
+		->column("locked", "tinyint(1)", 0)
 		->key(array("memberId", "series"), "primary")
 		->exec($drop);
 }

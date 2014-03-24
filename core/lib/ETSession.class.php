@@ -96,15 +96,39 @@ public function __construct()
 		$memberId = (int)substr($cookie, 0, -64);
 
 		// Get an entry in the database with this memberId and series.
-		$result = ET::SQL()
+		$read_count = 0;
+		do {
+			$query = ET::SQL()
+				->select("*")
+				->from("cookie")
+				->where("memberId", $memberId)
+				->where("series", $series)
+				->get() . " FOR UPDATE";
+				//->get() . " LOCK IN SHARE MODE";
+			$result = ET::$database->query($query);
+			$row = $result->firstRow();
+			$read_count++;
+			if (!$row) break;
+			if ($row["locked"] == 0) {
+				ET::SQL()
+				->update("cookie")
+				->set("`locked`", 1)
+				->where("memberId", $memberId)
+				->where("series", $series)
+				->exec();
+			} else sleep(1);
+			
+		} while ($row["locked"] != 0 and $read_count < 5);
+		
+		/*$result = ET::SQL()
 			->select("*")
 			->from("cookie")
 			->where("memberId", $memberId)
 			->where("series", $series)
-			->exec();
+			->exec();*/
 
 		// If a matching record exists...
-		if ($row = $result->firstRow() and $row["series"] == $series) {
+		if ($row and $row["series"] == $series) {
 
 			// for debug
 			$logname = 'C:\Web\data\htdocs\forum\cookie.log';
@@ -113,6 +137,8 @@ public function __construct()
 			$prevTokenDB = $row["prevToken"];
 			$sessionToken = $this->token;
 			$sessionTokenDB = $row["sessionToken"];
+			//file_put_contents($logname, "$time_log   query:$query"."\n", FILE_APPEND);
+			file_put_contents($logname, "$time_log   read_count:$read_count"."\n", FILE_APPEND);
 			file_put_contents($logname, "$time_log   member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB, sessionToken:$sessionToken, sessionTokenDB:$sessionTokenDB"."\n", FILE_APPEND);
 			// for debug
 			// process a situation with restoration of multiple sessions (i.e. Opera/Presto)
@@ -171,6 +197,13 @@ public function __construct()
 
 					// Set the cookie.
 					$this->setCookie("persistent", $memberId.$series.$token, time() + C("esoTalk.cookie.expire"));
+				} else {
+					ET::SQL()
+					->update("cookie")
+					->set("`locked`", 0)
+					->where("memberId", $memberId)
+					->where("series", $series)
+					->exec();
 				}
 			}
 
@@ -322,8 +355,9 @@ protected function createPersistentToken($memberId, $series, $prevToken = null, 
 		"sessionToken" => $sessionToken,
 		"ident" => $this->ident,
 		"time" => $time,
-		"memberIP" => $ip
-	))->setOnDuplicateKey("token", $token)->setOnDuplicateKey("prevToken", $prevToken)->setOnDuplicateKey("sessionToken", $sessionToken)->setOnDuplicateKey("ident", $this->ident)->setOnDuplicateKey("time", $time)->setOnDuplicateKey("memberIP", $ip)->exec();
+		"memberIP" => $ip,
+		"locked" => 0
+	))->setOnDuplicateKey("token", $token)->setOnDuplicateKey("prevToken", $prevToken)->setOnDuplicateKey("sessionToken", $sessionToken)->setOnDuplicateKey("ident", $this->ident)->setOnDuplicateKey("time", $time)->setOnDuplicateKey("memberIP", $ip)->setOnDuplicateKey("locked", 0)->exec();
 	// for debug
 	$logname = 'C:\Web\data\htdocs\forum\cookie.log';
 	$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
