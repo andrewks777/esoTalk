@@ -1615,7 +1615,9 @@ protected function getPostForShowing($postId)
 
 protected function getPostsPerPage()
 {
-	return C("esoTalk.conversation.postsPerPage");
+	$count = (int)ET::$session->preference("postsPerPage", 0);
+	if ($count and $count >= 5 and $count <= 1000) return $count;
+	else return C("esoTalk.conversation.postsPerPage");
 }
 
 }

@@ -722,7 +722,7 @@ public static function gambitContributor(&$search, $term, $negate)
  */
 public static function gambitMoreResults(&$search, $term, $negate)
 {
-	if (!$negate) $search->limit(C("esoTalk.search.moreResults"));
+	if (!$negate) $search->limit(ETSearchModel::getMoreConversationsCount());
 }
 
 
@@ -842,7 +842,17 @@ public static function gambitLocked(&$search, $term, $negate)
 
 public static function getConversationsPerPage()
 {
-	return C("esoTalk.search.results");
+	$count = (int)ET::$session->preference("conversationsPerPage", 0);
+	if ($count and $count >= 5 and $count <= 100) return $count;
+	else return C("esoTalk.search.results");
+}
+
+
+public static function getMoreConversationsCount()
+{
+	$count = (int)ET::$session->preference("conversationsPerPage", 0);
+	if ($count and $count >= 5 and $count <= 100) return $count * 4;
+	else return C("esoTalk.search.moreResults");
 }
 
 }

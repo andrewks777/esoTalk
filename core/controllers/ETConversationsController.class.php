@@ -65,10 +65,14 @@ function index($channelSlug = false)
 
 	// Get the search string request value.
 	$searchString = R("search");
+	
+	$isExistsKB = $this->isExistsKB($channelSlug);
 
 	// Last, but definitely not least... perform the search!
+	// Handle special cases of $channelSlug
+	$searchStringPostfix = ($isExistsKB ? $this->getSearchStringPostfix($channelSlug, $searchString) : "");
 	$search = ET::searchModel();
-	$conversationIDs = $search->getConversationIDs($channelIds, $searchString, count($currentChannels));
+	$conversationIDs = $search->getConversationIDs($channelIds, $searchString . $searchStringPostfix, count($currentChannels));
 
 	// If this page was originally accessed at conversations/markAsRead/all?search=whatever (the
 	// markAsRead method simply calls the index method), then mark the results as read.
@@ -96,6 +100,7 @@ function index($channelSlug = false)
 	$this->data("channelSlug", $channelSlug = $channelSlug ? $channelSlug : "all");
 	$this->data("searchString", $searchString);
 	$this->data("fulltextString", implode(" ", $search->fulltext));
+	$this->data("isKB", $isExistsKB);
 
 	// Construct a canonical URL and add to the breadcrumb stack.
 	$slugs = array();
@@ -200,6 +205,7 @@ function index($channelSlug = false)
 		$this->addJSVar("searchUpdateResults", $this->getConversationsPerPage());
 		$this->addJSVar("currentSearch", $searchString);
 		$this->addJSVar("currentChannels", $currentChannels);
+		$this->addJSVar("isKB", $isExistsKB);
 		$this->addJSFile("core/js/lib/jquery.cookie.js");
 		$this->addJSFile("core/js/autocomplete.js");
 		$this->addJSFile("core/js/search.js");
@@ -369,6 +375,8 @@ public function update($channelSlug = "", $query = "")
 	// This must be done as an AJAX request.
 	$this->responseType = RESPONSE_TYPE_AJAX;
 	$conversationsPerPage = $this->getConversationsPerPage();
+	
+	$isExistsKB = $this->isExistsKB($channelSlug);
 
 	list($channelInfo, $currentChannels, $channelIds, $includeDescendants) = $this->getSelectedChannels($channelSlug);
 	$search = ET::searchModel();
@@ -397,7 +405,9 @@ public function update($channelSlug = "", $query = "")
 	if (!$random) {
 
 		// Get a list of conversation IDs for the channel/query.
-		$newConversationIds = $search->getConversationIDs($channelIds, $query, count($currentChannels));
+		// Handle special cases of $channelSlug
+		$searchStringPostfix = ($isExistsKB ? $this->getSearchStringPostfix($channelSlug, $query) : "");
+		$newConversationIds = $search->getConversationIDs($channelIds, $query . $searchStringPostfix, count($currentChannels));
 		$newConversationIds = array_slice((array)$newConversationIds, 0, $conversationsPerPage);
 
 		// Get the difference of the two sets of conversationId's.
@@ -430,7 +440,8 @@ public function update($channelSlug = "", $query = "")
 		$rows["c".$conversation["conversationId"]] = $this->getViewContents("conversations/conversation", array(
 			"conversation" => $conversation,
 			"channelInfo" => $channelInfo,
-			"fulltextString" => $fulltextString
+			"fulltextString" => $fulltextString,
+			"isKB" => $isExistsKB
 		));
 	}
 	
@@ -462,7 +473,25 @@ protected function highlight($terms)
 
 protected function getConversationsPerPage()
 {
-	return C("esoTalk.search.updateResults");
+	$count = (int)ET::$session->preference("conversationsPerPage", 0);
+	if ($count and $count >= 5 and $count <= 100) return $count;
+	else return C("esoTalk.search.updateResults");
+}
+
+protected function isExistsKB(&$channelSlug)
+{
+	$slug_array = explode(" ", $channelSlug);
+	return (in_array("kb", $slug_array));
+}
+
+protected function getSearchStringPostfix(&$channelSlug, &$searchString)
+{
+	// Handle special cases of $channelSlug
+	$slug_array = explode(" ", $channelSlug);
+	$searchStringPostfix = "";
+	if (in_array("kb", $slug_array)) $searchStringPostfix = "#" . strtolower(T("gambit.KB"));
+	if ($searchString) $searchStringPostfix = "+" . $searchStringPostfix;
+	return $searchStringPostfix;
 }
 
 }

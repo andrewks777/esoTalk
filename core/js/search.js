@@ -5,6 +5,7 @@ var ETSearch = {
 // The current search details.
 currentSearch: "",
 currentChannels: [],
+isKB: false,
 
 // References to search form elements.
 form: null,
@@ -20,6 +21,7 @@ init: function() {
 	// Set the current channel and search query.
 	if (ET.currentChannels) ETSearch.currentChannels = ET.currentChannels;
 	if (ET.currentSearch) ETSearch.currentSearch = ET.currentSearch;
+	if (ET.isKB) ETSearch.isKB = ET.isKB;
 
 
 	// INITIALIZE THE SEARCH FORM.
@@ -127,7 +129,8 @@ init: function() {
 
 	// Add tooltips to the channels, and give them click handlers.
 	$("#channels a:not(.channel-list)").tooltip({alignment: "left", delay: 250, offset: [0, 0], className: "withArrow withArrowBottom"});
-	$("#channels a.channel-list").tooltip();
+	$("#channels a.channel-list").tooltip({alignment: "left", offset: [24, 0]});
+	$("#search a.control-KB").tooltip({alignment: "left", offset: [24, 0]});
 
 	// When the hash in the URL changes, update the search interface.
 	$(document).bind("statechange", function(event, hash) {
@@ -293,8 +296,9 @@ getCurrentChannelSlugs: function() {
 			if (ET.channels[ETSearch.currentChannels[i]]) slugs.push(encodeURIComponent(ET.channels[ETSearch.currentChannels[i]]));
 			else slugs.push("");
 		}
+		if (ETSearch.isKB) slugs.push("kb");
 	}
-	else slugs = ["all"];
+	else slugs = (ETSearch.isKB ? ["kb"] : ["all"]);
 
 	return slugs;
 },

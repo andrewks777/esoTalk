@@ -4,6 +4,9 @@
 
 if (!defined("IN_ESOTALK")) exit;
 
+define("CONV_PER_PAGE_PATTERN", "([5-9]|[1-9]\d|100)");
+define("POST_PER_PAGE_PATTERN", "([5-9]|[1-9]\d{1,2}|1000)");
+
 /**
  * The settings controller handles a user's settings page and all the separate panes that are on it.
  *
@@ -126,6 +129,12 @@ public function general()
 	$form->setValue("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
 	$form->addField("topPanel", "topPanelBehavior", array($this, "fieldTopPanelBehavior"), array($this, "savePreference"));
 	
+	$form->addSection("conversationsPerPage", T("settings.conversationsPerPage.label"));
+	
+	// Add the "conversationsPerPage" field.
+	$form->setValue("conversationsPerPage", ET::$session->preference("conversationsPerPage"));
+	$form->addField("conversationsPerPage", "conversationsPerPage", array($this, "fieldConversationsPerPage"), array($this, "saveCountPerPagePreference"));
+	
 	$form->addSection("mainPageRefresh", T("settings.mainPageRefresh.label"));
 	
 	// Add the "main page refresh mode" field.
@@ -137,6 +146,12 @@ public function general()
 	// Add the "load conversation" field.
 	$form->setValue("loadConversationMode", ET::$session->preference("loadConversationMode"));
 	$form->addField("loadConversation", "loadConversationMode", array($this, "fieldLoadConversationMode"), array($this, "savePreference"));
+	
+	$form->addSection("postsPerPage", T("settings.postsPerPage.label"));
+	
+	// Add the "postsPerPage" field.
+	$form->setValue("postsPerPage", ET::$session->preference("postsPerPage"));
+	$form->addField("postsPerPage", "postsPerPage", array($this, "fieldPostsPerPage"), array($this, "savePreference"));
 	
 	$form->addSection("loadPosts", T("settings.loadPosts.label"));
 	
@@ -367,6 +382,32 @@ public function fieldMainPageRefreshMode($form)
 
 
 /**
+ * Return the HTML to render the fieldConversationsPerPage in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldConversationsPerPage($form)
+{
+	return $form->input("conversationsPerPage", "text", array("pattern" => CONV_PER_PAGE_PATTERN, "title" => T("setting.conversationsPerPage.desc"), "style" => "width:3em"));
+}
+
+
+/**
+ * Return the HTML to render the fieldConversationsPerPage in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldPostsPerPage($form)
+{
+	return $form->input("postsPerPage", "text", array("pattern" => POST_PER_PAGE_PATTERN, "title" => T("setting.postsPerPage.desc"), "style" => "width:3em"));
+}
+
+
+/**
  * Return the HTML to render the fieldLoadConversationMode in the general
  * settings form.
  *
@@ -444,6 +485,40 @@ public function savePreference($form, $key, &$preferences)
 public function saveBoolPreference($form, $key, &$preferences)
 {
 	$preferences[$key] = (bool)$form->getValue($key);
+}
+
+
+public function saveCountPerPagePreference($form, $key, &$preferences)
+{
+	$pattern = "";
+	$minVal = 5;
+	$maxVal = 100;
+	if ($key == "conversationsPerPage") {
+		$pattern = CONV_PER_PAGE_PATTERN;
+		$minVal = 5;
+		$maxVal = 100;
+	}
+	else if ($key == "postsPerPage") {
+		$pattern = POST_PER_PAGE_PATTERN;
+		$minVal = 5;
+		$maxVal = 1000;
+	}
+	
+	$val = $form->getValue($key);
+	$valint = (int)$val;
+	$valid = false;
+	if (empty($val)) {
+		$preferences[$key] = "";
+		$valid = true;
+	} else
+	if (preg_match("/^".addcslashes($pattern, "/")."$/", $val) and $valint >= $minVal and $valint <= $maxVal) {
+		$preferences[$key] = $valint;
+		$valid = true;
+	}
+	
+	if (!$valid) {
+		$form->error($key, T("setting.".$key.".desc"));
+	}
 }
 
 

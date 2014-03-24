@@ -578,3 +578,9 @@ $definitions["settings.mainPageRefresh.label"] = "New conversations on main page
 $definitions["setting.mainPageRefreshMode.refresh"] = "autoload";
 $definitions["setting.mainPageRefreshMode.notify"] = "notify";
 $definitions["setting.mainPageRefreshMode.ignore"] = "ignore";
+
+$definitions["settings.conversationsPerPage.label"] = "Conversations per page";
+$definitions["setting.conversationsPerPage.desc"] = "Count of conversations per page (number from 5 to 100)";
+
+$definitions["settings.postsPerPage.label"] = "Posts per page";
+$definitions["setting.postsPerPage.desc"] = "Count of posts per page (number from 5 to 1000)";

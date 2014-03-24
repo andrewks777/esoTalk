@@ -652,3 +652,9 @@ $definitions["settings.mainPageRefresh.label"] = "Новые обсуждени�
 $definitions["setting.mainPageRefreshMode.refresh"] = "показывать автоматически";
 $definitions["setting.mainPageRefreshMode.notify"] = "уведомлять";
 $definitions["setting.mainPageRefreshMode.ignore"] = "игнорировать";
+
+$definitions["settings.conversationsPerPage.label"] = "Обсуждений на странице";
+$definitions["setting.conversationsPerPage.desc"] = "Количество обсуждений на странице (число от 5 до 100)";
+
+$definitions["settings.postsPerPage.label"] = "Сообщений на странице";
+$definitions["setting.postsPerPage.desc"] = "Количество сообщений на странице (число от 5 до 1000)";

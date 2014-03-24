@@ -85,6 +85,7 @@ $config["esoTalk.includeFaviconTag"] = ""; // Include favicon tag. Set to empty 
 	*/
 $config["esoTalk.hostName"] = "http://127.0.0.1"; // host name with protocol, without URL (not used, if "esoTalk.hostNamePattern" is set)
 $config["esoTalk.hostNamePattern"] = ""; // PCRE pattern for host name with protocol, without URL (override "esoTalk.hostName"), i.e.: "^http:\/\/(?:www\.)?myforum\.com", "^http:\/\/(?:127.0.0.1|localhost)"
+$config["esoTalk.showLinkForKB"] = false; // Show link for KB on search (main) page
 
 // Meta information.
 $config["esoTalk.meta.keywords"] = null;
