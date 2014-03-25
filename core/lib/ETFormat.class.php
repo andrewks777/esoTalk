@@ -218,7 +218,7 @@ public function links()
 	
 	// Convert mini-quotes
 	$this->content = preg_replace_callback(
-		"/(?<=\s|^|^\+|\)|\)\-)\((0|[1-9]{1,1}\d*)\)/",
+		"/(?<=\s|^|^\+|\)|\)\-|\]|\>)\((0|[1-9]{1,1}\d*)\)/",
 		array($this, "linksCallback2"), $this->content);
 
 	return $this;
@@ -472,7 +472,7 @@ public function getQuotes($conversationId, $relativePostId, $content)
 	}
 	
 	// mini-quotes
-	preg_match_all('/\((0|[1-9]{1,1}\d*)\)/', $content, $matches, PREG_SET_ORDER);
+	preg_match_all('/(?<=\s|^|^\+|\)|\)\-|\]|\>)\((0|[1-9]{1,1}\d*)\)/', $content, $matches, PREG_SET_ORDER);
 	foreach ($matches as $v) {
 		if ((int)$v[1] < $relativePostId) $names[] = array("conversationId" => (int)$conversationId, "relativePostId" => (int)$v[1]);
 	}
