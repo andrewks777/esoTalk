@@ -41,7 +41,12 @@ echo "</span> ";
 
 // Output the conversation title, highlighting search keywords.
 $convToolTip = $conversation["startMember"].", ".relativeTime($conversation["startTime"], true);
-echo "<strong class='title'><a href='".URL($conversationURL.($isKB ? "/0" : (ET::$session->user and !ET::$session->preference("loadConversationMode") and $conversation["unread"] ? "/unread" : "")))."' title='".$convToolTip."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
+$urlPostfix = "";
+if ($isKB) $urlPostfix = "/0";
+else {
+	if (ET::$session->user and !ET::$session->preference("loadConversationMode") and $conversation["unread"]) $urlPostfix = "/unread";
+}
+echo "<strong class='title'><a href='".URL($conversationURL.$urlPostfix)."' title='".$convToolTip."'>".highlight(sanitizeHTML($conversation["title"]), ET::$session->get("highlight"))."</a></strong> ";
 
 // If we're highlighting search terms (i.e. if we did a fulltext search), then output a "show matching posts" link.
 if (ET::$session->get("highlight"))
