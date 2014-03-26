@@ -76,7 +76,7 @@ function index($channelSlug = false)
 
 	// If this page was originally accessed at conversations/markAsRead/all?search=whatever (the
 	// markAsRead method simply calls the index method), then mark the results as read.
-	if ($this->controllerMethod == "markasread" and ET::$session->userId) {
+	if (($this->controllerMethod == "markasread" or $this->controllerMethod == "markallasread") and ET::$session->userId) {
 		ET::conversationModel()->markAsRead($conversationIDs, ET::$session->userId);
 	}
 
