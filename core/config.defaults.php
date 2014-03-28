@@ -156,6 +156,7 @@ $config["esoTalk.format.rutube"] = true; // Automatically convert Rutube.ru link
 $config["esoTalk.format.smotri"] = true; // Automatically convert Smotri.com links to embeds?
 $config["esoTalk.format.vkvideo"] = true; // Automatically convert vk.com video links to embeds?
 $config["esoTalk.format.vimeo"] = true; // Automatically convert vimeo.com video links to embeds?
+$config["esoTalk.format.truba"] = true; // Automatically convert truba.com video links to embeds?
 $config["esoTalk.format.wikipedia"] = true; // Stylize wikipedia-links?
 $config["esoTalk.format.lurkmore"] = false; // Stylize lurkmore-links?
 $config["esoTalk.format.mentions"] = true; // Allow @mentioning of members?
