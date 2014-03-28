@@ -952,13 +952,13 @@ $(function() {
 			var width = browserWindow.width();
 			var scrubber = $(".scrubberColumn");
 			if (clientX >= browserWindow.width() - 20) {
-				if (scrubber.length > 0 && clientX < browserWindow.width()) {
+				/*if (scrubber.length > 0 && clientX < browserWindow.width()) {
 					ETScrubber.onWindowScroll(browserWindow.scrollTop());
-				}
+				}*/
 				scrubber.show("fast");
 			}
 			else if (clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
-			else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());
+			/*else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());*/
 		});
 	});
 	
