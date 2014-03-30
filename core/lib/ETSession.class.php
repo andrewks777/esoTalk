@@ -104,6 +104,34 @@ public function __construct()
 				->where("memberId", $memberId)
 				->where("series", $series)
 				->get() . " FOR UPDATE";
+			$query2 = ET::SQL()
+				->update("cookie")
+				->set("`locked`", 1)
+				->where("memberId", $memberId)
+				->where("series", $series)
+				->where("locked", 0)
+				->get();
+			
+			$result = ET::$database->query($query . "\n;\n" . $query2);
+			$row = $result->firstRow();
+			$read_count++;
+			if (!$row) break;
+			
+			$locked = $row["locked"];
+			$result->closeCursor();
+			if ($locked) sleep(1);
+			
+		} while ($locked and $read_count < 5);
+		
+		/* //method 1
+		$read_count = 0;
+		do {
+			$query = ET::SQL()
+				->select("*")
+				->from("cookie")
+				->where("memberId", $memberId)
+				->where("series", $series)
+				->get() . " FOR UPDATE";
 				//->get() . " LOCK IN SHARE MODE";
 			$result = ET::$database->query($query);
 			$row = $result->firstRow();
@@ -119,13 +147,16 @@ public function __construct()
 			} else sleep(1);
 			
 		} while ($row["locked"] != 0 and $read_count < 5);
+		*/
 		
-		/*$result = ET::SQL()
+		/* //original method
+		$result = ET::SQL()
 			->select("*")
 			->from("cookie")
 			->where("memberId", $memberId)
 			->where("series", $series)
-			->exec();*/
+			->exec();
+		*/
 
 		// If a matching record exists...
 		if ($row and $row["series"] == $series) {
@@ -137,11 +168,10 @@ public function __construct()
 			$prevTokenDB = $row["prevToken"];
 			$sessionToken = $this->token;
 			$sessionTokenDB = $row["sessionToken"];
-			//file_put_contents($logname, "$time_log   query:$query"."\n", FILE_APPEND);
 			file_put_contents($logname, "$time_log   read_count:$read_count"."\n", FILE_APPEND);
 			file_put_contents($logname, "$time_log   member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB, sessionToken:$sessionToken, sessionTokenDB:$sessionTokenDB"."\n", FILE_APPEND);
 			// for debug
-			// process a situation with restoration of multiple sessions (i.e. Opera/Presto)
+			// process a situation with restoration of multiple tabs (sessions)
 			$curr_time = time();
 			$this->isPrevToken = ($row["prevToken"] == $token && $row["ident"] == $this->ident && ($row["time"] == 0 || $curr_time <= $row["time"] + 60));
 			if ($this->isPrevToken) {

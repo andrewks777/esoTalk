@@ -125,4 +125,49 @@ public function result()
 	return $this->pdoStatement->fetchColumn();
 }
 
+
+/**
+ * Closes the cursor, enabling the statement to be executed again.
+ *
+ * @return boolean
+ */
+public function closeCursor()
+{
+	return $this->pdoStatement->closeCursor();
+}
+
+
+/**
+ * Advances to the next rowset in a multi-rowset statement handle.
+ *
+ * @return boolean
+ */
+public function nextRowset()
+{
+	$this->rows = null;
+	return $this->pdoStatement->nextRowset();
+}
+
+
+/**
+ * Returns the number of rows affected by the last SQL statement.
+ *
+ * @return int
+ */
+public function rowCount()
+{
+	return $this->pdoStatement->rowCount();
+}
+
+
+/**
+ * Returns PDOStatement object.
+ *
+ * @return PDOStatement
+ */
+public function getStatement()
+{
+	return $this->pdoStatement;
+}
+
 }
