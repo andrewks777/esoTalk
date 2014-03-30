@@ -125,6 +125,7 @@ $config["esoTalk.warnAboutOutdatedVersionsIE"] = true;
 // Search view settings.
 $config["esoTalk.search.results"] = 50; // Number of conversations to list for a normal search.
 $config["esoTalk.search.moreResults"] = 200; // Total number of conversations to list when 'more results' is clicked.
+$config["esoTalk.search.limitMax"] = 9999; // Maximum number of results that can be viewed using the #limit gambit.
 $config["esoTalk.search.updateResults"] = 50; // Number of conversations to list for a update via AJAX.
 $config["esoTalk.search.updateInterval"] = 60; // Number of seconds at which to automatically update the unread status, post count, and last post information for currently listed conversations in a search.
 $config["esoTalk.search.searchesPerMinute"] = 15; // Users are limited to this many normal searches every minute.

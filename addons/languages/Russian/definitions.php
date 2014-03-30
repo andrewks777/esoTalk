@@ -583,6 +583,7 @@ $definitions["gambit.sticky"] = "прикрепленные";
 $definitions["gambit.KB"] = "база знаний";
 $definitions["gambit.unread"] = "непрочитанные";
 $definitions["gambit.more results"] = "больше результатов";
+$definitions["gambit.limit:"] = "лимит:";
 
 // Aliases
 // These are gambits which tell the gambit system to use another gambit.

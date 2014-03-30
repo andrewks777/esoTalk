@@ -92,6 +92,7 @@ function index($channelSlug = false)
 
 	// Pass on a bunch of data to the view.
 	$this->data("results", $results);
+	$this->data("limit", $search->limit);
 	$this->data("showViewMoreLink", $search->areMoreResults());
 	$this->data("channelPath", $path);
 	$this->data("channelTabs", $channels);

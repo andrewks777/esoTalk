@@ -502,6 +502,7 @@ $definitions["gambit.sticky"] = "sticky";
 $definitions["gambit.KB"] = "knowledge base";
 $definitions["gambit.unread"] = "unread";
 $definitions["gambit.more results"] = "more results";
+$definitions["gambit.limit:"] = "limit:";
 
 // Aliases
 // These are gambits which tell the gambit system to use another gambit.
