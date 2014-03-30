@@ -211,6 +211,7 @@ public function index($conversationId = false, $year = false, $month = false)
 	$this->data("posts", $posts);
 	$this->data("startFrom", $startFrom);
 	$this->data("searchString", $searchString);
+	$this->data("yearOrig", $year);
 
 	if ($this->responseType === RESPONSE_TYPE_DEFAULT) {
 

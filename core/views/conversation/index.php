@@ -209,7 +209,7 @@ foreach ($recentMonths as $month) {
 
 <?php $this->renderView("conversation/posts", $data); ?>
 
-<?php if ($data["startFrom"] + $postsPerPage < $conversation["countPosts"]): ?>
+<?php if ($data["startFrom"] + $postsPerPage < $conversation["countPosts"] && $data["yearOrig"] != "all"): ?>
 <li class='scrubberMore scrubberNext'><a href='<?php echo URL(makeURL("p".(floor($data["startFrom"] / $postsPerPage + 1) + 1), $data["searchString"])); ?>'><?php echo T("Newer"); ?> &rsaquo;</a></li>
 <?php endif; ?>
 
