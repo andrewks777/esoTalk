@@ -11,6 +11,7 @@ startFrom: 0,
 searchString: null,
 postCount: 0,
 lastTextareaId: "",
+lastSelectedChannelId: null, // for Opera/Presto
 
 updateInterval: null,
 editingReply: false, // Are we typing a reply?
@@ -1038,6 +1039,7 @@ changeChannel: function() {
 		$("#changeChannelSheet .channelList input").hide().click(function() {
 			// $("#changeChannelSheet .channelList li").removeClass("selected");
 			// $(this).parents("li").addClass("selected");
+			ETConversation.lastSelectedChannelId = $(this).val();
 			$("#changeChannelSheet form").submit();
 		});
 
@@ -1049,12 +1051,13 @@ changeChannel: function() {
 		// Add a submit event to the form.
 		$("#changeChannelSheet form").submit(function(e) {
 			e.preventDefault();
-			var channelId = $(this).find("input:checked").val();
+			var channelId = $(this).find("input[type='radio']:checked").val();
+			if (typeof channelId == "undefined" && ETConversation.lastSelectedChannelId) channelId = ETConversation.lastSelectedChannelId; // for Opera/Presto
 			$.ETAjax({
 				url: "conversation/save.json/" + ETConversation.id,
 				type: "post",
 				data: {channel: channelId},
-						success: function(data) {
+				success: function(data) {
 					if (data.messages) return;
 
 					// Update the members allowed summary.
