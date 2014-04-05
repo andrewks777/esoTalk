@@ -846,7 +846,7 @@ saveEditPost: function(postId, content) {
 			$(".button", post).enable();
 		},
 		success: function(data) {
-			if (data.messages) return;
+			if (data.messages || data.modalMessage) return;
 
 			var startHeight = $(".postContent", post).height();
 
