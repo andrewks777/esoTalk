@@ -168,7 +168,7 @@ public function imgBasicCallback($matches)
 {
 	$loc = (substr($matches[2], 0, 1) == "/");
 	$url = $matches[2];
-	$linkText = ($matches[1] ? $matches[1] : $matches[2]);
+	$linkText = ($matches[1] ? $matches[1] : sanitizeHTML2(urldecode($matches[2])));
 	$baseURL = C("esoTalk.baseURL");
 	if (substr($url, 0, strlen($baseURL)) == $baseURL || $loc) {
 		return "<a href='".$url."' target='_blank' class='link-internal'>".$linkText."</a>";
