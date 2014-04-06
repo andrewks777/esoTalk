@@ -557,7 +557,7 @@ public function validateToken($token = false)
 	if ($token === false) $token = R("token");
 
 	if (!ET::$session->validateToken($token)) {
-		$this->renderMessage(T("Error"), T("message.noPermission"));
+		$this->renderMessage(T("Error"), T("message.noPermissionInvalidToken"));
 		return false;
 	}
 	return true;

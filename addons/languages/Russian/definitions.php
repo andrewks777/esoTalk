@@ -506,6 +506,7 @@ $definitions["message.noActivity"] = "%s еще ничего не сделал �
 $definitions["message.noMembersOnline"] = "Нет пользователей онлайн.";
 $definitions["message.noNotifications"] = "У Вас нет уведомлений.";
 $definitions["message.noPermission"] = "У Вас нет разрешения выполнять это действие!";
+$definitions["message.noPermissionInvalidToken"] = "Ваша сессия истекла. Попробуйте обновить страницу и повторить действие.";
 $definitions["message.noPermissionToReplyInChannel"] = "У Вас нет разрешения участвовать в обсуждениях этого канала.";
 $definitions["message.noPluginsInstalled"] = "Нет установленных плагинов.";
 $definitions["message.noSearchResults"] = "Результатов по Вашему запросу не найдено.";

@@ -424,6 +424,7 @@ $definitions["message.noActivity"] = "%s hasn't done anything on this forum yet!
 $definitions["message.noMembersOnline"] = "No members are currently online.";
 $definitions["message.noNotifications"] = "You have no notifications.";
 $definitions["message.noPermission"] = "You do not have permisssion to perform this action.";
+$definitions["message.noPermissionInvalidToken"] = "Your session has expired. Please refresh this page and try again.";
 $definitions["message.noPermissionToReplyInChannel"] = "You don't have permission to reply to conversations in this channel.";
 $definitions["message.noPluginsInstalled"] = "No plugins are currently installed.";
 $definitions["message.noSearchResults"] = "No conversations matching your search were found.";
