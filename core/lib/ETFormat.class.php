@@ -204,13 +204,23 @@ public function links()
 	
 	$protocolPattern = "(?:http|https|ftp|ftps):\/\/";
 	$ipv4Pattern = "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
-	$domainPattern = "(?:AC|AD|AE|AERO|AF|AG|AI|AL|AM|AN|AO|AQ|AR|ARPA|AS|ASIA|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BI|BIZ|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CA|CAT|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|CO|COM|COOP|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|IN|INFO|INT|IO|IQ|IR|IS|IT|JE|JM|JO|JOBS|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MO|MOBI|MP|MQ|MR|MS|MT|MU|MUSEUM|MV|MW|MX|MY|MZ|NA|NAME|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PR|PRO|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TR|TRAVEL|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ)";
+	$domainPattern = "(?:AC|AD|AERO|AE|AF|AG|AI|AL|AM|AN|AO|AQ|ARPA|AR|ASIA|AS|AT|AU|AW|AX|AZ|BA|BB|BD|BE|BF|BG|BH|BIZ|BI|BJ|BM|BN|BO|BR|BS|BT|BV|BW|BY|BZ|CAT|CA|CC|CD|CF|CG|CH|CI|CK|CL|CM|CN|COM|COOP|CO|CR|CU|CV|CW|CX|CY|CZ|DE|DJ|DK|DM|DO|DZ|EC|EDU|EE|EG|ER|ES|ET|EU|FI|FJ|FK|FM|FO|FR|GA|GB|GD|GE|GF|GG|GH|GI|GL|GM|GN|GOV|GP|GQ|GR|GS|GT|GU|GW|GY|HK|HM|HN|HR|HT|HU|ID|IE|IL|IM|INFO|INT|IN|IO|IQ|IR|IS|IT|JE|JM|JOBS|JO|JP|KE|KG|KH|KI|KM|KN|KP|KR|KW|KY|KZ|LA|LB|LC|LI|LK|LR|LS|LT|LU|LV|LY|MA|MC|MD|ME|MG|MH|MIL|MK|ML|MM|MN|MOBI|MO|MP|MQ|MR|MS|MT|MUSEUM|MU|MV|MW|MX|MY|MZ|NAME|NA|NC|NE|NET|NF|NG|NI|NL|NO|NP|NR|NU|NZ|OM|ORG|PA|PE|PF|PG|PH|PK|PL|PM|PN|POST|PRO|PR|PS|PT|PW|PY|QA|RE|RO|RS|RU|RW|SA|SB|SC|SD|SE|SG|SH|SI|SJ|SK|SL|SM|SN|SO|SR|ST|SU|SV|SX|SY|SZ|TC|TD|TEL|TF|TG|TH|TJ|TK|TL|TM|TN|TO|TP|TRAVEL|TR|TT|TV|TW|TZ|UA|UG|UK|US|UY|UZ|VA|VC|VE|VG|VI|VN|VU|WF|WS|XXX|YE|YT|ZA|ZM|ZW|РФ){1}+";
 	$hostNamePattern = $use_unicode
 		? "(?:[\pL\d]\.|[\pL\d][\pL\d\-]*[\pL\d]\.)+".$domainPattern
 		: "(?:[a-z0-9]\.|[a-z0-9][a-z0-9\-]*[a-z0-9]\.)+".$domainPattern;
+	$letterPattern = $use_unicode ? "\pL" : "a-z";
+	$domainPatternGeneral = "[".$letterPattern."]{2,6}";
+	$hostNamePatternGeneral = $use_unicode
+		? "(?:[\pL\d]\.|[\pL\d][\pL\d\-]*[\pL\d]\.)+".$domainPatternGeneral
+		: "(?:[a-z0-9]\.|[a-z0-9][a-z0-9\-]*[a-z0-9]\.)+".$domainPatternGeneral;
 	$portPattern = "(?::\d+)?";
+	$pathPattern = "(?:(?:\/+(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)*+)?";
+	$queryStringPattern = "(?:\?(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)?";
+	$fragmentPattern = "(?:#(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)?";
+		
 	$this->content = preg_replace_callback(
-		"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>]*(?:\s|>|$))/i".($use_unicode ? "u" : "" ),
+		//"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>]*(?:\s|>|$))/i".($use_unicode ? "u" : "" ),
+		"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)"."(?:".$ipv4Pattern."|".$hostNamePatternGeneral.")"."|".$hostNamePattern.")".$portPattern.$pathPattern.$queryStringPattern.$fragmentPattern.")(?=\s|>|$)/i".($use_unicode ? "u" : "" ),
 		array($this, "linksCallback"), $this->content);
 
 	// Convert email links.
