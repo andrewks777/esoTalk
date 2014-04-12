@@ -133,6 +133,7 @@ public function result()
  */
 public function closeCursor()
 {
+	$this->rows = null;
 	return $this->pdoStatement->closeCursor();
 }
 
@@ -157,6 +158,17 @@ public function nextRowset()
 public function rowCount()
 {
 	return $this->pdoStatement->rowCount();
+}
+
+
+/**
+ * Returns the Fetch the SQLSTATE associated with the last operation on the statement handle.
+ *
+ * @return string
+ */
+public function errorCode()
+{
+	return $this->pdoStatement->errorCode();
 }
 
 

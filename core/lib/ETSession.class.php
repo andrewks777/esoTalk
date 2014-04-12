@@ -112,13 +112,16 @@ public function __construct()
 				->where("locked", 0)
 				->get();
 			
-			$result = ET::$database->query($query . "\n;\n" . $query2);
-			$row = $result->firstRow();
 			$read_count++;
+			$result = ET::$database->query("START TRANSACTION;\n" . $query . ";\n" . $query2. ";\nCOMMIT;");
+			$row = $result->firstRow();
+			if ($result->nextRowset()) $row = $result->firstRow();
+			$result->closeCursor();
+			unset($result);
+			
 			if (!$row) break;
 			
 			$locked = $row["locked"];
-			$result->closeCursor();
 			if ($locked) sleep(1);
 			
 		} while ($locked and $read_count < 5);
