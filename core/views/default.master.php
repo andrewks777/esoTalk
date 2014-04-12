@@ -71,6 +71,9 @@ if (!defined("IN_ESOTALK")) exit;
 <div id='ftr-content'>
 <ul class='menu'>
 <li id='goToTop'><a href='#'><?php echo T("Go to top"); ?></a></li>
+<?php if ($data["showMainPageLink"]): ?>
+<li><a href='<?php echo URL(""); ?>'><?php echo T("Go to main page"); ?></a></li>
+<?php endif; ?>
 <?php echo $data["metaMenuItems"]; ?>
 <?php if (!empty($data["statisticsMenuItems"])) echo $data["statisticsMenuItems"]; ?>
 </ul>

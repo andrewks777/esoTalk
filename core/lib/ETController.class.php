@@ -467,6 +467,7 @@ public function render($view = "")
 			if ($logo) $size = getimagesize($logo);
 			$data["forumTitle"] = $logo ? "<img src='".getWebPath($logo)."' {$size[3]} alt='$title'/>" : $title;
 			if (!($this instanceof ETConversationController)) $data["forumSlogan"] = C("esoTalk.forumSlogan");
+			$data["showMainPageLink"] = !($this instanceof ETConversationsController);
 
 			// Add the details for the "back" button.
 			$data["backButton"] = ET::$session->getNavigation($this->navigationId);

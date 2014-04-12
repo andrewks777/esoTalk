@@ -216,6 +216,7 @@ $definitions["Give this group the 'moderate' permission on all existing channels
 $definitions["Give this group the 'manage KB' permission on all existing channels"] = "Дать этой группе привилегии инженера знаний во всех существующих каналах";
 $definitions["Global permissions"] = "Глобальные привилегии";
 $definitions["Go to top"] = "Перейти вверх";
+$definitions["Go to main page"] = "Перейти на главную";
 $definitions["Group name"] = "Имя группы";
 $definitions["group.administrator"] = "Администратор";
 $definitions["group.administrator.plural"] = "Администраторы";

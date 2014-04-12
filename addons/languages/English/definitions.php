@@ -161,6 +161,7 @@ $definitions["Give this group the 'moderate' permission on all existing channels
 $definitions["Give this group the 'manage KB' permission on all existing channels"] = "Give this group the 'manage KB' permission on all existing channels";
 $definitions["Global permissions"] = "Global permissions";
 $definitions["Go to top"] = "Go to top";
+$definitions["Go to main page"] = "Go to main page";
 $definitions["Group name"] = "Group name";
 $definitions["group.administrator"] = "Administrator";
 $definitions["group.administrator.plural"] = "Administrators";
