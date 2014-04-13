@@ -2,7 +2,9 @@ var BBCode = {
 
 init: function() {
 
-	$(".spoiler-link a").live("click", function(e) {
+	$('body').on('click', '.spoiler-link a', function(e) {
+		e.preventDefault();
+		
 		var e = $(this);
 		var icon = e.children('i');
 		var hidClassId = "icon-double-angle-right";
@@ -19,12 +21,11 @@ init: function() {
 			hText.hide();
 		}
 		
-		e.preventDefault();
 	});
 	
 	BBCode.doFillLanguages();
 	
-	$(".code-lng").live("mouseenter", function(e) {
+	$('body').on('mouseenter', '.code-lng', function(e) {
 		BBCode.doFillLanguages(this);
 	});
 	
