@@ -35,7 +35,7 @@ $this->renderView("conversation/channelPath", array("conversation" => $conversat
 
 <?php
 // toKB checkbox
-if ($data["toKBCheckbox"]) echo "<label class='checkbox checkboxInline'>".$form->checkbox("toKB")." ".T("toKB")."</label>";
+if (isset($data["toKBCheckbox"]) && $data["toKBCheckbox"]) echo "<label class='checkbox checkboxInline' title='".T("label.KB")."'>".$form->checkbox("toKB")." ".T("toKB")."</label>";
 ?>
 
 </div>
