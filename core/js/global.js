@@ -919,7 +919,7 @@ $(function() {
 	}
 	
 	var scrubber = $(".scrubberColumn");
-	scrubber.css("position", "fixed").css("margin", "0").css("right", "0").css("z-index", "100").css("background", "#fff");
+	scrubber.css("position", "fixed").css("margin", "0").css("right", "0").css("z-index", "100").css("background", "#fff").css("top", "130px");
 	scrubber.children(".scrubberContent").css("background", "#fff");
 	scrubber.hide();
 	$(".hasScrubber").css("margin-right", "0px");
