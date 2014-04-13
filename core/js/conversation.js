@@ -99,7 +99,7 @@ init: function() {
 
 		// Store the conversation title and add a click handler to edit it.
 		this.title = $("#conversationTitle a").html() || $("#conversationTitle").html();
-		$("#conversationTitle a").live("click", function(e) {
+		$('body').on('click', '#conversationTitle a', function(e) {
 			e.preventDefault();
 			ETConversation.editTitle();
 		});
@@ -217,8 +217,7 @@ init: function() {
 		}
 
 	}
-	pushpinSelector = '.post .controls .control-pushpin';
-	$('#conversationPosts, #reply .postHeader').on('click', pushpinSelector, function(e) {
+	$('#conversationPosts, #reply .postHeader').on('click', '.control-pushpin', function(e) {
 		onControlPushpin(e, this);
 	});
 
@@ -603,46 +602,47 @@ initPosts: function() {
 	$("#conversationPosts .time").tooltip({alignment: "left", className: "withArrow withArrowBottom"});
 	$("#conversationPosts .online").tooltip({alignment: "left", offset: [-9, 0], className: "withArrow withArrowBottom"}).css("cursor", "pointer");
 
+	var body = $('body');
 	// Add click handlers to the post controls.
-	$("#conversationPosts .controls .control-edit").live("click", function(e) {
+	body.on('click', '#conversationPosts .controls .control-edit', function(e) {
 		var postId = $(this).parents(".post").data("id");
 		ETConversation.editPost(postId);
 		e.preventDefault();
 	});
 
-	$("#conversationPosts .controls .control-delete").live("click", function(e) {
+	body.on('click', '#conversationPosts .controls .control-delete', function(e) {
 		var postId = $(this).parents(".post").data("id");
 		ETConversation.deletePost(postId);
 		e.preventDefault();
 	});
 
-	$("#conversationPosts .controls .control-restore").live("click", function(e) {
+	body.on('click', '#conversationPosts .controls .control-restore', function(e) {
 		var postId = $(this).parents(".post").data("id");
 		ETConversation.restorePost(postId);
 		e.preventDefault();
 	});
 	
-	$("#conversationPosts .controls .control-view").live("click", function(e) {
+	body.on('click', '#conversationPosts .controls .control-view', function(e) {
 		e.preventDefault();
 		var e = $(this).parents(".postContent").children(".postBody,.postReplies");
 		var delClassId = "deleted";
 		if (e.hasClass(delClassId)) e.removeClass(delClassId); else e.addClass(delClassId);
 	});
 
-	$("#conversationPosts .post:not(.edit) .controls .control-quote").live("click", function(e) {
+	body.on('click', '#conversationPosts .post:not(.edit) .controls .control-quote', function(e) {
 		var postId = $(this).parents(".post").data("id");
 		ETConversation.quotePost(postId, e.shiftKey);
 		e.preventDefault();
 	});
 	
-	$("#conversationPosts .post:not(.edit) .info #relativePostId").live("click", function(e) {
+	body.on('click', '#conversationPosts .post:not(.edit) .info #relativePostId', function(e) {
 		var postId = $(this).parents(".post").data("id");
 		ETConversation.miniQuotePost(postId, e.shiftKey);
 		e.preventDefault();
 	});
 
 	// Add a click handler to any "post links" to scroll back up to the right post, if it's loaded.
-	$("#conversationPosts .postBody a[rel=post]").live("click", function(e) {
+	body.on('click', '#conversationPosts .postBody a[rel=post]', function(e) {
 		var id = $(this).data("id");
 
 		$("#conversationPosts .post").each(function() {
@@ -956,7 +956,8 @@ initMembersAllowed: function() {
 	});
 
 	// Add click handlers to each of the names, to remove them.
-	$("#membersAllowedSheet .allowedList .name a").die("click").live("click", function(e) {
+	var masSelector = '#membersAllowedSheet .allowedList .name a';
+	$('body').off('click', masSelector).on('click', masSelector, function(e) {
 		e.preventDefault();
 		ETConversation.removeMember($(this).data("type"), $(this).data("id"));
 	});

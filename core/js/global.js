@@ -247,10 +247,10 @@ $(function() {
 	// and revert it when we lose focus. 
 	var iOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
 	if (iOS) {
-		$("input, textarea").live('focus', function(){
+		$('body').on('focus', 'input, textarea', function(){
 			$("#hdr").css({position:'absolute'});
 		});
-		$("input, textarea").live('blur', function(){
+		$('body').on('blur', 'input, textarea', function(){
 			$("#hdr").css({position:''});
 		});
 		// Also hide tooltips.
@@ -619,9 +619,9 @@ $.fn.popup = function(options) {
 $.fn.tooltip = function(options) {
 
 	// If we're doing a tooltip on a distinct element, bind the handlers. But if we're using a selector, use live so they always apply.
-	var func = this.selector ? "live" : "bind";
+	var func = this.selector ? "on" : "bind";
 
-	return this.unbind("mouseenter.tooltip").die("mouseenter.tooltip")[func]("mouseenter.tooltip", function() {
+	return this.unbind("mouseenter.tooltip").off("mouseenter.tooltip")[func]("mouseenter.tooltip", function() {
 
 		var elm = $(this);
 		options = options || {};
@@ -680,7 +680,7 @@ $.fn.tooltip = function(options) {
 	})
 
 	// Bind a mouseleave handler to hide the tooltip.
-	.unbind("mouseleave.tooltip").die("mouseleave.tooltip")[func]("mouseleave.tooltip", function() {
+	.unbind("mouseleave.tooltip").off("mouseleave.tooltip")[func]("mouseleave.tooltip", function() {
 
 		// If the tooltip is hoverable, don't hide it instantly. Give it a chance to run the mouseenter event.
 		$("#tooltip").hasClass("hoverable")
@@ -692,7 +692,7 @@ $.fn.tooltip = function(options) {
 
 $.fn.removeTooltip = function() {
 	$.hideToolTip();
-	return this.unbind("mouseenter.tooltip").die("mouseenter.tooltip").unbind("mouseleave.tooltip").die("mouseleave.tooltip")
+	return this.unbind("mouseenter.tooltip").off("mouseenter.tooltip").unbind("mouseleave.tooltip").off("mouseleave.tooltip")
 };
 
 // The element which the tooltip belongs to.
@@ -795,42 +795,43 @@ $(function() {
 	// Initialize page history.
 	$.history.init();
 
+	var body = $('body');
 	// Add click handlers to any login, forgot password, new conversation, and sign up links.
-	// $(".link-login").live("click", function(e) {
+	// body.on('click', '.link-login', function(e) {
 	// 	e.preventDefault();
 	// 	showLoginSheet();
 	// });
 
-	$(".link-forgot").live("click", function(e) {
+	body.on('click', '.link-forgot', function(e) {
 		e.preventDefault();
 		showForgotSheet();
 	});
 
-	// $(".link-newConversation").live("click", function(e) {
+	// body.on('click', '.link-newConversation', function(e) {
 	// 	if (!ET.userId) {
 	// 		e.preventDefault();
 	// 		showLoginSheet(true);
 	// 	}
 	// });
 
-	// $(".link-join").live("click", function(e) {
+	// body.on('click', '.link-join', function(e) {
 	// 	e.preventDefault();
 	// 	showJoinSheet();
 	// });
 
-	$(".link-membersOnline").live("click", function(e) {
+	body.on('click', '.link-membersOnline', function(e) {
 		e.preventDefault();
 		showOnlineSheet();
 	});
 
 	// Add click handlers to stars.
-	$(".starButton").live("click", function(e) {
+	body.on('click', '.starButton', function(e) {
 		toggleStar($(this).data("id"));
 		e.preventDefault();
 	});
 	
 	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post";
-	$(miniQuoteId).live("mouseenter", function(e) {
+	body.on('mouseenter', miniQuoteId, function(e) {
 		e.preventDefault();
 		$("#postToolTip").remove();
 		var e = $(this);
@@ -849,21 +850,21 @@ $(function() {
 		}, 'qsp');
 	});
 	
-	$(miniQuoteId).live("mouseleave", function(e) {
+	body.on('mouseleave', miniQuoteId, function(e) {
 		e.preventDefault();
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
 	});
 	
-	$(miniQuoteId).live("click", function(e) {
+	body.on('click', miniQuoteId, function(e) {
 		var e = $(this);
 		e.queue('qsp', []);
 		e.stop(true, true);
 		$("#postToolTip").remove();
 	});
 	
-	$("#postToolTip .controls .control-closeToolTip").live("click", function(e) {
+	body.on('click', '#postToolTip .controls .control-closeToolTip', function(e) {
 		$("#postToolTip").remove();
 		e.preventDefault();
 	});
@@ -951,15 +952,17 @@ $(function() {
 			var browserWindow = $(window);
 			var width = browserWindow.width();
 			var scrubber = $(".scrubberColumn");
-			if (clientX >= browserWindow.width() - 20) {
+			
+			if (clientX >= width - 20) {
 				/*if (scrubber.length > 0 && clientX < browserWindow.width()) {
 					ETScrubber.onWindowScroll(browserWindow.scrollTop());
 				}*/
 				scrubber.show("fast");
 			}
-			else if (clientX < browserWindow.width() - scrubber.width()) scrubber.hide("fast");
+			else if (clientX < width - scrubber.width()) scrubber.hide("fast");
 			/*else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());*/
 		});
+		
 	});
 	
 

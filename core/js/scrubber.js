@@ -98,7 +98,7 @@ init: function() {
 
 	// Alright, so, all the scrolling event stuff is done! Now we need to make the "next/previous page" and
 	// "load more" blocks clickable.
-	$(".scrubberMore a", ETScrubber.body).live("click", function(e) {
+	$(".scrubberMore a", ETScrubber.body).click(function(e) {
 		e.preventDefault();
 		$(this).parent().addClass("loading");
 		var moreItem = $(this).parent();
