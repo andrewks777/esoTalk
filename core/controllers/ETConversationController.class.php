@@ -59,6 +59,8 @@ public function index($conversationId = false, $year = false, $month = false)
 	}
 
 	// Set up place
+	if (!ET::$session->userId && $year === 'unread') $year = 'last';
+	
 	$initialPlace = ET::$session->preference("loadConversationMode");
 	if ($initialPlace && ($year === false) && !$searchString) {
 		if ($initialPlace == 'unread') $year = 'unread';
