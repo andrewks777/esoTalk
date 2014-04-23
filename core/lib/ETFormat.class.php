@@ -214,13 +214,13 @@ public function links()
 		? "(?:[\pL\d]\.|[\pL\d][\pL\d\-]*[\pL\d]\.)+".$domainPatternGeneral
 		: "(?:[a-z0-9]\.|[a-z0-9][a-z0-9\-]*[a-z0-9]\.)+".$domainPatternGeneral;
 	$portPattern = "(?::\d+)?";
-	$pathPattern = "(?:(?:\/+(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)*+)?";
-	$queryStringPattern = "(?:\?(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)?";
-	$fragmentPattern = "(?:#(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*+)?";
+	$pathPattern = "(?:(?:\/+(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~]|%[0-9a-f]{2})*+)*+)?";
+	$queryStringPattern = "(?:\?(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~\/]|%[0-9a-f]{2})*+)?";
+	$fragmentPattern = "(?:#(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~]|%[0-9a-f]{2})*+)?";
 		
 	$this->content = preg_replace_callback(
 		//"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>]*(?:\s|>|$))/i".($use_unicode ? "u" : "" ),
-		"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)"."(?:".$ipv4Pattern."|".$hostNamePatternGeneral.")"."|".$hostNamePattern.")".$portPattern.$pathPattern.$queryStringPattern.$fragmentPattern.")(?=\s|>|$)/i".($use_unicode ? "u" : "" ),
+		"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)"."(?:".$ipv4Pattern."|".$hostNamePatternGeneral.")"."|".$hostNamePattern.")".$portPattern.$pathPattern.$queryStringPattern.$fragmentPattern.")(?=\s|>|$|\[)/i".($use_unicode ? "u" : "" ),
 		array($this, "linksCallback"), $this->content);
 
 	// Convert email links.
