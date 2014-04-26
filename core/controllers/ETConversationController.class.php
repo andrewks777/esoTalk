@@ -248,7 +248,8 @@ public function index($conversationId = false, $year = false, $month = false)
 		if ($conversation["canManageKB"]) {
 			$this->addJSLanguage("toKB", "fromKB");
 		}
-		if (ET::$session->user) $this->addJSLanguage("Controls", "Follow", "Following", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation", "Load more posts", "message.videoLoadingError", "message.imageLoadingError");
+		$this->addJSLanguage("Load more posts", "message.videoLoadingError", "message.imageLoadingError");
+		if (ET::$session->user) $this->addJSLanguage("Controls", "Follow", "Following", "message.confirmLeave", "message.confirmDiscardReply", "Mute conversation", "Unmute conversation");
 
 		$this->addJSVar("postsPerPage", $postsPerPage);
 		$this->addJSVar("conversationUpdateIntervalStart", C("esoTalk.conversation.updateIntervalStart"));
