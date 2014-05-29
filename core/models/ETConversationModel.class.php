@@ -641,21 +641,21 @@ public function create($data, $membersAllowed = array(), $isDraft = false)
 		// If the conversation is private, send out notifications to the allowed members.
 		if (!empty($membersAllowed)) {
 			// for debug
-			$logname = 'C:\Web\data\htdocs\forum\private.log';
-			file_put_contents($logname, "step 1, add notifications; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
+			//$logname = 'C:\Web\data\htdocs\forum\private.log';
+			//file_put_contents($logname, "step 1, add notifications; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
 			// for debug
 			$memberIds = array();
 			foreach ($membersAllowed as $member) {
 				if ($member["type"] == "member") $memberIds[] = $member["id"];
 			}
 			// for debug
-			$logname = 'C:\Web\data\htdocs\forum\private.log';
-			file_put_contents($logname, "step 1.1, add notifications; memberIds:".var_export($memberIds, true)."\n", FILE_APPEND);
+			//$logname = 'C:\Web\data\htdocs\forum\private.log';
+			//file_put_contents($logname, "step 1.1, add notifications; memberIds:".var_export($memberIds, true)."\n", FILE_APPEND);
 			// for debug
 			$this->privateAddNotification($conversation, $memberIds, true, $content);
 			// for debug
-			$logname = 'C:\Web\data\htdocs\forum\private.log';
-			file_put_contents($logname, "step 1.2, add notifications; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
+			//$logname = 'C:\Web\data\htdocs\forum\private.log';
+			//file_put_contents($logname, "step 1.2, add notifications; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
 			// for debug
 		}
 	}
@@ -663,8 +663,8 @@ public function create($data, $membersAllowed = array(), $isDraft = false)
 	// If the conversation is private, add the allowed members to the database.
 	if (!empty($membersAllowed)) {
 		// for debug
-		$logname = 'C:\Web\data\htdocs\forum\private.log';
-		file_put_contents($logname, "step 2, insert into member_conversation; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
+		//$logname = 'C:\Web\data\htdocs\forum\private.log';
+		//file_put_contents($logname, "step 2, insert into member_conversation; membersAllowed:".var_export($membersAllowed, true)."\n", FILE_APPEND);
 		// for debug
 		$inserts = array();
 		foreach ($membersAllowed as $member) $inserts[] = array($conversationId, $member["type"], $member["id"], 1);
@@ -1354,8 +1354,8 @@ protected function privateAddNotification($conversation, $memberIds, $notifyAll 
 	$followIds = array();
 	foreach ($members as $member) {
 		// for debug
-		$logname = 'C:\Web\data\htdocs\forum\private.log';
-		file_put_contents($logname, "step 1.3, add notification; member:".var_export($member, true)."\n", FILE_APPEND);
+		//$logname = 'C:\Web\data\htdocs\forum\private.log';
+		//file_put_contents($logname, "step 1.3, add notification; member:".var_export($member, true)."\n", FILE_APPEND);
 		// for debug
 		ET::activityModel()->create("privateAdd", $member, ET::$session->user, $data, $emailData);
 
@@ -1364,8 +1364,8 @@ protected function privateAddNotification($conversation, $memberIds, $notifyAll 
 
 	// Follow the conversation for the appropriate members.
 	// for debug
-	$logname = 'C:\Web\data\htdocs\forum\private.log';
-	file_put_contents($logname, "step 1.4, follow; followIds:".var_export($followIds, true)."\n", FILE_APPEND);
+	//$logname = 'C:\Web\data\htdocs\forum\private.log';
+	//file_put_contents($logname, "step 1.4, follow; followIds:".var_export($followIds, true)."\n", FILE_APPEND);
 	// for debug
 	if (!empty($followIds)) $this->setStatus($conversation["conversationId"], $followIds, array("starred" => true));
 
