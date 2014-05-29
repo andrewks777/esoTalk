@@ -216,7 +216,7 @@ public function links()
 	$portPattern = "(?::\d+)?";
 	$pathPattern = "(?:(?:\/+(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~]|%[0-9a-f]{2})*+)*+)?";
 	$queryStringPattern = "(?:\?(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~\/]|%[0-9a-f]{2})*+)?";
-	$fragmentPattern = "(?:#(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~]|%[0-9a-f]{2})*+)?";
+	$fragmentPattern = "(?:#(?:[".$letterPattern."0-9\$_\.\+!\*\'\(\),;:@&=\-~\/]|%[0-9a-f]{2})*+)?";
 		
 	$this->content = preg_replace_callback(
 		//"/(?<=\s|^|>|\()(".$protocolPattern.")?((?:"."(?<=:\/\/)".$ipv4Pattern."|".$hostNamePattern.")".$portPattern."(?:[\/#][^\s<]*?)?)(?=[\s\.,?!>]*(?:\s|>|$))/i".($use_unicode ? "u" : "" ),
