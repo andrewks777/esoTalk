@@ -17,3 +17,5 @@
 .code-lng-list > li a {color:#666}
 .code-lng-list > li:hover a {color:#000}
 .code-lng:hover .code-lng-list {display:block}
+.link-image {border:0}
+.link-image  > img{max-width:40%; max-height:40%; cursor:url(zoomin.cur), pointer !important}

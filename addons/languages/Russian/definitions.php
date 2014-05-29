@@ -650,6 +650,7 @@ $definitions["setting.autoLoadNextPagePosts.label"] = "Автоматическ�
 
 $definitions["settings.multimediaEmbedding.label"] = "Встраивание мультимедиа";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "Запретить встраивание мультимедиа";
+$definitions["setting.forbidImagesScaling.label"] = "Запретить масштабирование изображений";
 
 $definitions["settings.mainPageRefresh.label"] = "Новые обсуждения на главной";
 $definitions["setting.mainPageRefreshMode.refresh"] = "показывать автоматически";

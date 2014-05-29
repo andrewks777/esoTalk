@@ -30,6 +30,8 @@ protected function addResources($sender)
 	$groupKey = 'bbcode';
 	$sender->addJSFile($this->getResource("bbcode.js"), false, $groupKey);
 	$sender->addCSSFile($this->getResource("bbcode.css"), false, $groupKey);
+	$sender->addJSFile($this->getResource("jquery.colorbox-min.js"), false, $groupKey);
+	$sender->addCSSFile($this->getResource("colorbox.css"), false, $groupKey);
 	
 	// Syntax highlighting
 	$sender->addJSFile($this->getResource("highlight.pack.js"), false, $groupKey);
@@ -160,7 +162,14 @@ public function imgCallback($matches)
 	$desc = $matches[1] ? $matches[1] : "-image-";
 	$title = $matches[1];
 	$url = $matches[2];
-	return "<img onerror='$onerror' src='$url' alt='$desc' title='$title'/>";
+	
+	$forbidScaling = (bool)ET::$session->preference("forbidImagesScaling");
+	if ($forbidScaling) {
+		return "<img onerror='$onerror' src='$url' alt='$desc' title='$title'/>";
+	} else {
+		return "<a href='".$url."' target='_blank' class='link-image'>"."<img onerror='$onerror' src='$url' alt='$desc' title='$title'/>"."</a>";
+	}
+	
 }
 
 

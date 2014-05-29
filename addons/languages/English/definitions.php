@@ -576,6 +576,7 @@ $definitions["setting.autoLoadNextPagePosts.label"] = "Automatic loading of the 
 
 $definitions["settings.multimediaEmbedding.label"] = "Multimedia embedding";
 $definitions["setting.forbidMultimediaEmbedding.label"] = "To forbid multimedia embedding";
+$definitions["setting.forbidImagesScaling.label"] = "To forbid images scaling";
 
 $definitions["settings.mainPageRefresh.label"] = "New conversations on main page";
 $definitions["setting.mainPageRefreshMode.refresh"] = "autoload";

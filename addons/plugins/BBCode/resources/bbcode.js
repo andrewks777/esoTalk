@@ -23,6 +23,11 @@ init: function() {
 		
 	});
 	
+	$('body').on('click', '.link-image', function(e) {
+		e.preventDefault();
+		$(this).colorbox({rel:'imgview', opacity:0.75});
+	});
+	
 	BBCode.doFillLanguages();
 	
 	$('body').on('mouseenter', '.code-lng', function(e) {

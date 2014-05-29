@@ -165,6 +165,10 @@ public function general()
 	$form->setValue("forbidMultimediaEmbedding", ET::$session->preference("forbidMultimediaEmbedding"));
 	$form->addField("multimediaEmbedding", "forbidMultimediaEmbedding", array($this, "fieldForbidMultimediaEmbedding"), array($this, "saveBoolPreference"));
 	
+	// Add the "scale images" field.
+	$form->setValue("forbidImagesScaling", ET::$session->preference("forbidImagesScaling"));
+	$form->addField("multimediaEmbedding", "forbidImagesScaling", array($this, "fieldForbidImagesScaling"), array($this, "saveBoolPreference"));
+	
 	$form->addSection("notifications", T("Notifications"));
 
 	// Add the "email me when I'm added to a private conversation" field.
@@ -443,6 +447,19 @@ public function fieldAutoLoadNextPagePosts($form)
 public function fieldForbidMultimediaEmbedding($form)
 {
 	return "<label class='checkbox'>".$form->checkbox("forbidMultimediaEmbedding")." ".T("setting.forbidMultimediaEmbedding.label")."</label>";
+}
+
+
+/**
+ * Return the HTML to render the "fieldForbidImagesScaling" field in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldForbidImagesScaling($form)
+{
+	return "<label class='checkbox'>".$form->checkbox("forbidImagesScaling")." ".T("setting.forbidImagesScaling.label")."</label>";
 }
 
 
