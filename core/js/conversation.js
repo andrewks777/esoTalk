@@ -61,6 +61,7 @@ init: function() {
 				url: "conversation/index.ajax/"+ETConversation.id+"/"+position,
 				data: {search: ETConversation.searchString},
 				success: function(data) {
+					if (data.startFrom == 0) $("li.firstPost").remove();
 					var items = success(data);
 					ETConversation.collapseQuotes(items);
 					ETConversation.redisplayAvatars();

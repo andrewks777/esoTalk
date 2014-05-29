@@ -791,6 +791,7 @@ var ETMembersAllowedTooltip = {
 $(function() {
 
 	$("#backButton").tooltip({alignment: "left", offset: [25, 25]});
+	$("#hdr .firstPostRef").tooltip({alignment: "left", offset: [35, 25]});
 
 	// Initialize page history.
 	$.history.init();
@@ -830,7 +831,7 @@ $(function() {
 		e.preventDefault();
 	});
 	
-	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post";
+	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post, #hdr .firstPostRef";
 	body.on('mouseenter', miniQuoteId, function(e) {
 		e.preventDefault();
 		$("#postToolTip").remove();
@@ -848,6 +849,19 @@ $(function() {
 			showPostTooltip(postId);
 			e.dequeue();
 		}, 'qsp');
+	});
+	
+	body.on('touchmove', miniQuoteId, function(e) {
+		e.preventDefault();
+		$("#postToolTip").remove();
+		var e = $(this);
+		var em = e.parent().parent();
+		if (em.prop("class") == "col-conversation") {
+			var postId = em.parent().prop("id").substr(1) + "-0";
+		} else {
+			var postId = e.data("id");
+		}
+		showPostTooltip(postId);
 	});
 	
 	body.on('mouseleave', miniQuoteId, function(e) {

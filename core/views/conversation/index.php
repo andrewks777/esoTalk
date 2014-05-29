@@ -203,7 +203,14 @@ foreach ($recentMonths as $month) {
 <!-- Posts -->
 <ol id='conversationPosts' class='postList' start='<?php echo $data["startFrom"] + 1; ?>'>
 
-<?php if ($data["startFrom"] > 0): ?>
+
+<?php
+if ($data["startFrom"] > 0 && isset($data["firstPost"])) {
+	$data1 = array_replace($data, array('posts' => $data["firstPost"], 'firstPost' => true));
+	$this->renderView("conversation/posts", $data1);
+}
+?>
+<?php if ($data["startFrom"] > 1): ?>
 <li class='scrubberMore scrubberPrevious'><a href='<?php echo URL(makeURL("p".(ceil($data["startFrom"] / $postsPerPage + 1) - 1), $data["searchString"])); ?>'>&lsaquo; <?php echo T("Older"); ?></a></li>
 <?php endif; ?>
 

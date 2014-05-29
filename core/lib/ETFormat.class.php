@@ -243,11 +243,11 @@ public function linksCallback2($matches)
 	} else return $matches[0];
 }
 
-public function getMiniQuote($quote, $classname = 'mqPostRef')
+public function getMiniQuote($quote, $classname = 'mqPostRef', $title = '')
 {
 	$dataId = postURL(0, $quote["conversationId"], $quote["relativePostId"], false);
 	$url = URL(postURL(0, $quote["conversationId"], $quote["relativePostId"]), true);
-	return "<a href='".$url."' rel='post' data-id='$dataId' class='$classname'>(".$quote["relativePostId"].")</a>";
+	return "<a href='".$url."' rel='post' data-id='$dataId' class='$classname'".($title ? " title='$title'" : "").">(".$quote["relativePostId"].")</a>";
 }
 
 /**

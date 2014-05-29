@@ -41,7 +41,11 @@ if (!defined("IN_ESOTALK")) exit;
 <a href='<?php echo $data["backButton"]["url"]; ?>' id='backButton' title='<?php echo T("Back to {$data["backButton"]["type"]}"); ?>'><i class="icon-circle-arrow-left"></i></a>
 <?php endif; ?>
 
-<h1 id='forumTitle'><a href='<?php echo URL(""); ?>'><?php echo $data["forumTitle"]; ?></a></h1>
+<h1 id='forumTitle'><a href='<?php echo URL(""); ?>'><?php echo $data["forumTitle"]; ?></a>
+<?php if (isset($data["firstPostLink"])): ?>
+<span style='padding-left:6px'></span><?php echo $data["firstPostLink"]; ?>
+<?php endif; ?>
+</h1>
 <?php if (isset($data["forumSlogan"])): ?>
 <h1 id='forumSlogan'><?php echo $data["forumSlogan"]; ?></h1>
 <?php endif; ?>

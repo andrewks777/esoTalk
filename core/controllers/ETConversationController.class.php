@@ -316,6 +316,12 @@ public function index($conversationId = false, $year = false, $month = false)
 			$description = str_replace(array("\n\n", "\n"), " ", $description);
 			$this->addToHead("<meta name='description' content='".sanitizeHTML($description)."'>");
 		}
+		
+		// Add first post content
+		if ($startFrom > 0) {
+			$firstPost = $posts = ET::postModel()->getByConversation($conversation["conversationId"], array('startFrom' => 0, 'limit' => 1));
+			$this->data("firstPost", $firstPost);
+		}
 
 		// Add JavaScript variables which contain conversation information.
 		$this->addJSVar("conversation", array(

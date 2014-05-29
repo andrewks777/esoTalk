@@ -467,6 +467,11 @@ public function render($view = "")
 			$title = C("esoTalk.forumTitle");
 			if ($logo) $size = getimagesize($logo);
 			$data["forumTitle"] = $logo ? "<img src='".getWebPath($logo)."' {$size[3]} alt='$title'/>" : $title;
+			if ($this instanceof ETConversationController) {
+				$quote = array('conversationId' => $this->data["conversation"]["conversationId"], 'relativePostId' => 0);
+				$firstPostLink = ET::formatter()->getMiniQuote($quote, 'firstPostRef', T("Original Post"));
+				$data["firstPostLink"] = $firstPostLink;
+			}
 			if (!($this instanceof ETConversationController)) $data["forumSlogan"] = C("esoTalk.forumSlogan");
 			$data["showMainPageLink"] = !($this instanceof ETConversationsController);
 

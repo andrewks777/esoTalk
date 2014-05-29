@@ -57,7 +57,11 @@ $(function() {
 <?php echo $data["userMenuItems"]; ?>
 </ul>
 
-<h1 id='forumTitle'><a href='<?php echo URL(""); ?>'><?php echo C("esoTalk.forumTitle"); ?></a></h1>
+<h1 id='forumTitle'><a href='<?php echo URL(""); ?>'><?php echo C("esoTalk.forumTitle"); ?></a>
+<?php if (isset($data["firstPostLink"])): ?>
+<span style='padding-left:6px'></span><?php echo $data["firstPostLink"]; ?>
+<?php endif; ?>
+</h1>
 
 </div>
 </div>
