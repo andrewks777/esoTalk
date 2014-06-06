@@ -481,10 +481,10 @@ public function getQuotes($conversationId, $relativePostId, $content)
 	$names = array();
 	
 	// quotes
-	preg_match_all('/(.*?)\n?\[quote(?:=(.*?)(]?))?\]\n?(.*?)\n?\[\/quote\]\n{0,2}/ise', $content, $matches, PREG_SET_ORDER);
+	preg_match_all('/(.*?)\n?\[quote(?:=(.*?)(:.*?)?(?:]?))?\]\n?(.*?)\n?\[\/quote\]\n{0,2}/ise', $content, $matches, PREG_SET_ORDER);
 	foreach ($matches as $v) {
-		list($conversationId2, $relativePostId) = explodeRelativePostId($v[2]);
-		$names[] = array("conversationId" => (int)$conversationId2, "relativePostId" => (int)$relativePostId);
+		list($conversationId2, $relativePostId2) = explodeRelativePostId($v[2]);
+		if ($conversationId2) $names[] = array("conversationId" => (int)$conversationId2, "relativePostId" => (int)$relativePostId2);
 	}
 	
 	// mini-quotes
