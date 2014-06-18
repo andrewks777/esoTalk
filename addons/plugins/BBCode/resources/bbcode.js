@@ -25,7 +25,7 @@ init: function() {
 	
 	$('body').on('click', '.link-image', function(e) {
 		e.preventDefault();
-		$(this).colorbox({rel:'imgview', opacity:0.75});
+		$(this).colorbox({rel:'imgview', opacity:0.75, inline:true, href:$(this).children('img')});
 	});
 	
 	BBCode.doFillLanguages();
