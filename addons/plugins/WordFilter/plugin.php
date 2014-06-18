@@ -21,19 +21,49 @@ class ETPlugin_WordFilter extends ETPlugin {
 
 	public function handler_format_format($sender)
 	{
-		$disallow = ET::$session->preference("disallowWordFilter", false);
-		if ($disallow) return;
-
-		$filters = C("plugin.WordFilter.filters", array());
-
-		if (!count($filters)) return;
-
-		// Pass each instance of any filtered word to our callback.
-		$words = array_keys($filters);
-		$sender->content = preg_replace_callback('#\b('.implode('|', $words).')\b#ium', array($this, "filterCallback"), $sender->content);
+		$filters = $this->getFilters();
+		if (count($filters)) $sender->content = $this->filterContent($sender->content, $filters);
+	}
+	
+	
+	public function handler_conversationController_conversationIndex($sender, &$conversation)
+	{
+		$filters = $this->getFilters();
+		if (count($filters)) {
+			if (!$conversation["canModerate"] and ($conversation["startMemberId"] != ET::$session->userId or $conversation["locked"])) $conversation["title"] = $this->filterContent($conversation["title"], $filters);
+		}
+	}
+	
+	
+	public function handler_searchModel_afterGetResults($sender, &$results)
+	{
+		$filters = $this->getFilters();
+		if (count($filters)) {
+			
+			foreach ($results as &$result) $result["title"] = $this->filterContent($result["title"], $filters);
+		}
 	}
 
 
+	public function getFilters()
+	{
+		$disallow = ET::$session->preference("disallowWordFilter", false);
+		if ($disallow) return array();
+
+		$filters = C("plugin.WordFilter.filters", array());
+		
+		return $filters;
+	}
+	
+	
+	public function filterContent($content, $filters)
+	{
+		// Pass each instance of any filtered word to our callback.
+		$words = array_keys($filters);
+		return preg_replace_callback('#\b('.implode('|', $words).')\b#ium', array($this, "filterCallback"), $content);
+	}
+	
+	
 	public function filterCallback($matches)
 	{
 		$filters = C("plugin.WordFilter.filters", array());
