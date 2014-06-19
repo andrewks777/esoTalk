@@ -127,11 +127,15 @@ init: function() {
 
 		// If there's a post ID in the URL hash (eg. p1234), highlight that post, and scroll to it.
 		var hash = window.location.hash.replace("#", "");
-		if (hash.substr(0, 1) == "p" && $("#"+hash).length) {
-			ETConversation.highlightPost($("#"+hash));
-			setTimeout(function(){
-				ETConversation.scrollTo($("#"+hash).offset().top - 10);
-			}, 100);
+		if (hash.substr(0, 1) == "p") {
+			var postHL = $("#"+hash);
+			if (!postHL.length) postHL = $("[id^="+hash+"-]");
+			if (postHL.length) {
+				ETConversation.highlightPost(postHL);
+				setTimeout(function(){
+					ETConversation.scrollTo(postHL.offset().top - 10);
+				}, 100);
+			}
 		}
 
 		// If we scroll below the header, pop the conversation title up in the forum header.

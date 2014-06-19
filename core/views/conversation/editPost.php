@@ -19,7 +19,7 @@ $post = $data["post"];
 <?php
 
 // Using the provided form object, construct a textarea and buttons.
-$relativePostIdShortURL = postURL($post["postId"], $post["conversationId"], $post["relativePostId"], false);
+$relativePostIdShortURL = postURL_abs($post["postId"], $post["conversationId"], $post["relativePostId"], false);
 $body = $form->input("content", "textarea", array("cols" => "200", "rows" => "20"))."
 	<div id='p".$relativePostIdShortURL."-preview' class='preview'></div>
 	<div class='editButtons'>".

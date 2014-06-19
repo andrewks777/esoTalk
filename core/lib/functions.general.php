@@ -874,6 +874,12 @@ function postURL($postId, $conversationId = 0, $relativePostId = -1, $includePre
 }
 
 
+function postURL_abs($postId, $conversationId = 0, $relativePostId = -1, $includePrefix = true)
+{
+	//return ($includePrefix ? "conversation/post/" : "")."$conversationId-".$relativePostId."-".$postId;
+	return ($includePrefix ? "conversation/post/" : "").($relativePostId >=0 ? "$conversationId-".$relativePostId : $postId);
+}
+
 /**
  * Construct a URL to a search results page, given a search string.
  *
@@ -1163,10 +1169,11 @@ function lcfirst($str)
 
 function explodeRelativePostId($relativePostId)
 {
-	if (preg_match("/^(\d+)(?:-(\d+))?$/i", $relativePostId, $matches)) {
-		return explode("-", $relativePostId, 2);
+	if (preg_match("/^(\d+)(?:-(\d+)){0,2}$/i", $relativePostId, $matches)) {
+		//return array_pad(explode("-", $relativePostId, 3), 3, 0);
+		return explode("-", $relativePostId."-0", 3);
 	} else {
-		return explode("-", "0-0", 2);
+		return explode("-", "0-0-0", 3);
 	}
 	
 }

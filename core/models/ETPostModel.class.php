@@ -100,7 +100,8 @@ public function get($wheres = array())
  */
 public function getById($postId)
 {
-	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
+	list($conversationId, $relativePostId, $globalPostId) = explodeRelativePostId($postId);
+	if ($globalPostId) return $this->getByGlobalId($globalPostId);
 	return reset($this->get(array("p.conversationId" => $conversationId, "p.relativePostId" => $relativePostId)));
 }
 

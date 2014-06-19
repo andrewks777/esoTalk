@@ -1359,7 +1359,7 @@ protected function formatPostForTemplate($post, $conversation)
 	$canEdit = ET::postModel()->canEditPost($post, $conversation);
 	$avatar = avatar($post);
 
-	$relativePostIdShortURL = postURL($post["postId"], $conversation["conversationId"], $post["relativePostId"], false);
+	$relativePostIdShortURL = postURL_abs($post["postId"], $conversation["conversationId"], $post["relativePostId"], false);
 	$replies = "";
 	$repliesCount = 0;
 	if (!$post["deleteMemberId"] || $canViewDeleted) {

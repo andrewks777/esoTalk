@@ -220,15 +220,25 @@ public function get($wheres = array())
  */
 public function getByPostId($postId)
 {
-	list($conversationId, $relativePostId) = explodeRelativePostId($postId);
-	$subquery = ET::SQL()
-		->select("conversationId")
-		->from("post")
-		->where("relativePostId=:relativePostId")
-		->where("conversationId=:conversationId")
-		->bind(":relativePostId", (int)$relativePostId)
-		->bind(":conversationId", (int)$conversationId)
-		->get();
+	list($conversationId, $relativePostId, $globalPostId) = explodeRelativePostId($postId);
+	if ($globalPostId) {
+		$subquery = ET::SQL()
+			->select("conversationId")
+			->from("post")
+			->where("postId=:postId")
+			->bind(":postId", (int)$globalPostId)
+			->get();
+	} else {
+		$subquery = ET::SQL()
+			->select("conversationId")
+			->from("post")
+			->where("relativePostId=:relativePostId")
+			->where("conversationId=:conversationId")
+			->bind(":relativePostId", (int)$relativePostId)
+			->bind(":conversationId", (int)$conversationId)
+			->limit(1)
+			->get();
+	}
 	return $this->get("c.conversationId=($subquery)");
 }
 
@@ -717,8 +727,20 @@ public function addReply(&$conversation, $content)
 	$postId = $postModel->create($conversation["conversationId"], ET::$session->userId, $content, $conversation["title"], $relativePostId);
 	if (!$postId) $this->error($postModel->errors());
 
+	// for debug
+	if ($this->errorCount()) {
+		$errors=$this->errors();
+		$logname = 'C:\Web\data\htdocs\forum\addreply.log';
+		$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
+		file_put_contents($logname, "$time_log   conversationId:".var_export($conversation["conversationId"],true).", relativePostId:".var_export($relativePostId, true)."\n", FILE_APPEND);
+		file_put_contents($logname, "$time_log   errors:".var_export($errors, true)."\n", FILE_APPEND);
+		$this->error($errors);
+	}
+	// for debug
+			
 	// Did we encounter any errors? Don't continue.
-	if ($this->errorCount()) return false;
+	//if ($this->errorCount()) return false;
+	if (!$postId) return false;
 
 	// Update the conversations table with the new post count, last post/action times, and last post member.
 	$time = time();
@@ -736,11 +758,21 @@ public function addReply(&$conversation, $content)
 	$relativePostId2 = (int)ET::$database->lastInsertId();
 	// prevent relativePostId doubling
 	if ($relativePostId2 > $relativePostId) {
+		// for debug
+		$logname = 'C:\Web\data\htdocs\forum\addreply.log';
+		$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
+		file_put_contents($logname, "$time_log   conversationId:".var_export($conversation["conversationId"], true).", relativePostId:".var_export($relativePostId, true).", relativePostId2:".var_export($relativePostId2, true)."\n", FILE_APPEND);
+		// for debug
 		$relativePostId = $relativePostId2;
 		$updatePost = array(
 			"relativePostId" => $relativePostId,
 		);
 		$postModel->updateById($postId, $updatePost);
+		// for debug
+		$logname = 'C:\Web\data\htdocs\forum\addreply.log';
+		$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
+		file_put_contents($logname, "$time_log   updateById".$postId."\n", FILE_APPEND);
+		// for debug
 	}
 
 	// If the user had a draft saved in this conversation before adding this reply, erase it now.
