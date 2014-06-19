@@ -263,11 +263,13 @@ public function linksCallback($matches)
 
 	if (!$this->basic) {
 		$onerror = "javascript:ETConversation.onErrorLoadingVideo(this);";
-		if (C("esoTalk.format.youtube") and preg_match("/^(?:(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)|youtu\.be\/)([^&]+)/i", $matches[2], $youtube)) {
+		if (C("esoTalk.format.youtube") and preg_match("/^(?:(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)|youtu\.be\/)([^&#]+)(?:[^#]*)(?:#t=(\d+))?/i", $matches[2], $youtube)) {
 			$id = $youtube[1];
 			$width = 425;
 			$height = 344;
-			return "<div class='video'><object width='$width' height='$height'><param name='movie' value='http://www.youtube.com/v/$id'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/$id' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='$width' height='$height'></embed></object></div>";
+			$vtime = (count($youtube) >= 3) ? "?start=".$youtube[2] : "";
+			//return "<div class='video'><object width='$width' height='$height'><param name='movie' value='http://www.youtube.com/v/$id'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/$id' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='$width' height='$height'></embed></object></div>";
+			return "<div class='video'><iframe width='$width' height='$height' src='//www.youtube.com/embed/$id$vtime' frameborder='0' allowfullscreen></iframe></div>";
 		} else
 		if (C("esoTalk.format.rutube") and preg_match("/^rutube\.ru\/video\/(?:embed\/)?([\S]+)/i", $matches[2], $rutube)) {
 			$id = $rutube[1];
