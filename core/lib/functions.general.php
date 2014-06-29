@@ -1225,6 +1225,12 @@ function validateDate($date, $format = 'Y-m-d H:i:s')
 	return $d && $d->format($format) == $date;
 }
 
+function writeDebugInfo($logname, $info)
+{
+	$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
+	file_put_contents(C("esoTalk.debugInfoFolder").$logname, "$time_log   $info\n", FILE_APPEND);
+}
+
 // write action to table 'adm_actions'
 function writeAdminLog($actionType, $objectId, $memberId, $titleOld = null, $titleNew = null, $time = 0, $adminId = false, $adminIP = false)
 {

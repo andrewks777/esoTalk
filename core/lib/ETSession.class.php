@@ -164,16 +164,6 @@ public function __construct()
 		// If a matching record exists...
 		if ($row and $row["series"] == $series) {
 
-			// for debug
-			$logname = 'C:\Web\data\htdocs\forum\cookie.log';
-			$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
-			$tokenDB = $row["token"];
-			$prevTokenDB = $row["prevToken"];
-			$sessionToken = $this->token;
-			$sessionTokenDB = $row["sessionToken"];
-			file_put_contents($logname, "$time_log   read_count:$read_count"."\n", FILE_APPEND);
-			file_put_contents($logname, "$time_log   member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB, sessionToken:$sessionToken, sessionTokenDB:$sessionTokenDB"."\n", FILE_APPEND);
-			// for debug
 			// process a situation with restoration of multiple tabs (sessions)
 			$curr_time = time();
 			$this->isPrevToken = ($row["prevToken"] == $token && $row["ident"] == $this->ident && ($row["time"] == 0 || $curr_time <= $row["time"] + 60));
@@ -184,21 +174,11 @@ public function __construct()
 					$_SESSION["token"] = $this->prevSessionToken;
 					$this->token = &$_SESSION["token"];
 				}
-				// for debug
-				$sessionToken = $row["sessionToken"];
-				$userAgent = getUserAgent();
-				file_put_contents($logname, "$time_log   multiple sessions, member:$memberId, token:$token, sessionToken:$sessionToken, userAgent:$userAgent"."\n", FILE_APPEND);
-				// for debug
 			}
 			
 			// If the token doesn't match, the user's cookie has probably been stolen by someone else.
 			if (($row["token"] != $token && $row["prevToken"] != $token) or (C("esoTalk.cookie.checkIdent") and $row["ident"] != $this->ident)) {
 				writeAdminLog('cookieTheft', $memberId, $memberId, "persistent;".$row["series"].";".$row["token"].";".$row["ident"], $cookie.";".$this->ident, 0, $memberId, getUserIP(true));
-				// for debug
-				$sessionToken = $row["sessionToken"];
-				$userAgent = getUserAgent();
-				file_put_contents($logname, "$time_log   cookieTheft, member:$memberId, cookie:$cookie, series:$series, token:$token, tokenDB:$tokenDB, prevTokenDB:$prevTokenDB, userAgent:$userAgent"."\n", FILE_APPEND);
-				// for debug
 			
 				// Delete this member's cookie identifier for this series, so the attacker will not be able
 				// to log in again.
@@ -391,12 +371,6 @@ protected function createPersistentToken($memberId, $series, $prevToken = null, 
 		"memberIP" => $ip,
 		"locked" => 0
 	))->setOnDuplicateKey("token", $token)->setOnDuplicateKey("prevToken", $prevToken)->setOnDuplicateKey("sessionToken", $sessionToken)->setOnDuplicateKey("ident", $this->ident)->setOnDuplicateKey("time", $time)->setOnDuplicateKey("memberIP", $ip)->setOnDuplicateKey("locked", 0)->exec();
-	// for debug
-	$logname = 'C:\Web\data\htdocs\forum\cookie.log';
-	$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);
-	$userAgent = getUserAgent();
-	file_put_contents($logname, "$time_log   createPersistentToken member:$memberId, series:$series, token:$token, prevToken:$prevToken, sessionToken:$sessionToken, userAgent:$userAgent"."\n", FILE_APPEND);
-	// for debug
 
 	return $token;
 }
