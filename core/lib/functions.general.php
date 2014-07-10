@@ -1225,6 +1225,11 @@ function validateDate($date, $format = 'Y-m-d H:i:s')
 	return $d && $d->format($format) == $date;
 }
 
+function reduceTitle(&$title, $maxLen)
+{
+	return (mb_strlen($title, "utf-8") <= $maxLen) ? $title : mb_substr($title, 0, $maxLen, "utf-8")."...";
+}
+
 function writeDebugInfo($logname, $info)
 {
 	$time_log = date("Y-m-d H:i:s") . substr((string)microtime(), 1, 7);

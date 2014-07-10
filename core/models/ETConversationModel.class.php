@@ -778,7 +778,7 @@ public function addReply(&$conversation, $content)
 		"conversationId" => $conversation["conversationId"],
 		"postId" => $postId,
 		"relativePostId" => $relativePostId,
-		"title" => $conversation["title"]
+		"title" => reduceTitle($conversation["title"], 50)
 	);
 	$emailData = array("content" => $content);
 
@@ -1358,7 +1358,7 @@ protected function privateAddNotification($conversation, $memberIds, $notifyAll 
 
 	$data = array(
 		"conversationId" => $conversation["conversationId"],
-		"title" => $conversation["title"]
+		"title" => reduceTitle($conversation["title"], 50)
 	);
 	$emailData = array("content" => $content);
 

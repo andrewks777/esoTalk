@@ -250,7 +250,7 @@ public function create($conversationId, $memberId, $content, $title = "", $relat
 				"conversationId" => $conversationId,
 				"postId" => (int)$id,
 				"relativePostId" => (int)$relativePostId,
-				"title" => $title
+				"title" => reduceTitle($title, 50)
 			);
 			$emailData = array("content" => $content);
 
