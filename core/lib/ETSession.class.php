@@ -114,7 +114,7 @@ public function __construct()
 			
 			$read_count++;
 			$result = ET::$database->query("START TRANSACTION;\n" . $query . ";\n" . $query2. ";\nCOMMIT;");
-			$row = $result->firstRow();
+			$row = false;
 			if ($result->nextRowset()) $row = $result->firstRow();
 			$result->closeCursor();
 			unset($result);
