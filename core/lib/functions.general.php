@@ -125,12 +125,16 @@ function rrmdir($dir)
  *
  * @package esoTalk
  */
-function file_force_contents($file, $contents){
+function file_force_contents($file, $contents, $basepath = ""){
 	$parts = explode("/", $file);
 	$file = array_pop($parts);
 	$dir = "";
-	foreach($parts as $part)
-		if (!is_dir($dir .= "$part/")) mkdir($dir);
+	foreach($parts as $part) {
+		$dir .= "$part/";
+		if (strpos($basepath, $dir) === false) {
+			if (!is_dir($dir)) mkdir($dir);
+		}
+	}
 	return file_put_contents("$dir$file", $contents);
 }
 

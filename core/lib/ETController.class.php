@@ -750,7 +750,7 @@ protected function aggregateFiles($files, $type)
 		}
 
 		// Minify and write the contents.
-		file_force_contents($file, $type == "css" ? minifyCSS($contents) : minifyJS($contents));
+		file_force_contents($file, $type == "css" ? minifyCSS($contents) : minifyJS($contents), PATH_ROOT."/");
 	}
 
 	return array($file);
