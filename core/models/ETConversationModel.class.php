@@ -752,7 +752,7 @@ public function addReply(&$conversation, $content)
 		$postModel->updateById($postId, $updatePost);
 		// for debug
 		$logname = 'addreply.log';
-		writeDebugInfo($logname, "updateById".$postId);
+		writeDebugInfo($logname, "updateById:".$postId);
 		// for debug
 	}
 
