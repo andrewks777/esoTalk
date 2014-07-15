@@ -69,7 +69,8 @@ public function index($orderBy = false, $start = 0)
 			->bind(":search", $searchString."%");
 	}
 	
-	if (C("esoTalk.members.hideDead") and !$_GET["all"]) $sql->where("`lastActionTime` IS NOT NULL");
+	$viewAll = isset($_GET["all"]) and $_GET["all"];
+	if (C("esoTalk.members.hideDead") and !$viewAll) $sql->where("`lastActionTime` IS NOT NULL");
 
 	// Create a query to get the total number of results. Clone the results one to retain the same WHERE conditions.
 	$count = clone $sql;
