@@ -224,7 +224,8 @@ public function links()
 		array($this, "linksCallback"), $this->content);
 
 	// Convert email links.
-	$this->content = preg_replace("/[\w-\.]+@([\w-]+\.)+[\w-]{2,4}/i", "<a href='mailto:$0' class='link-email'>$0</a>", $this->content);
+	//$this->content = preg_replace("/(?<=\s|^|:)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\b/i", "<a href='mailto:$0' class='link-email'>$0</a>", $this->content);
+	$this->content = preg_replace("/(?<=\s|^|:)[".$letterPattern."0-9_\-\.]+@".$hostNamePattern."(?=\s|>|$|\[)/i".($use_unicode ? "u" : "" ), "<a href='mailto:$0' class='link-email'>$0</a>", $this->content);
 	
 	// Convert mini-quotes
 	$this->content = preg_replace_callback(
