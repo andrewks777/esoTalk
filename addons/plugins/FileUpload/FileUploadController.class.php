@@ -142,6 +142,7 @@ class FileUploadController extends ETController {
 					// file is exists
 					$success = true;
 					$url = $this->usr_url_files_relative($upload['memberId']) . $file_name;
+					$url = $file_path; // absolute path
 					header('X-SendFile: ' . $url);
 					header("Content-Type: application/octet-stream");
 					header("Content-Disposition: attachment; filename=\"$file_name_orig\"");
