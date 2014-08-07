@@ -452,12 +452,25 @@ class UploadHandler
         return $name;
     }
 
+	protected function utf_basename($param, $suffix = null) { 
+		if ($suffix) { 
+			$tmpstr = ltrim(substr($param, strrpos($param, DIRECTORY_SEPARATOR)), DIRECTORY_SEPARATOR); 
+			if ((strpos($param, $suffix) + strlen($suffix))  ==  strlen($param)) { 
+				return str_ireplace($suffix, '', $tmpstr); 
+			} else { 
+				return ltrim(substr($param, strrpos($param, DIRECTORY_SEPARATOR)), DIRECTORY_SEPARATOR); 
+			} 
+		} else { 
+			return ltrim(substr($param, strrpos($param, DIRECTORY_SEPARATOR)), DIRECTORY_SEPARATOR); 
+		} 
+	}
+	
     protected function trim_file_name($file_path, $name, $size, $type, $error,
             $index, $content_range) {
-        // Remove path information and dots around the filename, to prevent uploading
+		// Remove path information and dots around the filename, to prevent uploading
         // into different directories or replacing hidden system files.
         // Also remove control characters and spaces (\x00..\x20) around the filename:
-        $name = trim(basename(stripslashes($name)), ".\x00..\x20");
+        $name = trim($this->utf_basename(stripslashes($name)), ".\x00..\x20");
         // Use a timestamp for empty filenames:
         if (!$name) {
             $name = str_replace('.', '-', microtime(true));
@@ -467,7 +480,8 @@ class UploadHandler
                 preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)) {
             $name .= '.'.$matches[1];
         }
-        if (function_exists('exif_imagetype')) {
+        
+		if (function_exists('exif_imagetype')) {
             switch(@exif_imagetype($file_path)){
                 case IMAGETYPE_JPEG:
                     $extensions = array('jpg', 'jpeg');
@@ -497,7 +511,10 @@ class UploadHandler
 		// or PHP >= 5.2.4 with PECL version of 'intl'
 		// See: http://pecl.php.net/package/intl
 		if ($this->options['transliterate_names'] and extension_loaded("intl")) {
-			$name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+			$trans_ids = transliterator_list_ids();
+			//$name = transliterator_transliterate('Any-Latin; Latin-ASCII', $name);
+			if (array_search("Any-Latin", $trans_ids)) $name = transliterator_transliterate('Any-Latin', $name);
+			if (array_search("Latin-ASCII", $trans_ids)) $name = transliterator_transliterate('Latin-ASCII', $name);
 			$name = preg_replace(array("/([^\w\s\d\-_~,\.;\[\]\(\)])/", "/(\.{2,})/", "/^(\.)/"), array('', '.', ''), $name); // sanitizeFileName
 		}
 		
