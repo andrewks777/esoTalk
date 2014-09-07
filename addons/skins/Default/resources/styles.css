@@ -156,5 +156,6 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 div.video {text-align:center}
 blockquote a.expand {padding:0 8px; font-size:14px; width:16px}
 .avatar {width:45px; height:45px}
+#memberProfile > .avatar {width:64px; height:64px}
 .bodyHeader {padding:5px 0px 5px}
 .autoCompletePopup .popupMenu li > a {padding:3px 10px 3px 10px}

@@ -101,7 +101,7 @@ function avatar($member = array(), $className = "")
 	// Construct the avatar path from the provided information.
 	if (!empty($member["memberId"]) and !empty($member["avatarFormat"])) {
 		$file = "uploads/avatars/{$member["memberId"]}.{$member["avatarFormat"]}";
-		$url = getWebPath($file);
+		$url = getWebPath($file)."?".filemtime($file);
 	}
 
 	return "<img src='$url' alt='' class='avatar $className'/>";

@@ -4,6 +4,9 @@
 
 if (!defined("IN_ESOTALK")) exit;
 
+use gdenhancer\GDEnhancer;
+
+
 /**
  * The ETUpload class provides a way to easily validate and manage uploaded files. Typically, an upload should
  * be validated using the getUploadedFile() function, which will return the temporary filename of the uploaded
@@ -129,7 +132,7 @@ public function saveAsImage($source, $destination, $width, $height, $sizeMode = 
 		$outputType = $types[$type];
 
 		// We don't support gif output, as it makes transparency difficult.
-		if ($outputType == "gif") $outputType = "png";
+		//if ($outputType == "gif") $outputType = "png";
 	}
 	else $destination = substr($destination, 0, -strlen($outputType) - 1);
 
@@ -161,18 +164,27 @@ public function saveAsImage($source, $destination, $width, $height, $sizeMode = 
 
 	// Create a new GD image of the specified width and height, and make sure we can handle transparency.
 	$newImage = imagecreatetruecolor($width, $height);
-	if ($outputType == "png") {
-		imagecolortransparent($newImage, imagecolorallocate($newImage, 0, 0, 0));
-		imagealphablending($newImage, false);
-		imagesavealpha($newImage, true);
+	
+	if ($outputType == "gif") {
+		require_once PATH_LIBRARY.DIRECTORY_SEPARATOR."vendor".DIRECTORY_SEPARATOR."gdenhancer".DIRECTORY_SEPARATOR."GDEnhancer.php";
+		$gif_image = new GDEnhancer($source);
+		$gif_image->backgroundResize($width, $height, 'shrink'); //option shrink
+		$gif_save = $gif_image->save();
+	} else {
+		
+		if ($outputType == "png" or $outputType == "gif") {
+			imagecolortransparent($newImage, imagecolorallocate($newImage, 0, 0, 0));
+			imagealphablending($newImage, false);
+			imagesavealpha($newImage, true);
+		}
+
+		// Work out how much to offset the image by in order to center it.
+		$x = $newWidth / 2 - $width / 2;
+		$y = $newHeight / 2 - $height / 2;
+
+		// Copy the source image onto our new canvas.
+		imagecopyresampled($newImage, $image, -$x, -$y, 0, 0, $newWidth, $newHeight, $sourceWidth, $sourceHeight);
 	}
-
-	// Work out how much to offset the image by in order to center it.
-	$x = $newWidth / 2 - $width / 2;
-	$y = $newHeight / 2 - $height / 2;
-
-	// Copy the source image onto our new canvas.
-	imagecopyresampled($newImage, $image, -$x, -$y, 0, 0, $newWidth, $newHeight, $sourceWidth, $sourceHeight);
 
 	// Save the image to the correct destination and format.
 	switch ($outputType) {
@@ -181,7 +193,8 @@ public function saveAsImage($source, $destination, $width, $height, $sizeMode = 
 			break;
 
 		case "gif":
-			imagegif($newImage, $outputFile = "$destination.gif");
+			//imagegif($newImage, $outputFile = "$destination.gif");
+			file_put_contents($outputFile = "$destination.gif", $gif_save['contents']);
 			break;
 
 		default:
