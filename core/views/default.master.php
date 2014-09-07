@@ -78,6 +78,7 @@ if (!defined("IN_ESOTALK")) exit;
 <?php if ($data["showMainPageLink"]): ?>
 <li><a href='<?php echo URL(""); ?>'><?php echo T("Go to main page"); ?></a></li>
 <?php endif; ?>
+<li id='goToTape'><a href='<?php echo URL("tape"); ?>'><?php echo T("Tape"); ?></a></li>
 <?php echo $data["metaMenuItems"]; ?>
 <?php if (!empty($data["statisticsMenuItems"])) echo $data["statisticsMenuItems"]; ?>
 </ul>

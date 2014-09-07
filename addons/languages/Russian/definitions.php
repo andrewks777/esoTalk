@@ -217,6 +217,7 @@ $definitions["Give this group the 'manage KB' permission on all existing channel
 $definitions["Global permissions"] = "Глобальные привилегии";
 $definitions["Go to top"] = "Перейти вверх";
 $definitions["Go to main page"] = "Перейти на главную";
+$definitions["Tape"] = "Лента";
 $definitions["Group name"] = "Имя группы";
 $definitions["group.administrator"] = "Администратор";
 $definitions["group.administrator.plural"] = "Администраторы";

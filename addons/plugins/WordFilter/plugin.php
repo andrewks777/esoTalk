@@ -45,6 +45,15 @@ class ETPlugin_WordFilter extends ETPlugin {
 	}
 
 
+	public function handler_activityModel_afterGetResults($sender, &$result)
+	{
+		$filters = $this->getFilters();
+		if (count($filters)) {
+			$result["title"] = $this->filterContent($result["title"], $filters);
+		}
+	}
+
+
 	public function getFilters()
 	{
 		$disallow = ET::$session->preference("disallowWordFilter", false);

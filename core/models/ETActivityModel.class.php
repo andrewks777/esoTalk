@@ -20,6 +20,18 @@ if (!defined("IN_ESOTALK")) exit;
  *
  * @package esoTalk
  */
+
+function activity_cmp($a, $b) {
+	if ($a['conversationId'] == $b['conversationId']) {
+		if ($a['relativePostId'] == $b['relativePostId']) {
+			return 0;
+		} else
+		return ($a['relativePostId'] > $b['relativePostId']) ? +1 : -1;
+	} else
+	return ($a['conversationId'] < $b['conversationId']) ? +1 : -1;
+}
+
+ 
 class ETActivityModel extends ETModel {
 
 
@@ -264,6 +276,8 @@ public function getActivity($member, $offset = 0, $limit = 11)
 
 		// If there's no activity type handler for this item and the "activity" projection, discard it.
 		if (empty(self::$types[$item["type"]][self::PROJECTION_ACTIVITY])) continue;
+		
+		$this->trigger("afterGetResults", array(&$item));
 
 		// Expand the activity data.
 		$item["data"] = unserialize($item["data"]);
@@ -274,6 +288,111 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		$activity[] = $item;
 	}
 
+	return $activity;
+}
+
+
+public function getAllActivity($offset = 0, $limit = 11)
+{
+	// Construct a query that will get all the activity data from the activity table.
+	$activity = ET::SQL()
+		->select("activityId")
+		->select("IF(a.fromMemberId IS NOT NULL,a.fromMemberId,a.memberId)", "fromMemberId")
+		->select("m.username", "fromMemberName")
+		->select("email")
+		->select("avatarFormat")
+		->select("type")
+		->select("data")
+		->select("NULL", "postId")
+		->select("NULL", "conversationId")
+		->select("NULL", "relativePostId")
+		->select("NULL", "title")
+		->select("NULL", "content")
+		->select("NULL", "start")
+		->select("time")
+		->from("activity a")
+		->from("member m", "m.memberId=IF(a.fromMemberId IS NOT NULL,a.fromMemberId,a.memberId)", "left")
+		->where("a.type IN (:types)")
+		->bind(":types", $this->getTypesWithProjection(self::PROJECTION_ACTIVITY))
+		->orderBy("time DESC")
+		->limit($offset + $limit);
+
+	// Construct a query that will get all of the user's most recent posts.
+	// All of the posts will be handled through the "post" activity type.
+	$posts = ET::SQL()
+		->select("NULL", "activityId")
+		->select("p.memberId", "fromMemberId")
+		->select("m.username", "fromMemberName")
+		->select("email")
+		->select("avatarFormat")
+		->select("'postAllActivity'", "type")
+		->select("NULL", "data")
+		->select("postId")
+		->select("p.conversationId","conversationId")
+		->select("p.relativePostId","relativePostId")
+		->select("c.title", "title")
+		->select("content")
+		->select("c.startMemberId=p.memberId AND c.startTime=p.time", "start")
+		->select("time")
+		->from("post p")
+		->from("conversation c", "c.conversationId=p.conversationId", "left")
+		->from("member m", "m.memberId=p.memberId", "left")
+		->where("p.deleteTime IS NULL")
+		->where("c.countPosts>0")
+		->where("c.private=0")
+		->orderBy("time DESC")
+		->limit($offset + $limit);
+	ET::channelModel()->addPermissionPredicate($posts);
+
+	// Marry these two queries so we get their activity AND their posts in one resultset.
+	$result = ET::SQL()
+		->union($activity)
+		->union($posts)
+		->orderBy("time DESC")
+		->limit($limit)
+		->offset($offset)
+		->exec();
+	
+	// Now expand the resultset into a proper array of activity items by running activity type/projection
+	// callback functions.
+	$activity = array();
+	while ($item = $result->nextRow()) {
+		
+		// If there's no activity type handler for this item and the "activity" projection, discard it.
+		if (empty(self::$types[$item["type"]][self::PROJECTION_ACTIVITY])) continue;
+		
+		$this->trigger("afterGetResults", array(&$item));
+
+		// Expand the activity data.
+		$item["data"] = unserialize($item["data"]);
+
+		// Run the type/projection's callback function. The return value is the activity description and body.
+		list($item["description"], $item["body"]) = call_user_func_array(self::$types[$item["type"]][self::PROJECTION_ACTIVITY], array(&$item)) + array(null, null);
+
+		$activity[] = $item;
+	}
+	
+	$showViewMoreLink = false;
+	if (count($activity) == 11) {
+		$last_item = array_pop($activity);
+		$showViewMoreLink = true;
+	}
+	
+	usort($activity, "activity_cmp");
+	
+	$currentConversationId = -1;
+	foreach ($activity as &$item) {
+		if ($item["type"] == 'postAllActivity') {
+			if ($item["conversationId"] != $currentConversationId) {
+				$currentConversationId = $item["conversationId"];
+			} else {
+				$item["description"] = sprintf(T("%s <span style='margin-left:5px'> %s"), "<a href='".URL(memberURL($item["fromMemberId"]))."'>".$item["fromMemberName"]."</a>", "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML("»")."</a>");
+			}
+		}
+	}
+	
+	if ($showViewMoreLink) $activity[] = $last_item;
+	
 	return $activity;
 }
 
@@ -378,6 +497,15 @@ public static function postActivity($item, $member)
 }
 
 
+public static function postAllActivity($item)
+{
+	return array(
+		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), "<a href='".URL(memberURL($item["fromMemberId"]))."'>".$item["fromMemberName"]."</a>", "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML($item["title"])."</a>"),
+		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->basic(true)->format()->get()
+	);
+}
+
+
 /**
  * Returns a formatted notification item for the "post" activity type. For example, '[member]
  * posted in [title]'.
@@ -401,10 +529,17 @@ public static function postNotification(&$item)
  */
 public static function joinActivity($item, $member)
 {
-	return array(
-		sprintf(T("%s joined the forum."), name($member["username"])),
-		false
-	);
+	if (isset($item["fromMemberId"]) and isset($item["fromMemberName"])) {
+		return array(
+			sprintf(T("%s joined the forum."), "<a href='".URL(memberURL($item["fromMemberId"]))."'>".$item["fromMemberName"]."</a>"),
+			false
+		);
+	} else {
+		return array(
+			sprintf(T("%s joined the forum."), isset($item["fromMemberName"]) ? name($item["fromMemberName"]) : name($member["username"])),
+			false
+		);
+	}
 }
 
 
@@ -546,6 +681,10 @@ ETActivityModel::addType("post", array(
 
 ETActivityModel::addType("postActivity", array(
 	"activity" => array("ETActivityModel", "postActivity"),
+));
+
+ETActivityModel::addType("postAllActivity", array(
+	"activity" => array("ETActivityModel", "postAllActivity"),
 ));
 
 ETActivityModel::addType("groupChange", array(
