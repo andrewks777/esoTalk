@@ -448,7 +448,7 @@ a.deleteLink:hover {color:#f00 !important; text-decoration:line-through}
 .post {margin-bottom:15px; padding-left:79px; padding-bottom:2px; position:relative; overflow:hidden}
 .post div.avatar {float:left; margin-left:-79px}
 .postContent:before, .postContent:after {content:" "; border-top-color:transparent !important; border-bottom-color:transparent !important; border-left-color:transparent !important; border-style:solid; border-width:5px; height:0; width:0; left:-11px; top:8px; position:absolute}
-.postContent:after {float:left; left:-10px}
+.postContent:not(.postDoubled):after {float:left; left:-10px}
 
 .highlight .postContent {background-color:#ffd}
 .highlight .postContent:after {border-color:#ffd}

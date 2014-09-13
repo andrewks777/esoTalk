@@ -145,6 +145,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 /*.postBody {font-size:14px}*/
 /*.post {margin-bottom:0px; margin-top:0px; padding-bottom:0px; padding-top:0px}*/
 .post {margin-bottom:0px; margin-top:0px; padding-bottom:3px; padding-top:3px}
+.post.postDoubled:first-child {margin-top:-4px; padding-top:0px;}
 .post div.avatar {margin-left:-56px}
 .post {padding-left:56px}
 .post .editButtons {padding: 0px 0px 0px}

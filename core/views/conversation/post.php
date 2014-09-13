@@ -13,7 +13,7 @@ if (!defined("IN_ESOTALK")) exit;
 $post = $data["post"];
 ?>
 
-<div class='post hasControls <?php echo implode(" ", (array)$post["class"]); ?>' id='<?php echo $post["id"]; ?>'<?php
+<div class='post hasControls<?php if (!empty($post["hideAvatar"])): ?> postDoubled<?php endif; ?> <?php echo implode(" ", (array)$post["class"]); ?>' id='<?php echo $post["id"]; ?>'<?php
 if (!empty($post["data"])):
 foreach ((array)$post["data"] as $dk => $dv)
 	echo " data-$dk='$dv'";
@@ -23,7 +23,7 @@ endif; ?>>
 <div class='avatar'<?php if (!empty($post["hideAvatar"])): ?> style='display:none'<?php endif; ?>><?php echo $post["avatar"]; ?></div>
 <?php endif; ?>
 
-<div class='postContent thing'>
+<div class='postContent thing<?php if (!empty($post["hideAvatar"])): ?> postDoubled<?php endif; ?>'>
 
 <div class='postHeader'>
 <div class='info'>
