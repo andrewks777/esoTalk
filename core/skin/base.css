@@ -549,6 +549,7 @@ code {background:#eee}
 .activity .action {margin-bottom:5px}
 .activityBody {padding:9px 12px 1px; overflow:auto; max-height:100px; margin-left:26px}
 .activityBody p {margin-bottom:9px}
+#membersActivity li.sep {border-top:1px solid #e5e5e5; border-bottom:1px solid #fff; margin:15px 0}
 
 
 /* Member statistics */

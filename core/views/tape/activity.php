@@ -17,8 +17,15 @@ $activity = $data["activity"];
 if (!empty($activity)): ?>
 <ol id='membersActivity' class='activityList'>
 <?php
+$currentConversationId = -1;
 foreach ($activity as $k => $item):
 
+if ($item["type"] == 'postAllActivity' && $item["conversationId"] != $currentConversationId) {
+	$currentConversationId = $item["conversationId"];
+	echo "<li class='sep'></li>";
+	echo "<li><div class='action'><a href='".URL(conversationURL($item["conversationId"]))."/last'>".sanitizeHTML($item['title'])."</a></div></li>";
+}
+			
 // Get the relative time of this post.
 $thisPostTime = relativeTime($item["time"], false); ?>
 
