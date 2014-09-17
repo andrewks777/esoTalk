@@ -95,7 +95,7 @@ public function handler_format_beforeFormat($sender)
 			\'langId\' => $langId
 		);
 		return "</p><pre></pre><p>";');
-	$regexp = "/(.*)^ *\[code(?:=(\w+(?:-\w+)*))?\]\n?(.*?)\n?\[\/code] *$/imseu";
+	$regexp = "/(.*)^\s*\[code(?:=(\w+(?:-\w+)*))?\]\n?(.*?)\n?\[\/code] *$/imseu";
 	while (preg_match($regexp, $sender->content)) $sender->content = preg_replace($regexp, "'$1' . \$hideFixed(\$this->blockFixedContents, '$3', '$2')", $sender->content);
 
 	// Inline-level [fixed] tags will become <code>.
@@ -127,7 +127,7 @@ public function handler_format_format($sender)
 	// Images: [img=description]url[/img]
 	$onerror = "javascript:ETConversation.onErrorLoadingImage(this);";
 	if (!$sender->basic) $imgCallbackName = 'imgCallback'; else $imgCallbackName = 'imgBasicCallback';
-	$sender->content = preg_replace_callback("/\[img(?:=(.*))?\](.*?)\[\/img\]/i", array($this, $imgCallbackName), $sender->content);
+	$sender->content = preg_replace_callback("/\[img(?:=(.*))?\](?!\s*(?:data:|\[))(.*?)\[\/img\]/i", array($this, $imgCallbackName), $sender->content);
 
 	// Links with display text: [url=http://url]text[/url]
 	$sender->content = preg_replace_callback("/\[url=(\w{2,6}:\/\/)?([^\]]*?)\](.*?)\[\/url\]/i", array($this, "linksCallback"), $sender->content);
