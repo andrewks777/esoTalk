@@ -12,7 +12,10 @@ ET::$pluginInfo["SnowStorm"] = array(
 	"author" => "andrewks",
 	"authorEmail" => "forum330@gmail.com",
 	"authorURL" => "http://forum330.com",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 
@@ -28,9 +31,9 @@ class ETPlugin_SnowStorm extends ETPlugin {
 protected function addResources($sender)
 {
 	$groupKey = 'SnowStorm';
-	$sender->addJSFile($this->getResource("vendor/snowstorm-min.js"), false, $groupKey);
-	$sender->addJSFile($this->getResource("snowstorm.js"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("snowstorm.css"), false, $groupKey);
+	$sender->addJSFile($this->resource("vendor/snowstorm-min.js"), false, $groupKey);
+	$sender->addJSFile($this->resource("snowstorm.js"), false, $groupKey);
+	$sender->addCSSFile($this->resource("snowstorm.css"), false, $groupKey);
 	$sender->addJSVar("snowStorm_snowColor", C("plugin.SnowStorm.snowColor"));
 	$sender->addJSVar("snowStorm_snowCharacter", C("plugin.SnowStorm.snowCharacter"));
 	$sender->addJSVar("snowStorm_flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
@@ -67,7 +70,7 @@ public function settings($sender)
 {
 	// Set up the settings form.
 	$form = ETFactory::make("form");
-	$form->action = URL("admin/plugins");
+	$form->action = URL("admin/plugins/settings/SnowStorm");
 	$form->setValue("snowColor", C("plugin.SnowStorm.snowColor"));
 	$form->setValue("snowCharacter", C("plugin.SnowStorm.snowCharacter"));
 	$form->setValue("flakesMaxActive", C("plugin.SnowStorm.flakesMaxActive"));
@@ -90,7 +93,7 @@ public function settings($sender)
 			// Write the config file.
 			ET::writeConfig($config);
 
-			$sender->message(T("message.changesSaved"), "success");
+			$sender->message(T("message.changesSaved"), "success autoDismiss");
 			$sender->redirect(URL("admin/plugins"));
 
 		}
@@ -99,7 +102,7 @@ public function settings($sender)
 	$sender->data("snowStormSettingsForm", $form);
 	$sender->addCSSFile("core/js/lib/farbtastic/farbtastic.css");
 	$sender->addJSFile("core/js/lib/farbtastic/farbtastic.js");
-	return $this->getView("settings");
+	return $this->view("settings");
 }
 
 }

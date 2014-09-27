@@ -12,7 +12,10 @@ ET::$pluginInfo["WordFilter"] = array(
 	"author" => "esoTalk Team",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 
@@ -49,11 +52,20 @@ class ETPlugin_WordFilter extends ETPlugin {
 	{
 		$filters = $this->getFilters();
 		if (count($filters)) {
-			$result["title"] = $this->filterContent($result["title"], $filters);
+			if (isset($result["title"])) $result["title"] = $this->filterContent($result["title"], $filters);
 		}
 	}
 
 
+	public function handler_activityModel_afterGetResultsUnserialize($sender, &$result)
+	{
+		$filters = $this->getFilters();
+		if (count($filters)) {
+			if (isset($result["title"])) $result["title"] = $this->filterContent($result["title"], $filters);
+		}
+	}
+
+	
 	public function getFilters()
 	{
 		$disallow = ET::$session->preference("disallowWordFilter", false);
@@ -142,7 +154,7 @@ class ETPlugin_WordFilter extends ETPlugin {
 
 		// Set up the settings form.
 		$form = ETFactory::make("form");
-		$form->action = URL("admin/plugins");
+		$form->action = URL("admin/plugins/settings/WordFilter");
 		$form->setValue("filters", $filterText);
 
 		// If the form was submitted...
@@ -168,14 +180,14 @@ class ETPlugin_WordFilter extends ETPlugin {
 				// Write the config file.
 				ET::writeConfig($config);
 
-				$sender->message(T("message.changesSaved"), "success");
+				$sender->message(T("message.changesSaved"), "success autoDismiss");
 				$sender->redirect(URL("admin/plugins"));
 
 			}
 		}
 
 		$sender->data("wordFilterSettingsForm", $form);
-		return $this->getView("settings");
+		return $this->view("settings");
 	}
 
 

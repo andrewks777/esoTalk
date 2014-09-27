@@ -1,21 +1,29 @@
 $(function() {
 	
-	$(".likes .showMore").live("click", function(e) {
+	$(".likes a").tooltip();
+	
+	if (ET.likePaneSlide) {
+		$(document).on("click", ".postHeader", function(e) {
+			if (!$(e.target).parents(".controls").length) $(this).siblings(".postFooter").find(".likes").slideDown("fast");
+		});
+	}
+	
+	$(document).on("click", ".likes .showMore", function(e) {
 		e.preventDefault();
-		ETSheet.loadSheet("onlineSheet", "conversation/liked.view/"+$(this).parents(".post").data("id"));
+		ETSheet.loadSheet("onlineSheet", "conversation/liked.view/"+$(this).parents(".post").data("id")+"/"+$(this).data("type"));
 	});
 
-	$(".likes .like-button").live("click", function(e) {
+	$(document).on("click", ".likes .like-button, .likes .dislike-button, .likes .unlike-button", function(e) {
 		e.preventDefault();
 		var area = $(this).parents(".likes");
-		area.find(".like-button").html(area.hasClass("liked") ? "Like" : "Unlike");
+		var action = 'like';
+		if ($(this).hasClass("dislike-button")) action = 'dislike';
+		else if ($(this).hasClass("unlike-button")) action = 'unlike';
 		
 		$.ETAjax({
-			url: "conversation/"+(area.hasClass("liked") ? "unlike" : "like")+".json/"+area.parents(".post").data("id"),
+			url: "conversation/"+action+".json/"+area.parents(".post").data("id"),
 			success: function(data) {
-				area.find(".like-members").html(data.names);
-				area.find(".like-separator").toggle(!!data.names);
-				area.toggleClass("liked");
+				if (data.likes) area.before(data.likes).remove();
 			}
 		})
 	});

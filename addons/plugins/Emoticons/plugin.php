@@ -12,7 +12,10 @@ ET::$pluginInfo["Emoticons"] = array(
 	"author" => "esoTalk Team",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_Emoticons extends ETPlugin {
@@ -103,8 +106,8 @@ protected function fillStyles()
 protected function addResources($sender)
 {
 	$groupKey = 'bbcode';
-	$sender->addJSFile($this->getResource("emoticons.js"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("emoticons.css"), false, $groupKey);
+	$sender->addJSFile($this->resource("emoticons.js"), false, $groupKey);
+	$sender->addCSSFile($this->resource("emoticons.css"), false, $groupKey);
 }
 
 public function handler_conversationController_renderBefore($sender)

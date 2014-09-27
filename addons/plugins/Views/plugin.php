@@ -11,7 +11,10 @@ ET::$pluginInfo["Views"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_Views extends ETPlugin {
@@ -37,7 +40,7 @@ class ETPlugin_Views extends ETPlugin {
 	// When we load the conversation index, increase the conversation's view count.
 	public function handler_conversationController_conversationIndexDefault($sender, &$conversation)
 	{
-		$sender->addCSSFile($this->getResource("views.css"));
+		$sender->addCSSFile($this->resource("views.css"));
 
 		if ($conversation["startMemberId"] == ET::$session->userId) return;
 

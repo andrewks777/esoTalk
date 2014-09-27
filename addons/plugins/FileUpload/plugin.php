@@ -13,7 +13,10 @@ ET::$pluginInfo["FileUpload"] = array(
 	"author" => "andrewks",
 	"authorEmail" => "forum330@gmail.com",
 	"authorURL" => "http://forum330.com",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 // default values
@@ -104,13 +107,13 @@ class ETPlugin_FileUpload extends ETPlugin {
 			'file' => $this->getFileTypesJS("plugin.FileUpload.allowedFileTypes")
 		);
 		$sender->addJSVar("fileUploadPluginAllowedTypes", $fileTypes);
-		$sender->addJSFile($this->getResource("vendor/jquery.ui.widget.js"), false, $groupKey);
-		$sender->addJSFile($this->getResource("vendor/jquery.iframe-transport.js"), false, $groupKey);
-		$sender->addJSFile($this->getResource("vendor/jquery.fileupload.js"), false, $groupKey);
-		$sender->addJSFile($this->getResource("vendor/jquery.fileupload-process.js"), false, $groupKey);
-		$sender->addJSFile($this->getResource("vendor/jquery.fileupload-validate.js"), false, $groupKey);
-		$sender->addJSFile($this->getResource("upload.js"), false, $groupKey);
-		$sender->addCSSFile($this->getResource("upload.css"), false, $groupKey);
+		$sender->addJSFile($this->resource("vendor/jquery.ui.widget.js"), false, $groupKey);
+		$sender->addJSFile($this->resource("vendor/jquery.iframe-transport.js"), false, $groupKey);
+		$sender->addJSFile($this->resource("vendor/jquery.fileupload.js"), false, $groupKey);
+		$sender->addJSFile($this->resource("vendor/jquery.fileupload-process.js"), false, $groupKey);
+		$sender->addJSFile($this->resource("vendor/jquery.fileupload-validate.js"), false, $groupKey);
+		$sender->addJSFile($this->resource("upload.js"), false, $groupKey);
+		$sender->addCSSFile($this->resource("upload.css"), false, $groupKey);
 		$sender->addJSLanguage(
 			"plugin.FileUpload.message.serverDisconnected.file",
 			"plugin.FileUpload.message.serverDisconnected.image",
@@ -171,7 +174,7 @@ class ETPlugin_FileUpload extends ETPlugin {
 	{
 		// Set up the settings form.
 		$form = ETFactory::make("form");
-		$form->action = URL("admin/plugins");
+		$form->action = URL("admin/plugins/settings/FileUpload");
 		$form->setValue("allowedImageTypes", implode(" ", (array)C("plugin.FileUpload.allowedImageTypes")));
 		$form->setValue("allowedArchiveTypes", implode(" ", (array)C("plugin.FileUpload.allowedArchiveTypes")));
 		$form->setValue("allowedFileTypes", implode(" ", (array)C("plugin.FileUpload.allowedFileTypes")));
@@ -195,14 +198,14 @@ class ETPlugin_FileUpload extends ETPlugin {
 				// Write the config file.
 				ET::writeConfig($config);
 
-				$sender->message(T("message.changesSaved"), "success");
+				$sender->message(T("message.changesSaved"), "success autoDismiss");
 				$sender->redirect(URL("admin/plugins"));
 
 			}
 		}
 
 		$sender->data("fileUploadSettingsForm", $form);
-		return $this->getView("settings");
+		return $this->view("settings");
 	}
 
 }

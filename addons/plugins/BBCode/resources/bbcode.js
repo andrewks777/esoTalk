@@ -62,10 +62,19 @@ doHighlightAll: function() {
 
 doHighlight: function(e) {
 	$(e).removeClass("_nhl");
+	var expander = $(e).find(".expand");
+	var savedExpander;
+	if (expander.length) {
+		savedExpander = expander.clone(true);
+		expander.remove();
+		expander = null;
+	}
+	
 	hljs.highlightBlock(e, '    ');
 	var em = $(e);
-	var langId = $.trim(em.prop('class'));
+	var langId = $.trim(em.prop('class').replace(' collapsed', ''));
 	if (langId != 'no-highlight') em.prop('title', langId);
+	if (savedExpander) em.append(savedExpander);
 },
 
 doFillLanguages: function(e, updateExist) {

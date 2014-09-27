@@ -12,7 +12,7 @@ class CaptchaUserController extends ETController {
 	}
 	
 	// Management.
-	public function index($handler = '')
+	public function action_index($handler = '')
 	{
 		/*$php_name = 'securimage/' . $handler;
 		if (preg_match("/\.php$/i", $php_name)) {
@@ -23,7 +23,7 @@ class CaptchaUserController extends ETController {
 	}
 
 	// Generate a captcha.
-	public function generate()
+	public function action_generate()
 	{
 		$php_name = $this->scriptsLocation() . 'securimage.php';
 		require_once $php_name;
@@ -39,7 +39,7 @@ class CaptchaUserController extends ETController {
 	}
 
 	// Play audio.
-	public function play()
+	public function action_play()
 	{
 		$php_name = $this->scriptsLocation() . 'securimage_play.php';
 		require_once $php_name;

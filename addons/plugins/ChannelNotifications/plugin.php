@@ -11,7 +11,10 @@ ET::$pluginInfo["ChannelNotifications"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_ChannelNotifications extends ETPlugin {
@@ -52,7 +55,7 @@ class ETPlugin_ChannelNotifications extends ETPlugin {
 	}
 
 	// Add an action to toggle the follow status of a channel.
-	public function channelsController_follow($controller, $channelId = "")
+	public function action_channelsController_follow($controller, $channelId = "")
 	{
 		if (!ET::$session->user or !$controller->validateToken()) return;
 

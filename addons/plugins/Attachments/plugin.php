@@ -11,7 +11,11 @@ ET::$pluginInfo["Attachments"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"priority" => 0,
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_Attachments extends ETPlugin {
@@ -23,11 +27,12 @@ class ETPlugin_Attachments extends ETPlugin {
 		$structure->table("attachment")
 			->column("attachmentId", "varchar(13)", false)
 			->column("filename", "varchar(255)", false)
-			->column("secret", "varchar(13)", false)			
+			->column("secret", "varchar(13)", false)
 			->column("postId", "int(11) unsigned")
 			->column("draftMemberId", "int(11) unsigned")
 			->column("draftConversationId", "int(11) unsigned")
 			->key("attachmentId", "primary")
+			->key("filename")
 			->exec(false);
 
 		// Make the uploads/attachments folder, and put in an index.html to prevent directory listing
@@ -53,25 +58,75 @@ class ETPlugin_Attachments extends ETPlugin {
 	public function init()
 	{
 		ET::define("message.attachmentNotFound", "For some reason this attachment cannot be viewed. It may not exist, or you may not have permission to view it.");
+
+		/**
+		 * Format an attachment to be outputted on the page, either in the attachment list
+		 * at the bottom of the post or embedded inside the post.
+		 *
+		 * @param array $attachment The attachment details.
+		 * @param bool $expanded Whether or not the attachment should be displayed in its
+		 * 		full form (i.e. whether or not the attachment is embedded in the post.)
+		 * @return string The HTML to output.
+		 */
+		function formatAttachment($attachment, $expanded = false)
+		{
+			$extension = pathinfo($attachment["filename"], PATHINFO_EXTENSION);
+			$url = URL("attachment/".$attachment["attachmentId"]."_".$attachment["filename"]);
+			$filename = sanitizeHTML($attachment["filename"]);
+			$displayFilename = ET::formatter()->init($filename)->highlight(ET::$session->get("highlight"))->get();
+
+			// For images, either show them directly or show a thumbnail.
+			if (in_array($extension, array("jpg", "jpeg", "png", "gif"))) {
+				if ($expanded) return "<span class='attachment attachment-image'><img src='".$url."' alt='".$filename."' title='".$filename."'></span>";
+				else return "<a href='".$url."' class='attachment attachment-image' target='_blank'><img src='".URL("attachment/thumb/".$attachment["attachmentId"])."' alt='".$filename."' title='".$filename."'><span class='filename'>".$displayFilename."</span></a>";
+			}
+
+			// Embed video.
+			if (in_array($extension, array("mp4", "mov", "mpg", "avi", "m4v")) and $expanded) {
+				return "<video width='400' height='225' controls><source src='".$url."'></video>";
+			}
+
+			// Embed audio.
+			if (in_array($extension, array("mp3", "mid", "wav")) and $expanded) {
+				return "<audio controls><source src='".$url."'></video>";
+			}
+
+			$icons = array(
+				"pdf" => "file-text-alt",
+				"doc" => "file-text-alt",
+				"docx" => "file-text-alt",
+				"zip" => "archive",
+				"rar" => "archive",
+				"gz" => "archive"
+			);
+			$icon = isset($icons[$extension]) ? $icons[$extension] : "file";
+			return "<a href='".$url."' class='attachment' target='_blank'><i class='icon-$icon'></i><span class='filename'>".$displayFilename."</span></a>";
+		}
 	}
 
 	// Add the attachments/fineuploader JS/CSS to the conversation view.
 	public function handler_conversationController_renderBefore($sender)
 	{
-		$sender->addCSSFile($this->getResource("fineuploader/fineuploader.css"));
-		$sender->addCSSFile($this->getResource("attachments.css"));
-		$sender->addJSFile($this->getResource("fineuploader/jquery.fineuploader.js"));
-        $sender->addJSFile($this->getResource("attachments.js"));
+		$sender->addCSSFile($this->resource("fineuploader/fineuploader.css"));
+		$sender->addCSSFile($this->resource("attachments.css"));
+		$sender->addJSFile($this->resource("fineuploader/jquery.fineuploader.js"));
+        $sender->addJSFile($this->resource("attachments.js"));
+		$sender->addJSLanguage("Delete", "Embed in post");
 	}
 
 	// When we render the reply box, add the attachments area to the bottom of it.
 	public function handler_conversationController_renderReplyBox($sender, &$formatted, $conversation)
 	{
+		$model = ET::getInstance("attachmentModel");
+
+		// Clear attachment session data for this conversation.
+		$model->extractFromSession("c".($conversation["conversationId"] ?: "0"));
+
 		// Get "draft" attachments for this member/conversation.
 		$sql = ET::SQL()
 			->where("draftMemberId", ET::$session->userId)
 			->where("draftConversationId", $conversation["conversationId"]);
-		$attachments = ET::getInstance("attachmentModel")->getWithSQL($sql);
+		$attachments = $model->getWithSQL($sql);
 
 		$this->appendEditAttachments($sender, $formatted, $attachments);
 	}
@@ -89,7 +144,7 @@ class ETPlugin_Attachments extends ETPlugin {
 	protected function appendEditAttachments($sender, &$formatted, $attachments)
 	{
 		$view = $sender->getViewContents("attachments/edit", array("attachments" => $attachments));
-		$formatted["body"] = substr_replace($formatted["body"], $view, strpos($formatted["body"], "<div class='editButtons'>"), 0);
+		addToArray($formatted["footer"], $view, 0);
 	}
 
 	// Hook onto PostModel::getPosts and get attachment data for all posts being displayed and "attach" it to each post array. (Pun totally intended)
@@ -133,12 +188,35 @@ class ETPlugin_Attachments extends ETPlugin {
 		// If the post has been deleted or has no attachments, stop!
 		if ($post["deleteMemberId"] or empty($post["attachments"])) return;
 
-		$view = $sender->getViewContents("attachments/list", array("attachments" => $post["attachments"]));
+		// Go through and replace embedded attachments in the post content.
+		$this->attachments = $post["attachments"];
+		$formatted["body"] = preg_replace_callback("/\[attachment:(\w+)\]/i", array($this, "attachmentCallback"), $formatted["body"]);
 
-		// Add this before the "likes" plugin. Bit hacky, but there's no way to prioritize event handlers in esoTalk :(
-		$pos = strpos($formatted["body"], "<p class='likes");
-		if (!$pos) $pos = strlen($formatted["body"]);
-		$formatted["body"] = substr_replace($formatted["body"], $view, $pos, 0);
+		if (empty($this->attachments)) return;
+		$formatted["body"] .= $sender->getViewContents($this->view("attachments/list"), array("attachments" => $this->attachments));
+	}
+
+	// A temporary array of attachments that will be listed at the end of a post.
+	// As embedded attachments are parsed, they are removed from this array
+	// so they are not listed at the end of the post.
+	protected $attachments = array();
+
+	// A callback to transform an embedded attachment.
+	public function attachmentCallback($matches)
+	{
+		$id = $matches[1];
+		$attachment = null;
+		foreach ($this->attachments as $k => $a) {
+			if ($a["attachmentId"] == $id) {
+				$attachment = $a;
+				unset($this->attachments[$k]);
+				break;
+			}
+		}
+
+		if (!$attachment) return;
+
+		return formatAttachment($attachment, true);
 	}
 
 	// Hook onto ConversationModel::addReply and commit attachments from the session to the database.
@@ -178,28 +256,79 @@ class ETPlugin_Attachments extends ETPlugin {
 	// Hook onto ConversationModel::setDraft and commit attachments from the session to the database.
 	public function handler_conversationModel_setDraftAfter($sender, $conversation, $memberId, $draft)
 	{
-		// If we're discarding the draft, delete all relevant attachments from the database.
+		$model = ET::getInstance("attachmentModel");
+
+		// Get the attachments for this conversation that are being stored in the session.
+		$attachments = $model->extractFromSession("c".($conversation["conversationId"] ?: 0));
+
+		// If we're discarding the draft, remove the attachments from the session/filesystem/database.
 		if ($draft === null) {
 
-			ET::SQL()
-				->delete()
-				->from("attachment")
-				->where("draftMemberId", ET::$session->userId)
-				->where("draftConversationId", $conversation["conversationId"])
-				->exec();
-
-			// TODO: delete them from the filesystem as well.
-		}
-
-		// If we're saving a draft, commit attachments from the session to the database.
-		else {
-			$model = ET::getInstance("attachmentModel");
-			$attachments = $model->extractFromSession(ET::$controller->controllerMethod == "start" ? "c0" : "c".$conversation["conversationId"]);
-
-			if (!empty($attachments)) $model->insertAttachments($attachments, array(
+			// Get attachments from the database.
+			$dbAttachments = $model->get(array(
 				"draftMemberId" => $memberId,
 				"draftConversationId" => $conversation["conversationId"]
 			));
+
+			// Delete them from the database.
+			ET::SQL()
+				->delete()
+				->from("attachment")
+				->where("draftMemberId", $memberId)
+				->where("draftConversationId", $conversation["conversationId"])
+				->exec();
+
+			// Delete all attachments (session and database) from the filesystem.
+			$attachments = array_merge($attachments, $dbAttachments);
+			foreach ($attachments as $attachment) {
+				$model->removeFile($attachment);
+			}
+		}
+
+		// If we're saving a draft, commit those attachments from the session to the database.
+		elseif (!empty($attachments)) {
+			$model->insertAttachments($attachments, array(
+				"draftMemberId" => $memberId,
+				"draftConversationId" => $conversation["conversationId"]
+			));
+		}
+	}
+
+	// Hook onto ConversationModel::deleteBefore and delete attachments for all posts in a list of conversations.
+	public function handler_conversationModel_deleteBefore($sender, $sql, $ids)
+	{
+		$model = ET::getInstance("attachmentModel");
+
+		// Create a subquery to get all post IDs for these conversations.
+		$postIds = ET::SQL()
+			->select("postId")
+			->from("post")
+			->where("conversationId IN (:conversationIds)")
+			->bind(":conversationIds", $ids)
+			->get();
+
+		// Get all attachments for all posts in these conversations, as well as all draft attachments for these conversations.
+		$attachments = ET::SQL()
+			->select("*")
+			->from("attachment")
+			->where("draftConversationId IN (:conversationIds) OR postId IN ($postIds)")
+			->bind(":conversationIds", $ids)
+			->exec()
+			->allRows("attachmentId");
+
+		// Delete them from the database.
+		if (!empty($attachments)) {
+			ET::SQL()
+				->delete()
+				->from("attachment")
+				->where("attachmentId IN (:attachmentIds)")
+				->bind(":attachmentIds", array_keys($attachments))
+				->exec();
+
+			// Delete all of these attachments from the filesystem.
+			foreach ($attachments as $attachment) {
+				$model->removeFile($attachment);
+			}
 		}
 	}
 
@@ -208,7 +337,7 @@ class ETPlugin_Attachments extends ETPlugin {
 	{
 		// Set up the settings form.
 		$form = ETFactory::make("form");
-		$form->action = URL("admin/plugins");
+		$form->action = URL("admin/plugins/settings/Attachments");
 		$form->setValue("allowedFileTypes", implode(" ", (array)C("plugin.Attachments.allowedFileTypes")));
 		$form->setValue("maxFileSize", C("plugin.Attachments.maxFileSize"));
 
@@ -226,13 +355,51 @@ class ETPlugin_Attachments extends ETPlugin {
 				// Write the config file.
 				ET::writeConfig($config);
 
-				$sender->message(T("message.changesSaved"), "success");
+				$sender->message(T("message.changesSaved"), "success autoDismiss");
 				$sender->redirect(URL("admin/plugins"));
 
 			}
 		}
 
 		$sender->data("attachmentsSettingsForm", $form);
-		return $this->getView("settings");
+		return $this->view("settings");
+	}
+
+	/*
+	|--------------------------------------------------------------------------
+	| Searching for Attachments
+	|--------------------------------------------------------------------------
+	*/
+
+	// Hook onto PostModel::whereSearch (called when searching within a conversation) 
+	// and modify the normal fulltext MATCH condition to also match posts which
+	// contain matching attachments.
+	public function handler_postModel_whereSearch($sender, $sql, $search)
+	{
+		foreach ($sql->where as &$condition) {
+			if (strpos(ltrim($condition, "("), "MATCH") === 0) {
+				$q = $this->fulltextQuery($search)->select("postId")->get();
+				$condition = "($condition OR postId IN (".$q."))";
+				break;
+			}
+		}
+	}
+
+	// Hook onto SearchModel::fulltext (called when searching for conversations) and
+	// modify the normal fulltext MATCH condition to also match posts which contain
+	// matching tasks.
+	public function handler_searchModel_fulltext($sender, $sql, $fulltext)
+	{
+		$search = implode(" ", $fulltext);
+		$this->handler_postModel_whereSearch($sender, $sql, $search);
+	}
+
+	// Produce a query which finds tasks which match a given search phrase.
+	protected function fulltextQuery($search)
+	{
+		return ET::SQL()
+			->from("attachment")
+			->where("filename LIKE :search")
+			->bind(":search", "%".$search."%");
 	}
 }

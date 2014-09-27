@@ -11,7 +11,10 @@ ET::$pluginInfo["Gravatar"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_Gravatar extends ETPlugin {
@@ -29,17 +32,10 @@ class ETPlugin_Gravatar extends ETPlugin {
 		 */
 		function avatar($member = array(), $className = "")
 		{
-			$esoTalkDefault = getResource("core/skin/avatar.png", true);
-			if (empty($member["email"])) $url = $esoTalkDefault;
-			else {
-			
-				$default = C("plugin.Gravatar.default");
-				if (!$default or empty($member)) $default = $esoTalkDefault;
+			$default = C("plugin.Gravatar.default") ? C("plugin.Gravatar.default") : "mm";
 
-				$protocol = C("esoTalk.https") ? "https" : "http";
-				$url = "$protocol://www.gravatar.com/avatar/".md5(strtolower(trim($member["email"])))."?d=".urlencode($default)."&s=64";
-
-			}
+			$protocol = C("esoTalk.https") ? "https" : "http";
+			$url = "$protocol://www.gravatar.com/avatar/".md5(strtolower(trim($member["email"])))."?d=".urlencode($default)."&s=64";
 
 			return "<img src='$url' alt='' class='avatar $className'/>";
 		}
@@ -54,13 +50,13 @@ class ETPlugin_Gravatar extends ETPlugin {
 
 	function fieldAvatar($form)
 	{
-		return T("Change your avatar on <a href='http://gravatar.com' target='_blank'>Gravatar.com</a>.");
+		return sprintf(T("Change your avatar on %s."), "<a href='http://gravatar.com' target='_blank'>Gravatar.com</a>");
 	}
 
 	/**
-	 * Construct and process the settings form for this skin, and return the path to the view that should be 
+	 * Construct and process the settings form for this skin, and return the path to the view that should be
 	 * rendered.
-	 * 
+	 *
 	 * @param ETController $sender The page controller.
 	 * @return string The path to the settings view to render.
 	 */
@@ -68,8 +64,8 @@ class ETPlugin_Gravatar extends ETPlugin {
 	{
 		// Set up the settings form.
 		$form = ETFactory::make("form");
-		$form->action = URL("admin/plugins");
-		$form->setValue("default", C("plugin.Gravatar.default"));
+		$form->action = URL("admin/plugins/settings/Gravatar");
+		$form->setValue("default", C("plugin.Gravatar.default", "mm"));
 
 		// If the form was submitted...
 		if ($form->validPostBack("save")) {
@@ -83,14 +79,14 @@ class ETPlugin_Gravatar extends ETPlugin {
 				// Write the config file.
 				ET::writeConfig($config);
 
-				$sender->message(T("message.changesSaved"), "success");
+				$sender->message(T("message.changesSaved"), "success autoDismiss");
 				$sender->redirect(URL("admin/plugins"));
 
 			}
 		}
 
 		$sender->data("gravatarSettingsForm", $form);
-		return $this->getView("settings");
+		return $this->view("settings");
 	}
 
 }

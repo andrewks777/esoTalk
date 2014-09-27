@@ -12,7 +12,10 @@ ET::$pluginInfo["April1"] = array(
 	"author" => "andrewks",
 	"authorEmail" => "forum330@gmail.com",
 	"authorURL" => "http://forum330.com",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 
@@ -29,7 +32,7 @@ protected function addResources($sender)
 {
 	$rand = rand(0, 100);
 	$groupKey = 'April1';
-	if ($rand <= 5) $sender->addCSSFile($this->getResource("apr1_trans.css"), false, $groupKey);
+	if ($rand <= 5) $sender->addCSSFile($this->resource("apr1_trans.css"), false, $groupKey);
 	else {
 		$var_name = "";
 		if ($rand <= 15) $var_name = "apr1_bugs1.js";
@@ -39,8 +42,8 @@ protected function addResources($sender)
 		else if ($rand <= 50) $var_name = "apr1_bugs5.js";
 		else if ($rand <= 55) $var_name = "apr1_bugs6.js";
 		if ($var_name) {
-			$sender->addJSFile($this->getResource("vendor/bug-min.js"), false, $groupKey);
-			$sender->addJSFile($this->getResource($var_name), false, $groupKey);
+			$sender->addJSFile($this->resource("vendor/bug-min.js"), false, $groupKey);
+			$sender->addJSFile($this->resource($var_name), false, $groupKey);
 		}
 	}
 	

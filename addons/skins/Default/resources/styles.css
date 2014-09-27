@@ -86,6 +86,11 @@ input[type=text]:focus, input[type=email]:focus, input[type=url]:focus, input[ty
 .button:hover, .button:active {border-color:#ccc}
 .button:active {background-color:#d3d3d3; background-position:0 -40px; color:#333}
 .button.disabled {border-color:#ccc !important; background:#f2f2f2 !important; color:#999 !important; box-shadow:none !important}
+.button.big {height:28px}
+a.button.big {padding:5px 6px; height:auto; line-height:1em}
+.postFooter a.button.big {padding:6px 6px 0px; height:20px}
+.buttonGroup .button {margin-right:-3px}
+
 
 /* Forum330 specific values. Must be moved to config/custom.css? */
 body {font-size:14px; color:#000}
@@ -109,6 +114,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #editChannelSheet {top:10px; width:75%}
 #permissionsSheet {top:10px; width:650px}
 .sheet .sheetBody {max-height:600px;}
+#joinSheet .sheetBody {max-height:700px;}
 
 .conversationList .title a:visited {color:#333333}
 .conversationList > li {padding-top:4px; padding-bottom:4px; padding-right:29em}
@@ -155,7 +161,7 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 .postContent .postReplies a:hover {color:rgb(18, 96, 238)}
 .postContent div.deleted {display:none}
 div.video {text-align:center}
-blockquote a.expand {padding:0 8px; font-size:14px; width:16px}
+blockquote a.expand, pre a.expand {padding:0 8px; font-size:14px; width:16px}
 .avatar {width:45px; height:45px}
 #memberProfile > .avatar {width:64px; height:64px}
 .bodyHeader {padding:5px 0px 5px}

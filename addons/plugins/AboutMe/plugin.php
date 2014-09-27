@@ -14,7 +14,10 @@ ET::$pluginInfo["AboutMe"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_AboutMe extends ETPlugin {
@@ -24,12 +27,12 @@ class ETPlugin_AboutMe extends ETPlugin {
 		$panes->add("about", "<a href='".URL(memberURL($member["memberId"], $member["username"], "about"))."'>".T("plugin.AboutMe.about.label")."</a>", 0);
 	}
 
-	public function memberController_index($sender, $member = "")
+	public function action_memberController_index($sender, $member = "")
 	{
-		$this->memberController_about($sender, $member);
+		$this->action_memberController_about($sender, $member);
 	}
 
-	public function memberController_about($sender, $member = "")
+	public function action_memberController_about($sender, $member = "")
 	{
 		if (!($member = $sender->profile($member, "about"))) return;
 
@@ -64,7 +67,7 @@ class ETPlugin_AboutMe extends ETPlugin {
 		}
 		
 		if (ET::$session->user) $sender->addJSLanguage("Controls");
-		$sender->renderProfile($this->getView("about"));
+		$sender->renderProfile($this->view("about"));
 	}
 
 	public function handler_settingsController_initGeneral($sender, $form)

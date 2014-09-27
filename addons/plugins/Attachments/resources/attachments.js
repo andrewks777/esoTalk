@@ -5,6 +5,8 @@ $(function() {
 		var $post = $("#"+postId);
 		var $attachments = $post.find('.attachments-edit ul');
 
+		if (!$attachments.length) return;
+
 		var uploader = new qq.FineUploaderBasic({
 			debug: true,
 			button: $post.find('.attachments-button')[0],
@@ -17,6 +19,7 @@ $(function() {
 			callbacks: {
 				onSubmit: function(id, fileName) {
 					$attachments.append('<li id="file-'+postId+'-' + id + '"></li>');
+					$attachments.parent().addClass('has-attachments');
 				},
 				onUpload: function(id, fileName) {
 					$('#file-'+postId+'-' + id).addClass('attachment-uploading')
@@ -33,7 +36,7 @@ $(function() {
 				onComplete: function(id, fileName, responseJSON) {
 					if (responseJSON.success) {
 						$('#file-'+postId+'-' + id).removeClass('attachment-uploading')
-							.html('<a href="#" class="control-delete" title="Delete" data-id="'+id+'"><i class="icon-remove"></i></a> <strong>' + fileName + '</strong>');
+							.html('<a href="#" class="control-delete" title='+T("Delete")+' data-id="'+responseJSON.attachmentId+'"><i class="icon-remove"></i></a> <strong>' + fileName + '</strong> <span class="attachment-controls"><a href="#" class="control-embed" title="Embed in post" data-id="'+responseJSON.attachmentId+'"><i class="icon-external-link"></i></a></span>');
 					} else {
 						$('#file-'+postId+'-' + id).remove();
 						ETMessages.showMessage('Error uploading "'+fileName+'": '+responseJSON.error, {className: "warning dismissable", id: "attachmentUploadError"});
@@ -66,22 +69,38 @@ $(function() {
 				url: "attachment/remove/"+$(this).data("id")
 			});
 			$(this).parent().remove();
+			if (!$attachments.find('li').length) {
+				$attachments.parent().removeClass('has-attachments');
+			}
+		});
+
+		$post.on("click", ".attachments-edit .control-embed", function(e) {
+			e.preventDefault();
+			ETConversation.insertText($post.find("textarea") , "[attachment:"+$(this).data("id")+"]");
 		});
 
 	}
 
 	initUploadArea("reply");
 
-	ETConversation._updateEditPost = ETConversation.updateEditPost;
+	var updateEditPost = ETConversation.updateEditPost;
 	ETConversation.updateEditPost = function(postId, html) {
-		ETConversation._updateEditPost(postId, html);
+		updateEditPost(postId, html);
 		initUploadArea("p"+postId);
 	};
 
-	ETConversation._resetReply = ETConversation.resetReply;
+	var resetReply = ETConversation.resetReply;
 	ETConversation.resetReply = function() {
-		ETConversation._resetReply();
-		$("#reply .attachments ul").html("");
+		resetReply();
+		$("#reply .attachments-edit ul").html("");
+	};
+
+	var cancelEditPost = ETConversation.cancelEditPost;
+	ETConversation.cancelEditPost = function(postId) {
+		cancelEditPost(postId);
+		$.ETAjax({
+			url: "attachment/removeSession/"+postId
+		});
 	};
 
 });

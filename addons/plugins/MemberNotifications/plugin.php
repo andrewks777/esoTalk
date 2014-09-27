@@ -11,7 +11,10 @@ ET::$pluginInfo["MemberNotifications"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_MemberNotifications extends ETPlugin {
@@ -53,7 +56,7 @@ class ETPlugin_MemberNotifications extends ETPlugin {
 	}
 
 	// Add an action to toggle the following status of a member.
-	public function memberController_follow($controller, $memberId = "")
+	public function action_memberController_follow($controller, $memberId = "")
 	{
 		if (!ET::$session->user or !$controller->validateToken()) return;
 

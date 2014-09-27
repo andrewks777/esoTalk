@@ -12,7 +12,10 @@ ET::$pluginInfo["CaptchaUser"] = array(
 	"author" => "andrewks",
 	"authorEmail" => "forum330@gmail.com",
 	"authorURL" => "http://forum330.com",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 /**
@@ -71,7 +74,7 @@ class ETPlugin_CaptchaUser extends ETPlugin {
 	{
 		if ((C("plugin.CaptchaUser.joinSheet") && $view == 'user/join') || (C("plugin.CaptchaUser.forgotSheet") && $view == 'user/forgot')) {
 			$data['captchaResURL'] = $this->resourcesURL();
-			$captcha = $sender->getViewContents($this->getView("captcha"), $data);
+			$captcha = $sender->getViewContents($this->view("captcha"), $data);
 			$content = preg_replace("/<ul class='form'>(.*?)(?=<\/ul>)/si", "$0\n$captcha\n", $content);
 		}
 	}
@@ -103,7 +106,7 @@ class ETPlugin_CaptchaUser extends ETPlugin {
 	{
 		// Set up the settings form.
 		$form = ETFactory::make("form");
-		$form->action = URL("admin/plugins");
+		$form->action = URL("admin/plugins/settings/CaptchaUser");
 		$form->setValue("joinSheet", C("plugin.CaptchaUser.joinSheet"));
 		$form->setValue("forgotSheet", C("plugin.CaptchaUser.forgotSheet"));
 
@@ -120,14 +123,14 @@ class ETPlugin_CaptchaUser extends ETPlugin {
 				// Write the config file.
 				ET::writeConfig($config);
 
-				$sender->message(T("message.changesSaved"), "success");
+				$sender->message(T("message.changesSaved"), "success autoDismiss");
 				$sender->redirect(URL("admin/plugins"));
 
 			}
 		}
 
 		$sender->data("captchaUserSettingsForm", $form);
-		return $this->getView("settings");
+		return $this->view("settings");
 	}
 
 }

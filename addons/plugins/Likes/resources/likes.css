@@ -2,9 +2,13 @@
 	border-top:1px solid #eee;
 	font-size:11px;
 	padding:5px 12px;
-	margin:0 -11px 1px;
-	color:#666;
+	margin:1px 0 0;
 }
-.likes a {
-	color:#6096ea;
-}
+
+.likes a {color:#444}
+.likes .like-button, .likes .dislike-button, .likes .unlike-button {font-size:12px; color:#444; opacity:0.6; text-decoration:none}
+.likes .like-button:hover, .likes .dislike-button:hover, .likes .unlike-button:hover {opacity:1; text-decoration:none}
+.likes .like-button:hover {color:#272}
+.likes .dislike-button:hover {color:#722}
+.likes .like-members i {color:#272}
+.likes .dislike-members i {color:#722}

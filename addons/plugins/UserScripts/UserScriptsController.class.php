@@ -28,7 +28,7 @@ class UserScriptsController extends ETSettingsController {
 
 	
 	// Show the settings page for user scripts.
-	public function settings()
+	public function action_settings()
 	{
 
 		$member = $this->profile("scripts");
@@ -70,7 +70,7 @@ class UserScriptsController extends ETSettingsController {
 
 				if (count($preferences)) ET::$session->setPreferences($preferences);
 
-				$this->message(T("message.changesSaved"), "success");
+				$this->message(T("message.changesSaved"), "success autoDismiss");
 				$this->redirect(URL("scripts/settings"));
 
 			}
@@ -85,7 +85,7 @@ class UserScriptsController extends ETSettingsController {
 			$preferences = array('usePersonalJS' => false);
 			ET::$session->setPreferences($preferences);
 
-			$this->message(T("message.changesSaved"), "success");
+			$this->message(T("message.changesSaved"), "success autoDismiss");
 			$this->redirect(URL("scripts/settings"));
 		}
 
@@ -98,7 +98,7 @@ class UserScriptsController extends ETSettingsController {
 			$preferences = array('usePersonalCSS' => false);
 			ET::$session->setPreferences($preferences);
 
-			$this->message(T("message.changesSaved"), "success");
+			$this->message(T("message.changesSaved"), "success autoDismiss");
 			$this->redirect(URL("scripts/settings"));
 
 		}
@@ -112,7 +112,7 @@ class UserScriptsController extends ETSettingsController {
 			$preferences = array('usePersonalCSSmob' => false);
 			ET::$session->setPreferences($preferences);
 
-			$this->message(T("message.changesSaved"), "success");
+			$this->message(T("message.changesSaved"), "success autoDismiss");
 			$this->redirect(URL("scripts/settings"));
 
 		}
@@ -125,7 +125,7 @@ class UserScriptsController extends ETSettingsController {
 	}
 
 	
-	public function editjs()
+	public function action_editjs()
 	{
 		$this->title = T("plugin.UserScripts.editJS.title");
 		$model = ET::getInstance("UserScriptsModel");
@@ -173,7 +173,7 @@ class UserScriptsController extends ETSettingsController {
 	}
 	
 
-	public function editcss($csstype = false)
+	public function action_editcss($csstype = false)
 	{
 		$this->title = T("plugin.UserScripts.editCSS.title");
 		$model = ET::getInstance("UserScriptsModel");

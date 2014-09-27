@@ -11,7 +11,10 @@ ET::$pluginInfo["Answers"] = array(
 	"author" => "Toby Zerner",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 class ETPlugin_Answers extends ETPlugin {
@@ -30,14 +33,14 @@ class ETPlugin_Answers extends ETPlugin {
 	public function init()
 	{
 		ET::conversationModel();
-		ETConversationModel::addLabel("answered", "IF(c.answered,1,0)", "icon-ok-sign");
+		ETConversationModel::addLabel("answered", "IF(c.answered > 0,1,0)", "icon-ok-sign");
 
 		ET::define("label.answered", "Answered");
 	}
 
 	public function handler_renderBefore($sender)
 	{
-		$sender->addCSSFile($this->getResource("answers.css"));
+		$sender->addCSSFile($this->resource("answers.css"));
 	}
 
 	public function handler_conversationController_formatPostForTemplate($sender, &$formatted, $post, $conversation)
@@ -45,7 +48,7 @@ class ETPlugin_Answers extends ETPlugin {
 		if ($post["deleteMemberId"]) return;
 
 		if ($conversation["startMemberId"] == ET::$session->userId or $conversation["canModerate"]) {
-			addToArray($formatted["controls"], "<a href='".URL("conversation/answer/".$post["postId"]."?token=".ET::$session->token)."' title='".T("This post answered my question")."' class='control-answer'><i class='icon-ok-sign'></i></a>", 0);
+			addToArray($formatted["controls"], "<a href='".URL("conversation/answer/".$post["postId"]."?token=".ET::$session->token)."' title='".T("This post answered my question")."' class='control-answer'><i class='icon-ok-sign'></i></a>");
 		}
 
 		// If this post is the answer...
@@ -68,7 +71,7 @@ class ETPlugin_Answers extends ETPlugin {
 		}
 	}
 
-	public function conversationController_answer($sender, $postId)
+	public function action_conversationController_answer($sender, $postId)
 	{
 		$conversation = ET::conversationModel()->getByPostId($postId);
 
@@ -86,7 +89,7 @@ class ETPlugin_Answers extends ETPlugin {
 		redirect(URL(R("return", postURL($postId))));
 	}
 
-	public function conversationController_unanswer($sender, $conversationId)
+	public function action_conversationController_unanswer($sender, $conversationId)
 	{
 		$conversation = ET::conversationModel()->getById($conversationId);
 

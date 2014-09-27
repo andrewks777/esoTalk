@@ -12,7 +12,10 @@ ET::$pluginInfo["BBCode"] = array(
 	"author" => "esoTalk Team",
 	"authorEmail" => "support@esotalk.org",
 	"authorURL" => "http://esotalk.org",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 
@@ -28,15 +31,15 @@ class ETPlugin_BBCode extends ETPlugin {
 protected function addResources($sender)
 {
 	$groupKey = 'bbcode';
-	$sender->addJSFile($this->getResource("bbcode.js"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("bbcode.css"), false, $groupKey);
-	$sender->addJSFile($this->getResource("jquery.colorbox-min.js"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("colorbox.css"), false, $groupKey);
+	$sender->addJSFile($this->resource("bbcode.js"), false, $groupKey);
+	$sender->addCSSFile($this->resource("bbcode.css"), false, $groupKey);
+	$sender->addJSFile($this->resource("jquery.colorbox-min.js"), false, $groupKey);
+	$sender->addCSSFile($this->resource("colorbox.css"), false, $groupKey);
 	
 	// Syntax highlighting
-	$sender->addJSFile($this->getResource("highlight.pack.js"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("hl-styles/github.css"), false, $groupKey);
-	$sender->addCSSFile($this->getResource("hl-styles/_1c.css"), false, $groupKey);
+	$sender->addJSFile($this->resource("highlight.pack.js"), false, $groupKey);
+	$sender->addCSSFile($this->resource("hl-styles/github.css"), false, $groupKey);
+	$sender->addCSSFile($this->resource("hl-styles/_1c.css"), false, $groupKey);
 }
 
 
@@ -126,7 +129,7 @@ public function handler_format_format($sender)
 
 	// Images: [img=description]url[/img]
 	$onerror = "javascript:ETConversation.onErrorLoadingImage(this);";
-	if (!$sender->basic) $imgCallbackName = 'imgCallback'; else $imgCallbackName = 'imgBasicCallback';
+	if (!$sender->inline) $imgCallbackName = 'imgCallback'; else $imgCallbackName = 'imgBasicCallback';
 	$sender->content = preg_replace_callback("/\[img(?:=(.*))?\](?!\s*(?:data:|\[))(.*?)\[\/img\]/i", array($this, $imgCallbackName), $sender->content);
 
 	// Links with display text: [url=http://url]text[/url]
@@ -142,7 +145,8 @@ public function handler_format_format($sender)
 	$sender->content = preg_replace("/\[s\](.*?)\[\/s\]/si", "<del>$1</del>", $sender->content);
 
 	// Headers: [h]header[/h]
-	$sender->content = preg_replace("/\[h\](.*?)\[\/h\]/", "</p><h4>$1</h4><p>", $sender->content);
+	$replacement = $sender->inline ? "<b>$1</b>" : "</p><h4>$1</h4><p>";
+	$sender->content = preg_replace("/\[h\](.*?)\[\/h\]/", $replacement, $sender->content);
 	
 	// Spoiler: [b]spoiler[/b]
 	$sender->content = preg_replace("|\[spoiler\] (.*?\n.*?) \[/spoiler\]|si", "<div class='spoiler-link'><a href='javascript:void(0)'>".T("Hidden text")." ".((ET::$session->user) ? "<i class='icon-double-angle-right'></i></a></div><div class='spoiler-block' style='display:none'>$1</div>" : "</a></div>"), $sender->content);

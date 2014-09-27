@@ -42,7 +42,7 @@ class FileUploadController extends ETController {
 	}
 
 	// Management of files.
-	public function index()
+	public function action_index()
 	{
 		if (!ET::$session->user) {
 			$this->renderMessage(T("Error"), T("message.noPermission"));
@@ -54,7 +54,7 @@ class FileUploadController extends ETController {
 	
 	
 	// Upload a file.
-	public function upload($type = '', $conversationId = 0)
+	public function action_upload($type = '', $conversationId = 0)
 	{
 		if (!ET::$session->user) return;
 		
@@ -120,7 +120,7 @@ class FileUploadController extends ETController {
 	}
 
 	// Download a file.
-	public function download($id = '')
+	public function action_download($id = '')
 	{
 
 		if (!ET::$session->user) {

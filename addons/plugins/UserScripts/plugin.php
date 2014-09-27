@@ -11,7 +11,10 @@ ET::$pluginInfo["UserScripts"] = array(
 	"author" => "andrewks",
 	"authorEmail" => "forum330@gmail.com",
 	"authorURL" => "http://forum330.com",
-	"license" => "GPLv2"
+	"license" => "GPLv2",
+	"dependencies" => array(
+		"esoTalk" => "1.0.0g4"
+	)
 );
 
 
@@ -34,25 +37,23 @@ class ETPlugin_UserScripts extends ETPlugin {
 	}
 	
 	
-	/*public function handler_settingsController_profile($sender, $panes, $controls, $actions)
+	public function handler_settingsController_initProfile($sender, $panes, $controls, $actions)
 	{
 		$this->addPanes($panes);
 	}
 	
-	public function handler_scriptsController_profile($sender, $panes, $controls, $actions)
+	
+	public function handler_scriptsController_initProfile($sender, $panes, $controls, $actions)
 	{
-		$this->addPanes($panes);
-	}*/
-	public function handler_profile($sender, $panes, $controls, $actions)
-	{
+		$sender->trigger("settingsController_initProfile", array($panes, $controls, $actions));
 		$this->addPanes($panes);
 	}
-
-
+	
+	
 	protected function addPluginResources($sender)
 	{
 		$groupKey = 'UserScripts';
-		$sender->addCSSFile($this->getResource("userscripts.css"), false, $groupKey);
+		$sender->addCSSFile($this->resource("userscripts.css"), false, $groupKey);
 	}
 	
 
