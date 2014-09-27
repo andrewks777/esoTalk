@@ -62,10 +62,10 @@ if ($data["controls"]->count()): ?>
 </ul>
 <?php endif; ?>
 
-<ul id='memberPanes' class='area tabs big'>
+<ul id='memberPanes' class='tabs big'>
 <?php echo $data["panes"]->getContents(); ?>
 </ul>
 
-<div id='memberContent'>
+<div id='memberContent' class='area'>
 <?php $this->renderView($data["view"], $data); ?>
 </div>

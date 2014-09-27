@@ -84,10 +84,10 @@ public $limit = false;
 
 
 /**
- * Whether or not to include muted conversations in the results.
+ * Whether or not to include ignored conversations in the results.
  * @var bool
  */
-public $includeMuted = false;
+public $includeIgnored = false;
 
 
 /**
@@ -212,7 +212,7 @@ protected function reset()
 	$this->orderBy = array();
 	$this->orderReverse = false;
 	$this->limit = false;
-	$this->includeMuted = false;
+	$this->includeIgnored = false;
 	$this->fulltext = array();
 }
 
@@ -345,10 +345,10 @@ public function getConversationIDs($channelIDs = array(), $searchString = "", $o
 		$this->orderBy("c.lastPostTime DESC");
 	}
 
-	// If we're not including muted conversations, add a where predicate to the query to exclude them.
-	if (!$this->includeMuted and ET::$session->user) {
-		$q = ET::SQL()->select("conversationId")->from("member_conversation")->where("type='member'")->where("id=:memberIdMuted")->where("muted=1")->get();
-		$this->sql->where("conversationId NOT IN ($q)")->bind(":memberIdMuted", ET::$session->userId);
+	// If we're not including ignored conversations, add a where predicate to the query to exclude them.
+	if (!$this->includeIgnored and ET::$session->user) {
+		$q = ET::SQL()->select("conversationId")->from("member_conversation")->where("type='member'")->where("id=:memberIdIgnored")->where("ignored=1")->get();
+		$this->sql->where("conversationId NOT IN ($q)")->bind(":memberIdIgnored", ET::$session->userId);
 	}
 
 	// Now we need to loop through the ID filters and run them one-by-one. When a query returns a selection
@@ -398,15 +398,18 @@ public function getConversationIDs($channelIDs = array(), $searchString = "", $o
 
 		// Run a query against the posts table to get matching conversation IDs.
 		$fulltextString = implode(" ", $this->fulltext);
-		$result = ET::SQL()
+		$fulltextQuery = ET::SQL()
 			->select("DISTINCT conversationId")
 			->from("post")
 			->where("MATCH (title, content) AGAINST (:fulltext IN BOOLEAN MODE)")
 			->where($idCondition)
 			->orderBy("MATCH (title, content) AGAINST (:fulltextOrder) DESC")
 			->bind(":fulltext", $fulltextString)
-			->bind(":fulltextOrder", $fulltextString)
-			->exec();
+			->bind(":fulltextOrder", $fulltextString);
+
+		$this->trigger("fulltext", array($fulltextQuery, $this->fulltext));
+
+		$result = $fulltextQuery->exec();
 		$ids = array();
 		while ($row = $result->nextRow()) $ids[] = reset($row);
 
@@ -421,6 +424,7 @@ public function getConversationIDs($channelIDs = array(), $searchString = "", $o
 	if (!$this->limit) $this->limit = $conversationsPerPage;
 
 	// Finish constructing the final query using the ID whitelist/blacklist we've come up with.
+	// Get one more result than we'll actually need so we can see if there are "more results."
 	if ($idCondition) $this->sql->where($idCondition);
 	$this->sql->orderBy($this->orderBy)->limit($this->limit + 1);
 
@@ -455,8 +459,10 @@ public function getResults($conversationIDs, $checkForPermission = false)
 	$sql = ET::SQL()
 		->select("s.*") // Select the status fields first so that the conversation fields take precedence.
 		->select("c.*")
+		->select("sm.memberId", "startMemberId")
 		->select("sm.username", "startMember")
 		->select("sm.avatarFormat", "startMemberAvatarFormat")
+		->select("lpm.memberId", "lastPostMemberId")
 		->select("lpm.username", "lastPostMember")
 		->select("lpm.email", "lastPostMemberEmail")
 		->select("lpm.avatarFormat", "lastPostMemberAvatarFormat")
@@ -619,21 +625,21 @@ public static function gambitPrivate(&$search, $term, $negate)
 
 
 /**
- * The "muted" gambit callback. Applies a filter to fetch only muted conversations.
+ * The "ignored" gambit callback. Applies a filter to fetch only ignored conversations.
  *
  * @see gambitUnread for parameter descriptions.
  */
-public static function gambitMuted(&$search, $term, $negate)
+public static function gambitIgnored(&$search, $term, $negate)
 {
 	if (!ET::$session->user or $negate) return;
-	$search->includeMuted = true;
+	$search->includeIgnored = true;
 
 	$sql = ET::SQL()
 		->select("DISTINCT conversationId")
 		->from("member_conversation")
 		->where("type='member'")
 		->where("id=:memberId")
-		->where("muted=1")
+		->where("ignored=1")
 		->bind(":memberId", ET::$session->userId);
 
 	$search->addIDFilter($sql);
@@ -710,7 +716,7 @@ public function gambitActive(&$search, $term, $negate)
 public static function gambitAuthor(&$search, $term, $negate)
 {
 	// Get the name of the member.
-	$term = trim(str_replace("\xc2\xa0", " ", substr($term, strlen(T("gambit.author:")))));
+	$term = trim(decodeTerm(substr($term, strlen(T("gambit.author:")))));
 
 	// If the user is referring to themselves, then we already have their member ID.
 	if ($term == T("gambit.myself")) $q = (int)ET::$session->userId;
@@ -734,7 +740,7 @@ public static function gambitAuthor(&$search, $term, $negate)
 public static function gambitContributor(&$search, $term, $negate)
 {
 	// Get the name of the member.
-	$term = trim(str_replace("\xc2\xa0", " ", substr($term, strlen(T("gambit.contributor:")))));
+	$term = trim(decodeTerm(substr($term, strlen(T("gambit.contributor:")))));
 
 	// If the user is referring to themselves, then we already have their member ID.
 	if ($term == T("gambit.myself")) $q = (int)ET::$session->userId;
@@ -769,7 +775,6 @@ public static function gambitLimit(&$search, $term, $negate)
 
 	$search->limit($limit);
 }
-
 
 
 /**
@@ -905,7 +910,7 @@ public static function getMoreConversationsCount()
 
 // Add default gambits.
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.starred"));', array("ETSearchModel", "gambitStarred"));
-ETSearchModel::addGambit('return $term == strtolower(T("gambit.muted"));', array("ETSearchModel", "gambitMuted"));
+ETSearchModel::addGambit('return $term == strtolower(T("gambit.ignored"));', array("ETSearchModel", "gambitIgnored"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.draft"));', array("ETSearchModel", "gambitDraft"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.private"));', array("ETSearchModel", "gambitPrivate"));
 ETSearchModel::addGambit('return $term == strtolower(T("gambit.sticky"));', array("ETSearchModel", "gambitSticky"));

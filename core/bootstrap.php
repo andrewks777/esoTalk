@@ -91,6 +91,9 @@ if (C("esoTalk.https") and (!array_key_exists("HTTPS", $_SERVER) or $_SERVER["HT
     exit;
 }
 
+// Load the forum's default language. We will load the user's preferred language later on.
+ET::loadLanguage(C("esoTalk.language"));
+
 
 
 //***** 3. REQUIRE AND REGISTER ESSENTIAL CLASSES
@@ -139,7 +142,6 @@ elseif (C("esoTalk.version") != ESOTALK_VERSION || C("esoTalk.admin.needUpgradeD
 
 // Otherwise, register all the default controllers and admin controllers.
 else {
-
 	ETFactory::registerController("conversations", "ETConversationsController", PATH_CONTROLLERS."/ETConversationsController.class.php");
 	ETFactory::registerController("conversation", "ETConversationController", PATH_CONTROLLERS."/ETConversationController.class.php");
 	ETFactory::registerController("post", "ETPostController", PATH_CONTROLLERS."/ETPostController.class.php");
@@ -159,6 +161,8 @@ else {
 	ETFactory::registerAdminController("plugins", "ETPluginsAdminController", PATH_CONTROLLERS."/admin/ETPluginsAdminController.class.php");
 	ETFactory::registerAdminController("groups", "ETGroupsAdminController", PATH_CONTROLLERS."/admin/ETGroupsAdminController.class.php");
 	ETFactory::registerAdminController("languages", "ETLanguagesAdminController", PATH_CONTROLLERS."/admin/ETLanguagesAdminController.class.php");
+	if (C("esoTalk.registration.requireConfirmation") == "approval")
+		ETFactory::registerAdminController("unapproved", "ETUnapprovedAdminController", PATH_CONTROLLERS."/admin/ETUnapprovedAdminController.class.php");
 }
 
 
@@ -169,10 +173,13 @@ if (C("esoTalk.installed")) {
 	foreach (C("esoTalk.enabledPlugins") as $v) {
 		if (file_exists($file = PATH_PLUGINS."/".sanitizeFileName($v)."/plugin.php")) include_once $file;
 		$className = "ETPlugin_$v";
-		if (class_exists($className)) ET::$plugins[$v] = new $className("addons/plugins/".$v);
+		if (!class_exists($className)) continue;
+		ET::$plugins[$v] = new $className("addons/plugins/".$v);
+		ET::$plugins[$v]->boot();
 	}
 
 }
+
 
 
 //***** 6. INITIALIZE SESSION AND DATABASE, AND CACHE
@@ -210,7 +217,7 @@ if (!empty($_GET["p"])) {
 elseif (C("esoTalk.urls.friendly") and isset($_SERVER["REQUEST_URI"])) {
 
 	// Remove the base path from the request URI.
-	$request = preg_replace("|^".preg_quote(ET::$webPath)."|", "", $_SERVER["REQUEST_URI"]);
+	$request = preg_replace("|^".preg_quote(ET::$webPath)."(/index\.php)?|", "", $_SERVER["REQUEST_URI"]);
 
 	// If there is a querystring, remove it.
 	$selfURL = $request;
@@ -238,20 +245,24 @@ $requestParts = explode("/", $request);
 
 //***** 8. SET UP SKIN
 
-// If the user is an administrator and we're in the admin section, use the admin skin.
-if (ET::$session->isAdmin() and $requestParts[0] == "admin") $skinName = C("esoTalk.adminSkin");
+if (C("esoTalk.installed")) {
 
-// If it's a mobile browser, use the mobile skin.
-elseif (isMobileBrowser()) $skinName = C("esoTalk.mobileSkin");
+	// If the user is an administrator and we're in the admin section, use the admin skin.
+	if (ET::$session->isAdmin() and $requestParts[0] == "admin") $skinName = C("esoTalk.adminSkin");
 
-// Otherwise, use the default skin.
-else $skinName = C("esoTalk.skin");
+	// If it's a mobile browser, use the mobile skin.
+	elseif (isMobileBrowser()) $skinName = C("esoTalk.mobileSkin");
 
-// Include the skin file and instantiate its class.
-ET::$skinName = $skinName;
-if (file_exists($file = PATH_SKINS."/$skinName/skin.php")) include_once $file;
-$skinClass = "ETSkin_".$skinName;
-if (class_exists($skinClass)) ET::$skin = new $skinClass("addons/skins/".$skinName);
+	// Otherwise, use the default skin.
+	else $skinName = C("esoTalk.skin");
+
+	// Include the skin file and instantiate its class.
+	ET::$skinName = $skinName;
+	if (file_exists($file = PATH_SKINS."/$skinName/skin.php")) include_once $file;
+	$skinClass = "ETSkin_".$skinName;
+	if (class_exists($skinClass)) ET::$skin = new $skinClass("addons/skins/".$skinName);
+	
+}
 
 // If we haven't got a working skin, just use the base class. It'll be ugly, but it'll do.
 if (empty(ET::$skin)) ET::$skin = new ETSkin("");
@@ -263,7 +274,9 @@ array_unshift(ET::$plugins, ET::$skin);
 
 //***** 9. SET UP LANGUAGE
 
-ET::loadLanguage(ET::$session->preference("language"));
+// If the user's preferred language differs from the forum's default, then load it now.
+if (C("esoTalk.language") != ET::$session->preference("language"))
+	ET::loadLanguage(ET::$session->preference("language"));
 
 
 

@@ -21,10 +21,10 @@ public $content = "";
 
 
 /**
- * Whether or not to do "basic", inline-only formatting, i.e. don't embed YouTube videos, images, etc.
+ * Whether or not to do inline-only formatting, i.e. don't embed YouTube videos, images, etc.
  * @var bool
  */
-public $basic = false;
+public $inline = false;
 
 public $conversationId = 0;
 public $relativePostId = 0;
@@ -53,14 +53,14 @@ public function init($content, $sanitize = true, $conversationId = 0, $relativeP
 
 
 /**
- * Turn "basic", inline-only formatting on or off.
+ * Turn "inline", inline-only formatting on or off.
  *
- * @param bool $basic Whether or not basic formatting should be on.
+ * @param bool $inline Whether or not inline formatting should be on.
  * @return ETFormat
  */
-public function basic($basic)
+public function inline($inline)
 {
-	$this->basic = $basic;
+	$this->inline = $inline;
 	return $this;
 }
 
@@ -104,6 +104,14 @@ public function format()
 public function get()
 {
 	return trim($this->content);
+}
+
+
+public function firstLine()
+{
+	$this->content = substr($this->content, 0, strpos($this->content, "\n"));
+	
+	return $this;
 }
 
 
@@ -259,10 +267,10 @@ public function getMiniQuote($quote, $classname = 'mqPostRef', $title = '')
  */
 public function linksCallback($matches)
 {
-	// If we're not doing basic formatting, YouTube embedding is enabled, and this is a YouTube video link,
+	// If we're not doing inline formatting, YouTube embedding is enabled, and this is a YouTube video link,
 	// then return an embed tag.
 
-	if (!$this->basic) {
+	if (!$this->inline) {
 		$onerror = "javascript:ETConversation.onErrorLoadingVideo(this);";
 		if (C("esoTalk.format.youtube") and preg_match("/^(?:(?:www\.)?youtube\.com\/watch\?(?:\S*(?:\&|\&amp;)v=|v=)|youtu\.be\/)([^&#]+)(?:[^#]*)(?:#t=(\d+))?/i", $matches[2], $youtube)) {
 			$id = $youtube[1];

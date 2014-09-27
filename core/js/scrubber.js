@@ -56,16 +56,6 @@ init: function() {
 			ETScrubber.scrubber.removeClass("floating").css({position: "", top: ""});
 		}
 
-		/*var e = $(this);
-		e.queue('qscr', []);
-		e.stop(true, true);
-		
-		e.delay(3000);
-		e.queue(function(){
-			ETScrubber.onWindowScroll(y);
-			e.dequeue();
-		}, 'qscr');*/
-		
 		// Now we need to work out where we are in the content and highlight the appropriate
 		// index in the scrubber. Go through each of the items on the page...
 		/*$("li", ETScrubber.items).each(function() {
@@ -373,4 +363,3 @@ onWindowScroll: function(y) {
 }
 
 };
-

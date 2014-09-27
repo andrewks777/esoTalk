@@ -481,7 +481,7 @@ hideSheet: function(id, callback) {
 },
 
 // Quickly load a view via an AJAX request and display it as a sheet.
-loadSheet: function(id, url, callback, data) {
+loadSheet: function(id, url, afterCallback, data, beforeCallback) {
 	$.ETAjax({
 		id: id,
 		url: url,
@@ -489,11 +489,12 @@ loadSheet: function(id, url, callback, data) {
 		type: data && data.length ? "POST" : "GET",
 		global: true,
 		success: function(data) {
-			if (data.modalMessage) {
+			if (data.modalMessage || !data || (typeof data != "string" && !data.view)) {
 				ETSheet.hideSheet(id);
 				return;
 			}
-			ETSheet.showSheet(id, data.view || data, callback);
+			if (typeof beforeCallback == "function" && beforeCallback(data) === false) return;
+			ETSheet.showSheet(id, data.view || data, afterCallback);
 		}
 	})
 }
@@ -582,13 +583,18 @@ $.fn.popup = function(options) {
 
 	options = options || {};
 	options.content = options.content || "<i class='icon-cog'></i> <i class='icon-caret-down'></i>";
+	options.class = options.class || "";
+
+	// Add space before the class.
+	if (options.class) options.class = " " + options.class
+
 
 	// Get the element to use as the popup contents.
 	var popup = $(this).first();
 	if (!popup.length) return;
 
 	// Construct the popup wrapper and button.
-	var wrapper = $("<div class='popupWrapper'></div>");
+	var wrapper = $("<div class='popupWrapper"+options.class+"'></div>");
 	var button = $("<a href='#' class='popupButton button' id='"+popup.attr("id")+"-button'>"+options.content+"</a>");
 	wrapper.append(button).append(popup);
 
@@ -790,35 +796,18 @@ var ETMembersAllowedTooltip = {
 
 $(function() {
 
-	$("#backButton").tooltip({alignment: "left", offset: [25, 25]});
+	$("#backButton").tooltip({alignment: "left", offset: [20, 23]});
 	$("#hdr .firstPostRef").tooltip({alignment: "left", offset: [35, 25]});
 
 	// Initialize page history.
 	$.history.init();
 
 	var body = $('body');
-	// Add click handlers to any login, forgot password, new conversation, and sign up links.
-	// body.on('click', '.link-login', function(e) {
-	// 	e.preventDefault();
-	// 	showLoginSheet();
-	// });
-
+	// Add click handlers to some links.
 	body.on('click', '.link-forgot', function(e) {
 		e.preventDefault();
 		showForgotSheet();
 	});
-
-	// body.on('click', '.link-newConversation', function(e) {
-	// 	if (!ET.userId) {
-	// 		e.preventDefault();
-	// 		showLoginSheet(true);
-	// 	}
-	// });
-
-	// body.on('click', '.link-join', function(e) {
-	// 	e.preventDefault();
-	// 	showJoinSheet();
-	// });
 
 	body.on('click', '.link-membersOnline', function(e) {
 		e.preventDefault();
@@ -959,7 +948,7 @@ $(function() {
 				if (!userMenu) {
 					var hdr = $("#hdr");
 					if (clientY <= 10) hdr.slideDown("fast");
-					else if (clientY > hdr.height()) hdr.slideUp("fast");
+					else if (clientY > hdr.height() && !$("#notificationsPopup").is(':visible')) hdr.slideUp("fast");
 				}
 			}
 			
@@ -973,7 +962,11 @@ $(function() {
 				}*/
 				scrubber.show("fast");
 			}
-			else if (clientX < width - scrubber.width()) scrubber.hide("fast");
+			else {
+				var controlsWidth = scrubber.width();
+				if ($("#popup-conversationControls").is(':visible')) controlsWidth = $("#conversationControls").width();
+				if (clientX < width - controlsWidth) scrubber.hide("fast");
+			}
 			/*else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());*/
 		});
 		
@@ -1081,7 +1074,7 @@ function ETIntervalCallback(callback, interval)
 
 	// Run the callback, resetting the timeout and the hold flag.
 	ic.runCallback = function() {
-		ic.callback();
+		if (!ETIntervalCallback.paused) ic.callback();
 		ic.setTimeout();
 		ic.hold = false;
 	};
@@ -1090,7 +1083,7 @@ function ETIntervalCallback(callback, interval)
 	ic.reset = function(interval) {
 		if (interval > 0) ic.interval = interval;
 		ic.setTimeout();
-	}
+	};
 
 	// When the window gains focus, if we're "holding", stop holding. Otherwise, run the callback.
 	$(window).focus(function(e) {
@@ -1108,6 +1101,15 @@ function ETIntervalCallback(callback, interval)
 	// Set the initial timeout.
 	ic.setTimeout();
 }
+
+// Pause all intervals. Until resume is called, callbacks will never be run.
+ETIntervalCallback.paused = false;
+ETIntervalCallback.pause = function() {
+	this.paused = true;
+};
+ETIntervalCallback.resume = function() {
+	this.paused = false;
+};
 
 
 
@@ -1202,3 +1204,51 @@ updateTitle: function(number) {
 $(function() {
 	ETNotifications.init();
 });
+
+
+//***** COLOR PICKER
+
+// Turn a normal text input into a color picker, and run a callback when the color is changed.
+function colorPicker(id, callback) {
+
+	// Create the color picker container.
+	var picker = $("<div id='"+id+"-colorPicker'></div>").appendTo("body").addClass("popup").hide();
+
+	// When the input is focussed upon, show the color picker.
+	$("#"+id+" input").focus(function() {
+		picker.css({position: "absolute", top: $(this).offset().top - picker.outerHeight(), left: $(this).offset().left}).show();
+	})
+
+	// When focus is lost, hide the color picker.
+	.blur(function() {
+		picker.hide();
+	})
+
+	// When a value is typed in the field, update the color.
+	.keyup(function() {
+		farb.setColor($(this).val());
+	})
+
+	// Add a color swatch before the input.
+	.before("<span class='colorSwatch'></span>");
+
+	// Create a handler function for when the color is changed to update the input and swatch, and call
+	// the custom callback function.
+	var handler = function(color) {
+		if (typeof callback == "function") callback(color, picker);
+		$("#"+id+" input").val(color.toUpperCase());
+		$("#"+id+" .colorSwatch").css("backgroundColor", color);
+		$("#"+id+" .reset").toggle(!!color);
+	}
+
+	// Set up a farbtastic instance inside the picker we've created.
+	var color = $("#"+id+" input").val();
+	var farb = $.farbtastic(picker, handler).setColor(color);
+
+	// When the "reset" link is clicked, reset the color.
+	$("#"+id+" .reset").click(function(e) {
+		e.preventDefault();
+		handler("");
+	}).toggle(!!$("#"+id+" input").val());
+
+}

@@ -81,7 +81,7 @@ if ($data["controlsMenu"]->count()): ?>
 if (count($conversation["membersAllowedSummary"]) or $conversation["startMemberId"] == ET::$session->userId or $conversation["canModerate"]): ?>
 <div id='conversationPrivacy' class='area'>
 <span class='allowedList action'><?php $this->renderView("conversation/membersAllowedSummary", $data); ?></span>
-<?php if ($conversation["startMemberId"] == ET::$session->userId): ?><a href='<?php echo URL("conversation/edit/".$conversation["conversationId"]); ?>' id='control-changeMembersAllowed'><?php echo T("Change"); ?></a><?php endif; ?>
+<?php if ($conversation["startMemberId"] == ET::$session->userId): ?><a href='<?php echo URL("conversation/edit/".$conversation["conversationId"]); ?>' id='control-changeMembersAllowed'><i class='icon-pencil'></i> <?php echo T("Change"); ?></a><?php endif; ?>
 </div>
 <?php endif; ?>
 
@@ -237,7 +237,7 @@ if (!$conversation["canReply"]) {
 			"id" => "reply",
 			"class" => "logInToReply",
 			"title" => "",
-			"body" => sprintf(T("message.logInToReply"), URL("user/login"), URL("user/join")),
+			"body" => sprintf(T("message.logInToReply"), URL("user/login?return=".urlencode($this->selfURL)), URL("user/join?return=".urlencode($this->selfURL))),
 			"avatar" => avatar()
 		);
 

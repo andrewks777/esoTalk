@@ -23,7 +23,10 @@ class ETSettingsController extends ETController {
 public function init()
 {
 	parent::init();
-	if (!ET::$session->userId) $this->redirect(URL(""));
+	if (!ET::$session->userId) {
+		if ($this->responseType === RESPONSE_TYPE_DEFAULT) $this->redirect(URL(""));
+		else exit;
+	}
 }
 
 
@@ -50,9 +53,9 @@ public function renderProfile($view = "")
  *
  * @return void
  */
-public function index()
+public function action_index()
 {
-	$this->general();
+	$this->action_general();
 }
 
 
@@ -62,7 +65,7 @@ public function index()
  * @param string $pane The name of the active pane.
  * @return array The member details.
  */
-protected function profile($pane = "")
+public function profile($pane = "")
 {
 	// Set the page title.
 	$this->title = T("Settings");
@@ -82,11 +85,11 @@ protected function profile($pane = "")
 	$actions = ETFactory::make("menu");
 
 	// Add a link to go back to the user's member profile.
-	$actions->add("viewProfile", "<a href='".URL("member/me")."'>".T("View your profile")."</a>");
+	$actions->add("viewProfile", "<a href='".URL("member/me")."'><i class='icon-eye-open'></i> ".T("View your profile")."</a>");
 	if ($forumRulesURL = C("esoTalk.forumRulesURL")) $actions->add("forumRules", "<a href='".URL($forumRulesURL)."'>".T("settings.forumRules.label")."</a>");
 	if ($forumDescriptionURL = C("esoTalk.forumDescriptionURL")) $actions->add("forumDescription", "<a href='".URL($forumDescriptionURL)."'>".T("settings.forumDescription.label")."</a>");
 
-	$this->trigger("profile", array($panes, $controls, $actions));
+	$this->trigger("initProfile", array($panes, $controls, $actions));
 
 	// Pass along these menus to the view.
 	$this->data("member", $member);
@@ -104,7 +107,7 @@ protected function profile($pane = "")
  *
  * @return void
  */
-public function general()
+public function action_general()
 {
 	$member = $this->profile("general");
 
@@ -119,7 +122,7 @@ public function general()
 	if (count(ET::getLanguages()) > 1) {
 		$form->addSection("language", T("Forum language"));
 
-		$form->setValue("language", (ET::$session->preference("language")) ? ET::$session->preference("language") : C("esoTalk.language"));
+		$form->setValue("language", ET::$session->preference("language", C("esoTalk.language")));
 		$form->addField("language", "language", array($this, "fieldLanguage"), array($this, "saveLanguage"));
 	}
 
@@ -211,7 +214,7 @@ public function general()
 
 			if (count($preferences)) ET::$session->setPreferences($preferences);
 
-			$this->message(T("message.changesSaved"), "success");
+			$this->message(T("message.changesSaved"), "success autoDismiss");
 			$this->redirect(URL("settings/general"));
 
 		}
@@ -224,7 +227,7 @@ public function general()
 		@unlink(PATH_UPLOADS."/avatars/".$member["memberId"].".".$member["avatarFormat"]);
 		ET::memberModel()->updateById($member["memberId"], array("avatarFormat" => null));
 
-		$this->message(T("message.changesSaved"), "success");
+		$this->message(T("message.changesSaved"), "success autoDismiss");
 		$this->redirect(URL("settings/general"));
 
 	}
@@ -290,7 +293,7 @@ public function saveLanguage($form, $key, &$preferences)
  */
 public function fieldEmailPrivateAdd($form)
 {
-	return "<label class='checkbox'>".$form->checkbox("privateAdd")." <span class='label label-private'>".T("label.private")."</span> ".T("Email me when I'm added to a private conversation")."</label>";
+	return "<label class='checkbox'>".$form->checkbox("privateAdd")." ".label("private")." ".T("Email me when I'm added to a private conversation")."</label>";
 }
 
 
@@ -579,7 +582,7 @@ public function saveAvatar($form, $key, &$preferences)
  * @param $popup bool Whether or not we are getting the contents of the notifications popup.
  * @return void
  */
-public function notifications($popup = false)
+public function action_notifications($popup = false)
 {
 	$member = $this->profile("notifications");
 
@@ -600,7 +603,7 @@ public function notifications($popup = false)
 /**
  *
  */
-public function notificationCheck()
+public function action_notificationCheck()
 {
 	$this->responseType = RESPONSE_TYPE_AJAX;
 
@@ -618,7 +621,7 @@ public function notificationCheck()
  *
  * @return void
  */
-public function password()
+public function action_password()
 {
 	$member = $this->profile("password");
 
@@ -663,7 +666,7 @@ public function password()
 
 			// Otherwise, show a message and redirect.
 			else {
-				$this->message(T("message.changesSaved"), "success");
+				$this->message(T("message.changesSaved"), "success autoDismiss");
 				$this->redirect(URL("settings"));
 			}
 

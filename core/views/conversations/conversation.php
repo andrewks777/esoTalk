@@ -64,8 +64,7 @@ echo "<span title='".T("conversations.replies")."'>".sprintf("%s", $conversation
 
 // Output an "unread indicator", showing the number of unread posts.
 if (ET::$session->user and $conversation["unread"])
-	echo " <a href='".URL("conversation/markAsRead/".$conversation["conversationId"]."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
-
+	echo " <a href='".URL("conversation/read/".$conversation["conversationId"]."/read?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
 
 ?></div>
 <div class='col-lastPost'><?php

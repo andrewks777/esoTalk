@@ -79,11 +79,13 @@ public function create(&$values)
 		->where("email=:email OR username=:username")
 		->bind(":email", $values["email"])
 		->bind(":username", $values["username"])
-		->where("confirmedEmail", 0)
+		->where("confirmed", 0)
 		->exec();
 
 	$memberId = parent::create($values);
 	$values["memberId"] = $memberId;
+	
+	$this->trigger("createAfter", array($values));
 
 	// Create "join" activity for this member.
 	ET::activityModel()->create("join", $values);
@@ -203,7 +205,7 @@ public function getById($memberId)
 
 
 /**
- * Get member data for the specified post IDs, in the same order.
+ * Get member data for the specified member IDs, in the same order.
  *
  * @param array $ids The IDs of the members to fetch.
  * @return array An array of member details, ordered by the order of the IDs.
@@ -316,10 +318,10 @@ public function validateUsername($username, $checkForDuplicate = true)
 
 	// Make sure there's no other member with the same username.
 	if ($checkForDuplicate) {
-		if (ET::SQL()->select("1")->from("member")->where("username=:username")->where("confirmedEmail=1")->bind(":username", $username)->exec()->numRows()) return "nameTaken";
+		if (ET::SQL()->select("1")->from("member")->where("username=:username")->where("confirmed=1")->bind(":username", $username)->exec()->numRows()) return "nameTaken";
 		if (C("esoTalk.strongUserNameChecking")) {
 			$pattern = "^".mb_strtolower($this->nameToPattern($username), "UTF-8")."$";
-			if (ET::SQL()->select("1")->from("member")->where("LOWER(username) REGEXP :pattern")->where("confirmedEmail=1")->bind(":pattern", $pattern)->exec()->numRows()) return "nameTaken";
+			if (ET::SQL()->select("1")->from("member")->where("LOWER(username) REGEXP :pattern")->where("confirmed=1")->bind(":pattern", $pattern)->exec()->numRows()) return "nameTaken";
 		}
 	}
 }
@@ -338,7 +340,7 @@ public function validateEmail($email, $checkForDuplicate = true)
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) return "invalidEmail";
 
 	// Make sure there's no other member with the same email.
-	if ($checkForDuplicate and ET::SQL()->select("1")->from("member")->where("email=:email")->where("confirmedEmail=1")->bind(":email", $email)->exec()->numRows())
+	if ($checkForDuplicate and ET::SQL()->select("1")->from("member")->where("email=:email")->where("confirmed=1")->bind(":email", $email)->exec()->numRows())
 		return "emailTaken";
 }
 

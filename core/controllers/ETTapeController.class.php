@@ -20,7 +20,7 @@ class ETTapeController extends ETController {
  *
  * @return void
  */
-public function index($page = "")
+public function action_index($page = "")
 {
 	
 	// Work out the page number we're viewing and fetch the activity.

@@ -48,7 +48,7 @@ class PasswordHash {
 	function get_random_bytes($count)
 	{
 		$output = '';
-		if (is_readable('/dev/urandom') &&
+		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' && is_readable('/dev/urandom') &&
 		    ($fh = @fopen('/dev/urandom', 'rb'))) {
 			$output = fread($fh, $count);
 			fclose($fh);
@@ -249,3 +249,5 @@ class PasswordHash {
 		return $hash == $stored_hash;
 	}
 }
+
+?>

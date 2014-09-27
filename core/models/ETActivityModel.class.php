@@ -22,6 +22,7 @@ if (!defined("IN_ESOTALK")) exit;
  */
 
 function activity_cmp($a, $b) {
+	if (!$a || !$b) return 0;
 	if ($a['conversationId'] == $b['conversationId']) {
 		if ($a['relativePostId'] == $b['relativePostId']) {
 			return 0;
@@ -237,9 +238,9 @@ public function getActivity($member, $offset = 0, $limit = 11)
 	$posts = ET::SQL()
 		->select("NULL", "activityId")
 		->select($member["memberId"], "fromMemberId")
-		->select("NULL", "fromMemberName")
-		->select("'{$member["email"]}'", "email")
-		->select("'{$member["avatarFormat"]}'", "avatarFormat")
+		->select(ET::$database->escapeValue($member["username"]), "fromMemberName")
+		->select(ET::$database->escapeValue($member["email"]), "email")
+		->select(ET::$database->escapeValue($member["avatarFormat"]), "avatarFormat")
 		->select("'postActivity'", "type")
 		->select("NULL", "data")
 		->select("postId")
@@ -278,6 +279,8 @@ public function getActivity($member, $offset = 0, $limit = 11)
 		if (empty(self::$types[$item["type"]][self::PROJECTION_ACTIVITY])) continue;
 		
 		$this->trigger("afterGetResults", array(&$item));
+		
+		if (!isset($item["type"])) continue;
 
 		// Expand the activity data.
 		$item["data"] = unserialize($item["data"]);
@@ -362,6 +365,11 @@ public function getAllActivity($offset = 0, $limit = 11)
 		if (empty(self::$types[$item["type"]][self::PROJECTION_ACTIVITY])) continue;
 		
 		$this->trigger("afterGetResults", array(&$item));
+		
+		if (!isset($item["type"])) {
+			$activity[] = array();
+			continue;
+		}
 
 		// Expand the activity data.
 		$item["data"] = unserialize($item["data"]);
@@ -373,7 +381,7 @@ public function getAllActivity($offset = 0, $limit = 11)
 	}
 	
 	$showViewMoreLink = false;
-	if (count($activity) == 11) {
+	if (count($activity) == $limit) {
 		$last_item = array_pop($activity);
 		$showViewMoreLink = true;
 	}
@@ -382,7 +390,7 @@ public function getAllActivity($offset = 0, $limit = 11)
 	
 	$currentConversationId = -1;
 	foreach ($activity as &$item) {
-		if ($item["type"] == 'postAllActivity') {
+		if ($item && $item["type"] == 'postAllActivity') {
 			if ($item["conversationId"] != $currentConversationId) {
 				$currentConversationId = $item["conversationId"];
 			} else {
@@ -447,9 +455,15 @@ public function getNotifications($limit = 5)
 		// If there's no activity type handler for this item and the "notification" projection, discard it.
 		if (empty(self::$types[$item["type"]][self::PROJECTION_NOTIFICATION])) continue;
 
+		$this->trigger("afterGetResults", array(&$item));
+		
+		if (!isset($item["type"])) continue;
+		
 		// Expand the activity data.
 		$item["data"] = unserialize($item["data"]);
-
+		
+		$this->trigger("afterGetResultsUnserialize", array(&$item["data"]));
+		
 		// Work out if the notification is unread.
 		$item["unread"] = !$item["read"];
 
@@ -463,7 +477,7 @@ public function getNotifications($limit = 5)
 }
 
 
-public function markNotificationsAsRead($conversationId = false)
+public function markNotificationsAsRead($type = null, $conversationId = null)
 {
 	$query = ET::SQL()
 		->update("activity")
@@ -471,6 +485,11 @@ public function markNotificationsAsRead($conversationId = false)
 		->where("memberId=:memberId")
 		->where("`read`=0")
 		->bind(":memberId", ET::$session->userId);
+
+	if ($type) {
+		$query->where("type=:type")
+			->bind(":type", $type);
+	}
 
 	if ($conversationId) {
 		$query->where("conversationId=:conversationId")
@@ -492,7 +511,7 @@ public static function postActivity($item, $member)
 {
 	return array(
 		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), name($member["username"]), "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML($item["title"])."</a>"),
-		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->basic(true)->format()->get()
+		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->inline(true)->format()->get()
 	);
 }
 
@@ -501,7 +520,7 @@ public static function postAllActivity($item)
 {
 	return array(
 		sprintf(T($item["start"] ? "%s started the conversation %s." : "%s posted in %s."), "<a href='".URL(memberURL($item["fromMemberId"]))."'>".$item["fromMemberName"]."</a>", "<a href='".URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))."'>".sanitizeHTML($item["title"])."</a>"),
-		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->basic(true)->format()->get()
+		ET::formatter()->init($item["content"], true, $item["conversationId"], $item["relativePostId"])->inline(true)->format()->get()
 	);
 }
 
@@ -516,7 +535,7 @@ public static function postAllActivity($item)
 public static function postNotification(&$item)
 {
 	return array(
-		sprintf(T("%s posted in %s."), name($item["fromMemberName"]), "<i class='star icon-star'></i> <strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
+		"<i class='star icon-star'></i> ".sprintf(T("%s posted in %s."), name($item["fromMemberName"]), "<strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
 		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
 	);
 }
@@ -553,7 +572,7 @@ public static function groupChangeNotification($item)
 {
 	$groups = memberGroup($item["data"]["account"], $item["data"]["groups"], true);
 	return array(
-		sprintf(T("%s changed your group to %s."), name($item["fromMemberName"]), "<strong>".$groups."</strong>"),
+		"<i class='icon-user'></i> ".sprintf(T("%s changed your group to %s."), name($item["fromMemberName"]), "<strong>".$groups."</strong>"),
 		URL(memberURL("me"))
 	);
 }
@@ -584,7 +603,7 @@ public static function groupChangeActivity($item, $member)
 public static function mentionNotification($item)
 {
 	return array(
-		sprintf(T("%s tagged you in a post."), "<strong>".name($item["fromMemberName"])."</strong>"),
+		sprintf(T("%s mentioned you in %s."), name($item["fromMemberName"]), "<strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
 		URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]))
 	);
 }
@@ -599,11 +618,11 @@ public static function mentionNotification($item)
  */
 public static function mentionEmail($item, $member)
 {
-	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+	$content = ET::formatter()->init($item["data"]["content"])->inline(true)->format()->get();
 	$url = URL(postURL($item["postId"], $item["conversationId"], $item["relativePostId"]), true);
 
 	return array(
-		sprintf(T("email.mention.subject"), name($item["fromMemberName"], false)),
+		sprintf(T("email.mention.subject"), name($item["fromMemberName"], false), $item["data"]["title"]),
 		sprintf(T("email.mention.body"), name($item["fromMemberName"]), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")
 	);
 }
@@ -619,7 +638,7 @@ public static function mentionEmail($item, $member)
 public static function privateAddNotification(&$item)
 {
 	return array(
-		sprintf(T("%s invited you to %s."), name($item["fromMemberName"]), "<span class='label label-private'>".T("label.private")."</span> <strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
+		label("private")." ".sprintf(T("%s invited you to %s."), name($item["fromMemberName"]), "<strong>".sanitizeHTML($item["data"]["title"])."</strong>"),
 		URL(conversationURL($item["conversationId"]))
 	);
 }
@@ -632,10 +651,10 @@ public static function privateAddNotification(&$item)
  */
 public static function privateAddEmail($item, $member)
 {
-	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+	$content = ET::formatter()->init($item["data"]["content"])->inline(true)->format()->get();
 	$url = URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"]), true);
 	return array(
-		T("email.privateAdd.subject"),
+		sprintf(T("email.privateAdd.subject"), $item["data"]["title"]),
 		sprintf(T("email.privateAdd.body"), sanitizeHTML($item["data"]["title"]), $content, "<a href='$url'>$url</a>")
 	);
 }
@@ -648,7 +667,7 @@ public static function privateAddEmail($item, $member)
  */
 public static function postEmail($item, $member)
 {
-	$content = ET::formatter()->init($item["data"]["content"])->basic(true)->format()->get();
+	$content = ET::formatter()->init($item["data"]["content"])->inline(true)->format()->get();
 	$url = URL(conversationURL($item["data"]["conversationId"], $item["data"]["title"])."/unread", true);
 	return array(
 		sprintf(T("email.post.subject"), $item["data"]["title"]),
@@ -665,8 +684,22 @@ public static function postEmail($item, $member)
 public static function updateAvailableNotification($item)
 {
 	return array(
-		sprintf(T("A new version of esoTalk (%s) is available."), "<strong>".$item["data"]["version"]."</strong>"),
+		"<i class='icon-wrench'></i> ".sprintf(T("A new version of esoTalk (%s) is available."), "<strong>".$item["data"]["version"]."</strong>"),
 		!empty($item["data"]["releaseNotes"]) ? $item["data"]["releaseNotes"] : "http://esotalk.org/"
+	);
+}
+
+
+/**
+ * Returns a formatted notification item for the "unapproved" activity type.
+ *
+ * @see postNotification() for parameter and return information.
+ */
+public static function unapprovedNotification($item)
+{
+	return array(
+		"<i class='icon-user'></i> ".sprintf(T("%s has registered and is awaiting approval."), "<strong>".name($item["data"]["username"])."</strong>"),
+		URL("admin/unapproved")
 	);
 }
 
@@ -710,4 +743,9 @@ ETActivityModel::addType("privateAdd", array(
 // Notification for when an update to the esoTalk software is available.
 ETActivityModel::addType("updateAvailable", array(
 	"notification" => array("ETActivityModel", "updateAvailableNotification")
+));
+
+// Notification for when a new user signs up and needs approval.
+ETActivityModel::addType("unapproved", array(
+	"notification" => array("ETActivityModel", "unapprovedNotification")
 ));

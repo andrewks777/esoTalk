@@ -34,13 +34,13 @@ init: function() {
 		// Make the controls into a popup button.
 		if ($("#conversationControls").length)
 			$("#conversationBody .scrubberContent").prepend($("#conversationControls").popup({
-				alignment: "left",
+				alignment: "right",
 				content: "<i class='icon-cog'></i> <span class='text'>"+T("Controls")+"</span> <i class='icon-caret-down'></i>"
 			}).find(".button").addClass("big").end());
 
 		// Set up the timeline scrubber.
 		ETScrubber.body = $("#conversation");
-		ETScrubber.scrubber = $("#conversationBody .scrubberContent");
+		ETScrubber.scrubber = $("#conversation .scrubberContent");
 		ETScrubber.items = $("#conversationPosts");
 		ETScrubber.count = this.postCount;
 		ETScrubber.perPage = ET.postsPerPage;
@@ -63,7 +63,7 @@ init: function() {
 				success: function(data) {
 					if (data.startFrom == 0) $("li.firstPost").remove();
 					var items = success(data);
-					ETConversation.collapseQuotes(items);
+					ETConversation.initPost(items);
 					ETConversation.redisplayAvatars();
 					if (ETConversation.replyShowing) {
 						$(".scrubber-now a").click();
@@ -79,7 +79,7 @@ init: function() {
 			var position;
 			if (index == Infinity) position = "last";
 			else position = (""+index).substr(0, 4)+"/"+(""+index).substr(4, 2);
-			//$.history.load("index.php/"+ETConversation.slug+"/"+position, true);
+			$.history.load(ETConversation.slug+"/"+position, true);
 		}*/
 
 		// Initialize the scrubber.
@@ -99,7 +99,7 @@ init: function() {
 		this.updateInterval = new ETIntervalCallback(this.update, ET.conversation.updateInterval);
 
 		// Store the conversation title and add a click handler to edit it.
-		this.title = $("#conversationTitle a").html() || $("#conversationTitle").html();
+		this.title = $("#conversationTitle a").text() || $("#conversationTitle").text();
 		$('body').on('click', '#conversationTitle a', function(e) {
 			e.preventDefault();
 			ETConversation.editTitle();
@@ -114,14 +114,24 @@ init: function() {
 			e.preventDefault();
 			ETConversation.toggleLock();
 		});
-		$("#control-mute").click(function(e) {
+		$("#control-ignore").click(function(e) {
 			e.preventDefault();
-			ETConversation.toggleMute();
+			ETConversation.toggleIgnore();
 		});
 		$("#control-delete").click(function(e) {
-			if (!ETConversation.confirmDelete()) e.preventDefault();
+			// Pause all auto-updaters so that we don't try to update when we regain focus
+			// on the window from the confirm popup.
+			ETIntervalCallback.pause();
+
+			if (!ETConversation.confirmDelete()) {
+				e.preventDefault();
+				ETIntervalCallback.resume();
+			}
 		});
-		
+
+		// Add tooltips to labels.
+		$("#conversationHeader .label").tooltip();
+
 		// Initialize the posts.
 		this.initPosts();
 
@@ -144,7 +154,7 @@ init: function() {
 			var title = $("#forumTitle");
 			if (y > $("#hdr").height()) {
 				if (!title.data("old")) {
-					title.data("old", title.html()).html("<a href='#' title='"+ETConversation.title+"'>"+ETConversation.title+"</a>");
+					title.data("old", title.html()).html("<a href='#'></a>").find("a").text(ETConversation.title);
 					title.find("a").click(function(e) {
 						e.preventDefault();
 						$.scrollTo(0, "fast");
@@ -171,7 +181,6 @@ init: function() {
 				
 		// Show the "change channel" sheet straight away!
 		ETConversation.changeChannel();
-		
 	}
 
 	// Add click handlers to change the channel and members allowed.
@@ -194,7 +203,7 @@ init: function() {
 	if ($("#reply").length) ETConversation.initReply();
 
 	// Add an onbeforeunload handler (to warn the user if they have an unsaved post/draft).
-	$(window).bind("beforeunload.ajax", ETConversation.beforeUnload);
+	$(window).bind("beforeunload.conversation", ETConversation.beforeUnload);
 	
 	// Add a click handler to the 'search' button.
 	$("#searchWithinConversation .control-start-search").click(function(e) {
@@ -237,7 +246,7 @@ scrollTo: function(position) {
 // On page exit, display a confirmation message if the user is editing posts or hasn't saved their reply.
 beforeUnload: function onbeforeunload() {
 	if (ETConversation.editingPosts > 0) return T("message.confirmLeave");
-	else if (ETConversation.editingReply) return T("message.confirmDiscardReply");
+	else if (ETConversation.editingReply) return T("message.confirmDiscardPost");
 },
 
 
@@ -337,7 +346,8 @@ initReply: function() {
 
 	}
 
-	$("#reply .controls a").tooltip({alignment: "center"});
+	$("#reply .controls a").tooltip();
+	$("#reply .discardDraft").tooltip();
 
 	// Register the Ctrl+Enter shortcut.
 	textarea.keypress(function(e) {
@@ -359,7 +369,7 @@ hideReply: function(hideReplyControls) {
 
 	// Condense it back into a placeholder.
 	if (hideReplyControls) {
-	ETConversation.replyShowing = false;
+		ETConversation.replyShowing = false;
 	$("#reply").addClass("replyPlaceholder"); }
 
 	// Animate the change and scroll back to where we were before.
@@ -376,7 +386,6 @@ resetReply: function(hideReplyControls) {
 	if (hideReplyControls == undefined) hideReplyControls = true;
 	$("#reply textarea").val("");
 	ETConversation.togglePreview("reply", false);
-	//if (hideReplyControls) ETConversation.hideReply(true);
 	ETConversation.hideReply(hideReplyControls);
 	$("#reply textarea").focus();
 	$("#reply .postHeader .controls .previewCheckbox #reply-previewCheckbox").prop("checked", false);
@@ -421,7 +430,7 @@ addReply: function() {
 			ETScrubber.count = ETConversation.postCount;
 			var items = ETScrubber.addItems(ETConversation.postCount - 1, data.view, moreItem, true);
 			ETConversation.redisplayAvatars();
-			ETConversation.collapseQuotes(items);*/
+			ETConversation.initPost(items);*/
 			var view = $(data.view);
 			var replyId = view.children(".post").prop("id");
 			var items = view.filter("li").addClass("fromAddReply");
@@ -430,7 +439,7 @@ addReply: function() {
 				if ($("#conversationPosts div.timeMarker[data-now]").length) view.children("div.timeMarker").remove();
 				view.appendTo("#conversationPosts");
 				ETConversation.redisplayAvatars();
-				ETConversation.collapseQuotes(items);
+				ETConversation.initPost(items);
 			}
 
 			// Star the conversation if the user has the "star on reply" option on.
@@ -524,16 +533,21 @@ saveDraft: function() {
 // Discard a draft.
 discardDraft: function() {
 
-	// If there are no posts in the conversation (ie. it's a draft conversation), delete the conversation.
-	if (this.postCount == 0 && $("#control-delete").length) {
-		if (ETConversation.confirmDelete()) window.location = $("#control-delete").attr("href");
-		return;
+	if ($("#conversationHeader .labels .label-draft").length) {
+		if (!confirm(T("message.confirmDiscardDraft"))) return;
+	} else {
+		if (!$("#reply textarea").val()) return;
+		else if (!confirm(T("message.confirmDiscardPost"))) return;
 	}
+
+	// Disable the beforeUnload confirmation prompt, because the ajax request we make may
+	// redirect us back to the home page.
+	$(window).unbind("beforeunload.conversation");
+
 	// Make the ajax request.
 	$.ETAjax({
-		url: "conversation/reply.ajax/" + ETConversation.id,
+		url: "conversation/discard.ajax/" + ETConversation.id,
 		type: "post",
-		data: {discardDraft: true},
 		beforeSend: function() {
 			createLoadingOverlay("reply", "reply");
 		},
@@ -545,6 +559,8 @@ discardDraft: function() {
 			// Hide the draft label and collapse the reply area.
 			$("#conversationHeader .labels").html(data.labels);
 			ETConversation.resetReply();
+
+			$(window).bind("beforeunload.conversation", ETConversation.beforeUnload);
 
 		}
 	});
@@ -564,7 +580,6 @@ update: function(fromAddReply) {
 		url: "conversation/index.ajax/"+ETConversation.id+"/"+ETConversation.postCount,
 		success: function(data) {
 
-			//if (!fromAddReply || ETConversation.postCount < data.countPosts) $("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").remove();
 			if (!fromAddReply || ETConversation.postCount < data.countPosts) {
 				$("#conversationPosts li.fromAddReply:not(.fromAddReply:has(.edit))").each(function(index, elem) {
 					var postId = $(elem).children(".post").prop("id");
@@ -581,7 +596,7 @@ update: function(fromAddReply) {
 				ETScrubber.count = ETConversation.postCount;
 				var items = ETScrubber.addItems(data.startFrom, data.view, moreItem, true);
 				ETConversation.redisplayAvatars();
-				ETConversation.collapseQuotes(items);
+				ETConversation.initPost(items);
 
 				var interval = ET.conversationUpdateIntervalStart;
 
@@ -660,12 +675,16 @@ initPosts: function() {
 		});
 	});
 	
-	ETConversation.collapseQuotes($("#conversationPosts"));
+	ETConversation.initPost($("#conversationPosts .post"));
+},
+
+initPost: function(post) {
+	ETConversation.collapseQuotes(post);
 },
 
 // Collapse quotes and add expand buttons.
 collapseQuotes: function(items) {
-	$(".postBody blockquote:not(.collapsed)", items)
+	$(".postBody blockquote:not(.collapsed), .postBody pre:not(.collapsed)", items)
 		.addClass("collapsed")
 		.each(function() {
 			if ($(this)[0].scrollHeight <= $(this).innerHeight() + 20) {
@@ -676,7 +695,8 @@ collapseQuotes: function(items) {
 			var link = $("<a href='#' class='expand'><i class='icon-ellipsis-horizontal'></i></a>");
 			link.click(function(e) {
 				e.preventDefault();
-				$(this).parents("blockquote").removeClass("collapsed");
+				
+				$(this).parent().removeClass("collapsed");
 				$(this).remove();
 			});
 			$(this).append(link);
@@ -687,6 +707,19 @@ collapseQuotes: function(items) {
 highlightPost: function(post) {
 	$("#conversationPosts .post.highlight").removeClass("highlight");
 	$(post).addClass("highlight");
+	var hlTimeout = 0;
+	var hlTimeoutStep = 300;
+	for (var i = 0; i < 3; i++) {
+		hlTimeout = hlTimeout + hlTimeoutStep;
+		setTimeout(function() {
+			$(post).removeClass("highlight");
+		}, hlTimeout);
+		
+		hlTimeout = hlTimeout + hlTimeoutStep;
+		setTimeout(function() {
+			$(post).addClass("highlight");
+		}, hlTimeout);
+	}
 },
 
 // Hide consecutive avatars from the same member.
@@ -729,7 +762,7 @@ deletePost: function(postId) {
 	});
 },
 
-// Delete a post.
+// Restore a post.
 restorePost: function(postId) {
 
 	$.hideToolTip();
@@ -867,7 +900,7 @@ saveEditPost: function(postId, content) {
 
 			ETConversation.editingPosts--;
 			ETConversation.redisplayAvatars();
-			ETConversation.collapseQuotes(newPost);
+			ETConversation.initPost(newPost);
 		}
 	});
 },
@@ -1038,13 +1071,8 @@ removeMember: function(type, id) {
 changeChannel: function() {
 	ETSheet.loadSheet("changeChannelSheet", "conversation/changeChannel.view/"+ETConversation.id, function() {
 
-		// Highlight the currently selected channel.
-		// $("#changeChannelSheet .channelList input:checked").parents("li").addClass("selected");
-
 		// Hide the radio buttons, and set up a handler for when they're changed.
 		$("#changeChannelSheet .channelList input").hide().click(function() {
-			// $("#changeChannelSheet .channelList li").removeClass("selected");
-			// $(this).parents("li").addClass("selected");
 			ETConversation.lastSelectedChannelId = $(this).val();
 			$("#changeChannelSheet form").submit();
 		});
@@ -1090,7 +1118,7 @@ editTitle: function() {
 	if (!$("#conversationTitle").hasClass("editing")) {
 
 		// Replace the title tag with an input.
-		var title = $("#conversationTitle a").html().trim();
+		var title = $("#conversationTitle a").text().trim();
 		$("#conversationTitle").html("<input type='text' class='text' maxlength='100'/>").addClass("editing");
 		$("#conversationTitle input").val(title).autoGrowInput({
 		    comfortZone: 30,
@@ -1100,7 +1128,7 @@ editTitle: function() {
 
 		// Add a key press and blur handler to the field.
 		$("#conversationTitle input").select().blur(function() { ETConversation.saveTitle(); }).keydown(function(e) {
-			if (e.which == 13) ETConversation.saveTitle(); // Enter
+			if (e.which == 13 || e.which == 10) ETConversation.saveTitle(); // Enter
 			if (e.which == 27) ETConversation.saveTitle(true); // Escape
 		});
 	}
@@ -1113,7 +1141,8 @@ saveTitle: function(cancel) {
 		// Return the conversation title input back to normal.
 		var title = $("#conversationTitle input").val();
 		if (!title || cancel) title = ETConversation.title;
-		$("#conversationTitle").html("<a href='#'>"+title+"</a>").removeClass("editing");
+		var sanitized = $('<div/>').text(title).html();
+		$("#conversationTitle").html("<a href='#'>"+sanitized+"</a>").removeClass("editing");
 
 		// If we're cancelling, that's all we need to do.
 		if (cancel || ETConversation.title == title) return;
@@ -1134,9 +1163,7 @@ saveTitle: function(cancel) {
 
 // Toggle sticky.
 toggleSticky: function() {
-	var e = $("#control-sticky").contents().last()[0];
-	var caption = e.nodeValue.toString().trim();
-	e.nodeValue = T(caption == T("Sticky") ? "Unsticky" : "Sticky");
+	$("#control-sticky span").html(T($("#control-sticky span").html() == T("Sticky") ? "Unsticky" : "Sticky"));
 	$.ETAjax({
 		url: "conversation/sticky.ajax/" + ETConversation.id,
 		success: function(data) {
@@ -1147,9 +1174,7 @@ toggleSticky: function() {
 
 // Toggle lock.
 toggleLock: function() {
-	var e = $("#control-lock").contents().last()[0];
-	var caption = e.nodeValue.toString().trim();
-	e.nodeValue = T(caption == T("Lock") ? "Unlock" : "Lock");
+	$("#control-lock span").html(T($("#control-lock span").html() == T("Lock") ? "Unlock" : "Lock"));
 	$.ETAjax({
 		url: "conversation/lock.ajax/" + ETConversation.id,
 		success: function(data) {
@@ -1158,13 +1183,11 @@ toggleLock: function() {
 	});
 },
 
-// Toggle lock.
-toggleMute: function() {
-	var e = $("#control-mute").contents().last()[0];
-	var caption = e.nodeValue.toString().trim();
-	e.nodeValue = T(caption == T("Mute conversation") ? "Unmute conversation" : "Mute conversation");
+// Toggle ignore.
+toggleIgnore: function() {
+	$("#control-ignore span").html(T($("#control-ignore span").html() == T("Ignore conversation") ? "Unignore conversation" : "Ignore conversation"));
 	$.ETAjax({
-		url: "conversation/mute.ajax/" + ETConversation.id,
+		url: "conversation/ignore.ajax/" + ETConversation.id,
 		success: function(data) {
 			$("#conversationHeader .labels").html(data.labels);
 		}
@@ -1313,6 +1336,9 @@ togglePreview: function(id, preview) {
 		$("#" + id + " .formattingButtons").show();
 		$("#" + id + " textarea").show();
 		$("#" + id + "-preview").hide();
+
+		// Make sure the preview checkbox is unchecked again.
+		$("#reply-previewCheckbox").prop("checked", false);
 	}
 },
 

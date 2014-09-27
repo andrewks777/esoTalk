@@ -17,8 +17,10 @@ class ETChannelsController extends ETController {
  *
  * @return void
  */
-public function index()
+public function action_index()
 {
+	if (!$this->allowed()) return;
+
 	// Set the canonical URL and push onto the navigation stack.
 	$url = "channels";
 	$canonicalURL = URL($url, true);
@@ -49,7 +51,7 @@ public function index()
  * @param int $channelId The ID of the channel to toggle subscription to.
  * @return void
  */
-public function subscribe($channelId = "")
+public function action_subscribe($channelId = "")
 {
 	if (!ET::$session->user or !$this->validateToken()) return;
 

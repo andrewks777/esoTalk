@@ -309,11 +309,15 @@ function parseRequest($parts, $controllers)
 			if (in_array($suffix, array(RESPONSE_TYPE_VIEW, RESPONSE_TYPE_JSON, RESPONSE_TYPE_AJAX, RESPONSE_TYPE_ATOM))) $type = $suffix;
 		}
 
-		// Get all of the immediately public methods in the controller class.
+		// Get all of the action methods in the controller class.
 		$methods = get_class_methods($controller);
-		$parentMethods = get_class_methods(get_parent_class($controller));
-		$methods = array_diff($methods, $parentMethods);
-		foreach ($methods as $k => $v) $methods[$k] = strtolower($v);
+		foreach ($methods as $k => $v) {
+			if (strpos($v = strtolower($v), "action_") !== 0) {
+				unset($methods[$k]);
+				continue;
+			}
+			$methods[$k] = substr($v, 7);
+		}
 
 		// If the method we want to use doesn't exist in the controller...
 		if (!$method or !in_array($method, $methods)) {
@@ -321,13 +325,13 @@ function parseRequest($parts, $controllers)
 			// Search for a plugin with this method. If found, use that.
 			$found = false;
 			foreach (ET::$plugins as $plugin) {
-				if (method_exists($plugin, $c."Controller_".$method)) {
+				if (method_exists($plugin, "action_".$c."Controller_".$method)) {
 					$found = true;
 					break;
 				}
 			}
 
-			// If one wasn't found, default to the "index" method.
+			// If one wasn't found, default to the "action_index" method.
 			if (!$found) {
 				$method = "index";
 				$arguments = array_slice($parts, 1);
@@ -470,16 +474,58 @@ function isMobileBrowser()
  */
 function slug($string)
 {
-	// Convert special latin letters and other characters to HTML entities.
-	$slug = htmlentities($string, ENT_NOQUOTES, "UTF-8");
+	// If there are any characters other than basic alphanumeric, space, punctuation, then we need to attempt transliteration.
+	if (preg_match("/[^\x20-\x7f]/", $string)) {
+	
+		// Thanks to krakos for this code! http://esotalk.org/forum/582-unicode-in-usernames-and-url-s
+		if (function_exists('transliterator_transliterate')) {
 
-	// With those HTML entities, either convert them back to a normal letter, or remove them.
-	$slug = preg_replace(array("/&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);/i", "/&[^;]{2,6};/"), array("$1", " "), $slug);
+			// Unicode decomposition rules states that these cannot be decomposed, hence
+			// we have to deal with them manually. Note: even though “scharfes s” is commonly
+			// transliterated as “sz”, in this context “ss” is preferred, as it's the most popular 
+			// method among German speakers.
+			$src = array('œ', 'æ', 'đ', 'ø', 'ł', 'ß', 'Œ', 'Æ', 'Đ', 'Ø', 'Ł');
+			$dst = array('oe','ae','d', 'o', 'l', 'ss', 'OE', 'AE', 'D', 'O', 'L');
+			$string = str_replace($src, $dst, $string);
+
+			// Using transliterator to get rid of accents and convert non-Latin to Latin
+			$string = transliterator_transliterate("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();", $string);
+
+		} 
+		elseif (function_exists('iconv')) {
+
+			// IConv won't deal nicely with the following, hence we have to deal with them
+			// manually. Note: even though “scharfes s” is commonly transliterated as “sz”,
+			// in this context “ss” is preferred, as it's the most popular method among German
+			// speakers.
+			$src = array('đ', 'ø', 'ß',  'Đ', 'Ø');
+			$dst = array('d', 'o', 'ss', 'D', 'O');
+			$string = str_replace($src, $dst, $string);
+
+			// Using IConv to get rid of accents. Non-Latin letters are unaffected
+			$string = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+		}
+		else {
+
+			// A fallback to old method.
+			// Convert special Latin letters and other characters to HTML entities.
+			$string = htmlentities($string, ENT_NOQUOTES, "UTF-8");
+
+			// With those HTML entities, either convert them back to a normal letter, or remove them.
+			$string = preg_replace(array("/&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml|caron);/i", "/&[^;]{2,6};/"), array("$1", " "), $string);
+
+		}
+
+	}
+
+	// Allow plugins to alter the slug.
+	ET::trigger("slug", array(&$string));
 
 	// Now replace non-alphanumeric characters with a hyphen, and remove multiple hyphens.
-	$slug = strtolower(trim(preg_replace(array("/[^0-9a-z]/i", "/-+/"), "-", $slug), "-"));
+	$slug = strtolower(trim(preg_replace(array("/[^0-9a-z]/i", "/-+/"), "-", $string), "-"));
 
-	return substr($slug, 0, 50);
+	return substr($slug, 0, 63);
 }
 
 
@@ -741,7 +787,7 @@ function json_decode($json)
  */
 function URL($url = "", $absolute = false, $prependIndex = true, $external = false)
 {
-	if (strpos($url, "http://") === 0) return $url;
+	if (preg_match('/^(https?\:)?\/\//', $url)) return $url;
 	
 	// Strip off the hash.
 	$hash = strstr($url, "#");
@@ -899,6 +945,28 @@ function searchURL($search, $channel = "all")
 }
 
 
+function encodeTerm($term)
+{
+	$term = str_replace(" ", "\xc2\xa0", $term); // no-break space
+	$term = str_replace("-", "\xe2\x80\x91", $term); // non-breaking hyphen
+	
+	return $term;
+}
+
+function decodeTerm($term)
+{
+	$term = str_replace("\xc2\xa0", " ", $term); // no-break space
+	$term = str_replace("\xe2\x80\x91", "-", $term); // non-breaking hyphen
+	
+	return $term;
+}
+
+function searchURL2($search, $channel = "all")
+{
+	return "conversations/$channel/".($search ? "?search=".str_replace('-', '%2D', urlencode($search)) : "");
+}
+
+
 /**
  * Send a HTTP Location header to redirect to a specific page.
  *
@@ -937,7 +1005,7 @@ function relativeTime($then, $precise = false)
 	// Work out how many seconds it has been since $then.
 	$ago = time() - $then;
 
-	// If $then happened less than 1 second ago (or is yet to happen,) say "Just now".
+	// If $then happened less than 1 second ago, say "Just now".
 	if ($ago < 1) return T("just now");
 
 	// If this happened over a year ago, return "x years ago".
@@ -986,6 +1054,31 @@ function relativeTime($then, $precise = false)
 
 	// Otherwise, just return "Just now".
 	return T("just now");
+}
+
+
+/**
+ * Get a smart human-friendly string for a date.
+ *
+ * @param int $then UNIX timestamp of the time to work out how much time has passed since.
+ * @param bool $precise Whether or not to return "x minutes/seconds", or just "a few minutes".
+ * @return string A human-friendly time string.
+ *
+ * @package esoTalk
+ */
+function smartTime($then, $precise = false)
+{
+	// Work out how many seconds it has been since $then.
+	$ago = time() - $then;
+
+	// If the time was within the last 48 hours, show a relative time (eg. 2 hours ago.)
+	if ($ago >= 0 and $ago < 48 * 60 * 60) return relativeTime($then, $precise);
+
+	// If the time is within the last half a year or the next half a year, show just a month and a day.
+	elseif ($ago < 180 * 24 * 60 * 60) return strftime("%b %e", $then);
+
+	// Otherwise, show the month, day, and year.
+	else return strftime(($precise ? "%e " : "")."%b %Y", $then);
 }
 
 

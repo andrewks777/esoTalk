@@ -15,6 +15,7 @@ if (!defined("IN_ESOTALK")) exit;
 
 <form class='search big' id='search' action='<?php echo URL("conversations/all"); ?>' method='get'>
 <fieldset>
+<i class='icon-search'></i>
 <input name='search' type='text' class='text' value='' spellcheck='false' placeholder='<?php echo T("Search conversations..."); ?>'/>
 </fieldset>
 </form>

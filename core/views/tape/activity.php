@@ -20,6 +20,8 @@ if (!empty($activity)): ?>
 $currentConversationId = -1;
 foreach ($activity as $k => $item):
 
+if (!$item) continue;
+
 if ($item["type"] == 'postAllActivity' && $item["conversationId"] != $currentConversationId) {
 	$currentConversationId = $item["conversationId"];
 	echo "<li class='sep'></li>";

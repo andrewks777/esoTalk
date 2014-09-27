@@ -111,7 +111,7 @@ public $bodyClass = "";
  * later call ET::$session->getNavigation().
  * @var string
  */
-private $navigationId = false;
+protected $navigationId = false;
 
 
 /**
@@ -169,15 +169,16 @@ public function dispatch($method, $arguments)
 	// Go through plugins and look for a handler for this controller/method.
 	$called = false;
 	foreach (ET::$plugins as $plugin) {
-		if (method_exists($plugin, $eventName)) {
-			call_user_func_array(array($plugin, $eventName), $eventArguments);
+		$actionName = "action_".$eventName;
+		if (method_exists($plugin, $actionName)) {
+			call_user_func_array(array($plugin, $actionName), $eventArguments);
 			$called = true;
 			break;
 		}
 	}
 
 	// If one wasn't found, call the method on $this.
-	if (!$called) call_user_func_array(array($this, $method), $arguments);
+	if (!$called) call_user_func_array(array($this, "action_".$method), $arguments);
 
 	// Trigger an "after" event for this method.
 	ET::trigger($eventName."_after", $eventArguments);
@@ -286,7 +287,7 @@ public function init()
 			if (ET::$session->isAdmin())
 				$this->addToMenu("user", "administration", "<a href='".URL("admin")."' class='link-administration'>".T("Administration")."</a>");
 
-			$this->addToMenu("user", "logout", "<a href='".URL("user/logout")."' class='link-logout'>".T("Log Out")."</a>");
+			$this->addToMenu("user", "logout", "<a href='".URL("user/logout?token=".ET::$session->token)."' class='link-logout'>".T("Log Out")."</a>");
 		}
 
 		// Get the number of members currently online and add it as a statistic.
@@ -303,7 +304,7 @@ public function init()
 			$this->addToMenu("statistics", "statistic-online", $stat);
 		}
 
-		$this->addToMenu("meta", "copyright", "<a href='http://esotalk.org/' target='_blank'>Powered by esoTalk".(ET::$session->isAdmin() ? " ".ESOTALK_VERSION : "")."</a>");
+		$this->addToMenu("meta", "copyright", "<a href='http://esotalk.org/' target='_blank'>".T("Powered by")." esoTalk</a>");
 
 		// Set up some default JavaScript files and language definitions.
 		$this->addJSFile("core/js/lib/jquery.js", true);
@@ -572,6 +573,26 @@ public function validateToken($token = false)
 
 
 /**
+ * Make sure that the user is logged in, or the specified configuration key is true. If not, redirect
+ * to the login page.
+ *
+ * This is generally used to make sure the user is allowed to view the forum (i.e. they are logged in
+ * or the forum is visible to guests.)
+ *
+ * @param string $key The configuration key which determines whether this page is visible to guests.
+ * @return bool true if the user is allowed to view this page, false if they are not.
+ */
+public function allowed($key = "esoTalk.visibleToGuests")
+{
+	if (ET::$session->user or C($key)) return true;
+
+	$url = ltrim($this->selfURL, "/");
+	$this->redirect(URL("user/login".($url ? "?return=$url" : "")));
+	return false;
+}
+
+
+/**
  * Renders a view, and captures and returns the output.
  *
  * @param string $view The name of the view to get.
@@ -618,11 +639,11 @@ public function getViewPath($view)
 	if (pathinfo($view, PATHINFO_EXTENSION) == "php") return $view;
 
 	// Check the skin to see if it contains this view.
-	if (file_exists($skinView = ET::$skin->getView($view))) return $skinView;
+	if (file_exists($skinView = ET::$skin->view($view))) return $skinView;
 
 	// Check loaded plugins to see if one of them contains the view.
 	foreach (ET::$plugins as $k => $v) {
-		if (file_exists($pluginView = $v->getView($view))) return $pluginView;
+		if (file_exists($pluginView = $v->view($view))) return $pluginView;
 	}
 
 	// Otherwise, just return the default view.
@@ -796,7 +817,7 @@ public function head()
 
 		// For each of the files that we need to include in the page, add a <link> tag.
 		foreach ($files as $file)
-			$head .= "<link rel='stylesheet' href='".getResource($file)."?".filemtime($file)."'>\n";
+			$head .= "<link rel='stylesheet' href='".getResource($file)."?".@filemtime($file)."'>\n";
 
 	}
 
@@ -832,7 +853,7 @@ public function head()
 
 	// Output all necessary config variables and language definitions, as well as other variables.
 	$esoTalkJS = array(
-		"webPath" => ET::$webPath,
+		"webPath" => ET::$webPath.((C("esoTalk.urls.friendly") and !C("esoTalk.urls.rewrite")) ? "/index.php" : ""),
 		"userId" => ET::$session->user ? (int)ET::$session->userId : false,
 		"token" => ET::$session->token,
 		"debug" => C("esoTalk.debug"),
