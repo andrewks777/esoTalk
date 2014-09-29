@@ -379,7 +379,7 @@ hideReply: function(hideReplyControls) {
 	});
 	$.scrollTo(scrollTop);
 
-	if (hideReplyControls) ETConversation.editingReply = false;
+	ETConversation.editingReply = false;
 },
 
 resetReply: function(hideReplyControls) {
