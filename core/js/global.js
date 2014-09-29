@@ -828,10 +828,10 @@ $(function() {
 		var em = e.parent().parent();
 		if (em.prop("class") == "col-conversation") {
 			var postId = em.parent().prop("id").substr(1) + "-0";
-			var delayTime = 1000;
+			var delayTime = 500;
 		} else {
 			var postId = e.data("id");
-			var delayTime = 2000;
+			var delayTime = 500;
 		}
 		e.delay(delayTime);
 		e.queue(function(){
