@@ -963,9 +963,7 @@ $(function() {
 				scrubber.show("fast");
 			}
 			else {
-				var controlsWidth = scrubber.width();
-				if ($("#popup-conversationControls").is(':visible')) controlsWidth = $("#conversationControls").width();
-				if (clientX < width - controlsWidth) scrubber.hide("fast");
+				if (clientX < width - scrubber.width() && !$("#popup-conversationControls").is(':visible')) scrubber.hide("fast");
 			}
 			/*else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());*/
 		});
