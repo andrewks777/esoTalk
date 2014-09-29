@@ -44,6 +44,15 @@ init: function() {
 		BBCode.fixedLangSel(this);
 	});
 	
+	$('body').on('touchstart', '.edit:not(#reply) .bbcode-fixed', function(e) {
+		BBCode.doFillLanguages($(this).parents(".code-lng"));
+		BBCode.showList(this);
+	});
+	
+	$("#reply .bbcode-fixed").on("touchstart", function(e) {
+		BBCode.showList(this);
+	});
+	
 	$(document).ready(function() {
 		BBCode.doHighlightAll();
 	});
@@ -52,6 +61,27 @@ init: function() {
 		BBCode.doHighlightAll();
 	});
 	
+},
+
+showList: function(elem) {
+	var list = $(elem).siblings('.code-lng-list');
+	if (list.length) {
+		if (list.data("vis")) {
+			list.data("vis", false);
+			list.hide("fast");
+		} else {
+			list.data("vis", true);
+			list.show("fast");
+		}
+	}
+},
+
+hideList: function(id) {
+	var list = $("#"+id+" .code-lng-list");
+	if (list.length && list.data("vis")) {
+		list.data("vis", false);
+		list.hide("fast");
+	}
 },
 
 doHighlightAll: function() {
@@ -109,6 +139,8 @@ fixedLangSel: function(e) {
 	var lang = '='+$.trim(e.children('a:first').text());
 	if (lang == '=<auto>') lang = '=_auto_';
 	ETConversation.wrapText($("#"+id+" textarea"), "[code"+lang+"]", "[/code]");
+	
+	BBCode.hideList(id);
 },
 
 bold: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[b]", "[/b]");},
@@ -117,7 +149,11 @@ strikethrough: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[s]
 header: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[h]", "[/h]");},
 link: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[url=http://example.com]", "[/url]", "http://example.com", "link text");},
 image: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[img]", "[/img]", "", "http://example.com/image.jpg");},
-fixed: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[code]", "[/code]");},
+fixed: function(id) {
+	ETConversation.wrapText($("#"+id+" textarea"), "[code]", "[/code]");
+	
+	BBCode.hideList(id);
+},
 spoiler: function(id) {ETConversation.wrapText($("#"+id+" textarea"), "[spoiler]", "[/spoiler]");}
 
 };

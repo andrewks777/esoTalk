@@ -127,8 +127,30 @@ $(function() {
 	
 	$(".upload input").tooltip({alignment: "center"});
 	
+	$('#conversationPosts, #reply .postHeader').on("touchstart", '.upload > .fileupload', function(e) {
+		
+		var list = $(this).siblings('.upload-list');
+		if (list.length) {
+			if (list.data("vis")) {
+				list.data("vis", false);
+				list.hide("fast");
+			} else {
+				list.data("vis", true);
+				list.show("fast");
+			}
+		}
+	});
+
+	
 	$('#conversationPosts, #reply .postHeader').on('click', '.fileupload', function(e) {
+		
 		onFileUploadClick(e, this);
+		
+		var list = $(this).parents('.upload-list');
+		if (list.length && list.data("vis")) {
+			list.data("vis", false);
+			list.hide("fast");
+		}
 	});
 	
 });
