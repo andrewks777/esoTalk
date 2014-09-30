@@ -261,7 +261,7 @@ addItems: function(startFrom, items, moreItem, animate) {
 			newStartFrom = startFrom + i + 1;
 			continue;
 		}
-		items.push(view[i]);
+		if (i < view.length) items.push(view[i]); else items.push($("<li></li>").get(0));
 	}
 	startFrom = newStartFrom;
 
