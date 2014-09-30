@@ -707,9 +707,10 @@ collapseQuotes: function(items) {
 highlightPost: function(post) {
 	$("#conversationPosts .post.highlight").removeClass("highlight");
 	$(post).addClass("highlight");
-	var hlTimeout = 0;
+	
+	/*var hlTimeout = 0;
 	var hlTimeoutStep = 300;
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < 2; i++) {
 		hlTimeout = hlTimeout + hlTimeoutStep;
 		setTimeout(function() {
 			$(post).removeClass("highlight");
@@ -719,7 +720,7 @@ highlightPost: function(post) {
 		setTimeout(function() {
 			$(post).addClass("highlight");
 		}, hlTimeout);
-	}
+	}*/
 },
 
 // Hide consecutive avatars from the same member.
