@@ -872,6 +872,18 @@ $(function() {
 		e.preventDefault();
 	});
 	
+	body.on('mouseenter', '#postToolTip', function(e) {
+		$(this).addClass("standby");
+		var e = $(this);
+		e.queue('qsp', []);
+		e.stop(true, false).css("opacity", 1);
+	});
+	
+	body.on('mouseleave', '#postToolTip', function(e) {
+		$(this).removeClass("standby");
+		hidePostTooltip(this, 2000);
+	});
+	
 	// Register the Esc hotkey.
 	$(document).keydown(function(e) { 
 		if (e.which == 27) {
@@ -991,9 +1003,26 @@ function showPostTooltip(postId)
 		success: function(data) {
 			if (data.messages || data.modalMessage) return;
 			$("#hdr").after(data.view);
+			hidePostTooltip($("#postToolTip"), 10000, 5000);
 		}
 	});
 	
+}
+
+function hidePostTooltip(tooltip, delayTime, animationTime)
+{
+	var e = $(tooltip);
+	e.delay(delayTime);
+	e.queue(function(){
+		if (animationTime) {
+			e.animate({opacity: 0.25}, animationTime, function() {
+				e.remove();
+			});
+		} else {
+			e.remove();
+		}
+		e.dequeue();
+	}, 'qsp');
 }
 
 // Show the join sheet.
