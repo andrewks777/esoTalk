@@ -414,8 +414,8 @@ public function action_update($channelSlug = "", $query = "")
 		$newConversationIds = array_slice((array)$newConversationIds, 0, $conversationsPerPage);
 
 		// Get the difference of the two sets of conversationId's.
-		$refreshMode = ET::$session->preference("mainPageRefreshMode");
-		if (!$refreshMode) $refreshMode = "notify";
+		$refreshMode = ET::$session->preference("mainPageRefreshMode", "refresh");
+		if (!$refreshMode) $refreshMode = "refresh";
 		$diff = array_diff((array)$newConversationIds, (array)$conversationIds);
 		if (count($diff)) {
 			if ($refreshMode == "notify") {
