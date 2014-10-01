@@ -15,4 +15,5 @@ $definitions["and others"] = "и другие";
 
 $definitions["settings.Likes.label"] = "Нравится / Не нравится";
 $definitions["setting.disallowLikes.label"] = "Отключить данную возможность";
+$definitions["setting.allowDislikes.label"] = "Включить функционал 'Не нравится'";
 $definitions["setting.hideLikesPane.label"] = "Выдвигающаяся панель (щёлкайте по заголовку сообщения)";

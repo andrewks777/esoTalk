@@ -29,13 +29,17 @@ protected function like_dislike($postId, $like = 1)
 	$post = ET::postModel()->getById($postId);
 	if (!$this->canLikePost($post, $conversation)) return false;
 
+	$time = time();
 	ET::SQL()->insert("like")
 		->set("postId", $post["postId"])
 		->set("memberId", ET::$session->userId)
 		->set("postFromMemberId", $post["memberId"])
 		->set("_like", $like)
-		->set("time", time())
+		->set("time", $time)
 		->setOnDuplicateKey("memberId", ET::$session->userId)
+		->setOnDuplicateKey("postFromMemberId", $post["memberId"])
+		->setOnDuplicateKey("_like", $like)
+		->setOnDuplicateKey("time", $time)
 		->exec();
 
 	if ($like) {
@@ -69,7 +73,7 @@ public function action_conversationController_like($sender, $postId = false)
 public function action_conversationController_dislike($sender, $postId = false)
 {
 	$sender->responseType = RESPONSE_TYPE_JSON;
-	if (!$sender->validateToken() or !$this->canLike()) return;
+	if (!$sender->validateToken() or !$this->canDislike()) return;
 
 	$likes = $this->like_dislike($postId, 0);
 	
@@ -131,6 +135,7 @@ public function handler_postModel_getPostsAfter($sender, &$posts)
 
 	if (!count($postsById)) return;
 	if (ET::$session->preference("disallowLikes", false)) return;
+	if (!ET::$session->preference("allowDislikes", false)) unset($keys["dislikes"]);
 
 	foreach ($keys as $k => $v) {
 		$result = ET::SQL()
@@ -179,6 +184,7 @@ public function getLikesPane(&$post, &$conversation = false)
 	$likesCount = count($post["likes"]);
 	$dislikesCount = count($post["dislikes"]);
 	$canLike = $this->canLike();
+	$canDislike = $this->canDislike();
 	if ($conversation) {
 		if ($liked || $disliked) $canLike = $canLike && $this->canUnlikePost($post, $conversation);
 		else $canLike = $canLike && $this->canLikePost($post, $conversation);
@@ -196,9 +202,12 @@ public function getLikesPane(&$post, &$conversation = false)
 		($canLike ?
 		($liked || $disliked ? "
 		<a href='#' class='unlike-button' title='$unlikeText'><i class='icon-reply'></i></a>" : "
-		<a href='#' class='like-button' title='$likeText'><i class='icon-thumbs-up-alt'></i></a>
-		<span class='like-separator'>&nbsp;</span>
-		<a href='#' class='dislike-button' title='$dislikeText'><i class='icon-thumbs-down-alt'></i></a>") . $separator
+		<a href='#' class='like-button' title='$likeText'><i class='icon-thumbs-up-alt'></i></a>".
+		($canDislike ?
+		"<span class='like-separator'>&nbsp;</span>
+		<a href='#' class='dislike-button' title='$dislikeText'><i class='icon-thumbs-down-alt'></i></a>"
+		: "")
+		) . $separator
 		: "");
 	if ($likesMembers) $likes = $likes . "
 		<span class='like-members'><i class='icon-plus'>&nbsp;$likesCount</i>&nbsp;&nbsp;$likesMembers</span>";
@@ -280,6 +289,11 @@ public function canLike()
 	return (ET::$session->userId and !ET::$session->isSuspended());
 }
 
+public function canDislike()
+{
+	return (ET::$session->userId and !ET::$session->isSuspended() and ET::$session->preference("allowDislikes", false));
+}
+
 public function canLikePost(&$post, &$conversation)
 {
 	return (!$post["deleteMemberId"]);
@@ -301,6 +315,10 @@ public function handler_settingsController_initGeneral($sender, $form)
 	// Add the "disallow Likes" field.
 	$form->setValue("disallowLikes", ET::$session->preference("disallowLikes", false));
 	$form->addField("Likes", "disallowLikes", array(__CLASS__, "fieldDisallowLikes"), array($sender, "saveBoolPreference"));
+	
+	// Add the "Allow Dislikes" field.
+	$form->setValue("allowDislikes", ET::$session->preference("allowDislikes", false));
+	$form->addField("Likes", "allowDislikes", array(__CLASS__, "fieldAllowDislikes"), array($sender, "saveBoolPreference"));
 	
 	// Add the "hide Likes Pane" field.
 	$form->setValue("hideLikesPane", ET::$session->preference("hideLikesPane", false));
@@ -330,6 +348,18 @@ public function fieldHideLikesPane($form)
 public function fieldDisallowLikes($form)
 {
 	return "<label class='checkbox'>".$form->checkbox("disallowLikes")." ".T("setting.disallowLikes.label")."</label>";
+}
+
+/**
+ * Return the HTML to render the "fieldAllowDislikes" field in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldAllowDislikes($form)
+{
+	return "<label class='checkbox'>".$form->checkbox("allowDislikes")." ".T("setting.allowDislikes.label")."</label>";
 }
 
 public function setup($oldVersion = "")

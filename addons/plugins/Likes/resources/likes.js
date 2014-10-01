@@ -4,7 +4,7 @@ $(function() {
 	
 	if (ET.likePaneSlide) {
 		$(document).on("click", ".postHeader", function(e) {
-			if (!$(e.target).parents(".controls").length) $(this).siblings(".postFooter").find(".likes").slideDown("fast");
+			if (!$(e.target).parents(".controls").length && !$(e.target).parents(".info").length) $(this).siblings(".postFooter").find(".likes").slideDown("fast");
 		});
 	}
 	

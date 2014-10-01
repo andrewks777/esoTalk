@@ -14,5 +14,6 @@ $definitions["%s like this."] = "%s like this.";
 $definitions["and others"] = "and others";
 
 $definitions["settings.Likes.label"] = "Likes";
-$definitions["setting.disallowLikes.label"] = "Disallow Likes";
+$definitions["setting.disallowLikes.label"] = "Disallow this functionality";
+$definitions["setting.allowDislikes.label"] = "Allow 'Dislikes'";
 $definitions["setting.hideLikesPane.label"] = "Movable Likes pane (click on post header)";
