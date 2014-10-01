@@ -83,6 +83,7 @@ public function action_index($orderBy = false, $start = 0)
 	
 	$viewAll = isset($_GET["all"]) and $_GET["all"];
 	if (C("esoTalk.members.hideDead") and !$viewAll) $sql->where("`lastActionTime` IS NOT NULL");
+	if ($orderBy == "suspended") $sql->where("`account` = 'suspended'");
 
 	// Create a query to get the total number of results. Clone the results one to retain the same WHERE conditions.
 	$count = clone $sql;
