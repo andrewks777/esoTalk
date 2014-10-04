@@ -197,9 +197,11 @@ init: function() {
 // Initialize the edit channel sheet.
 initEditChannel: function() {
 
+	var oldSlug = $("#channelSlug").val();
+
 	// Update the channel slug preview when the title input is typed in.
 	$("#editChannelSheet input[name=title]").keyup(function() {
-		$("#channelSlug").val($(this).val().replace(/[^0-9a-z]/ig, "-").replace(/-+/, "-").replace(/^-+|-+$/g, "").toLowerCase());
+		if (!oldSlug) $("#channelSlug").val($(this).val().replace(/[^0-9a-z]/ig, "-").replace(/-+/, "-").replace(/^-+|-+$/g, "").toLowerCase());
 	});
 
 	// Allow the user to select a channel to import permissions from.
