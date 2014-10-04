@@ -366,6 +366,7 @@ $definitions["Unhide"] = "Unhide";
 $definitions["Uninstall"] = "Uninstall";
 $definitions["Unlock"] = "Unlock";
 $definitions["Unignore conversation"] = "Unignore conversation";
+$definitions["Unread"] = "Unread";
 $definitions["Unstarred"] = "Not following";
 $definitions["Unsticky"] = "Unsticky";
 $definitions["Unsubscribe new users by default"] = "Unsubscribe new users by default";

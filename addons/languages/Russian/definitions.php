@@ -422,6 +422,7 @@ $definitions["Unhide"] = "Показать";
 $definitions["Uninstall"] = "Удалить";
 $definitions["Unlock"] = "Разблокировать";
 $definitions["Unignore conversation"] = "Не игнорировать";
+$definitions["Unread"] = "Непрочитано";
 $definitions["Unstarred"] = "Не в избранном";
 $definitions["Unsticky"] = "Открепить";
 $definitions["Unsubscribe new users by default"] = "Отменить подписку новых пользователей по-умолчанию";

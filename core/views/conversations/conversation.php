@@ -58,13 +58,12 @@ $channel = $data["channelInfo"][$conversation["channelId"]];
 echo "<a href='".URL(searchURL("", $channel["slug"]))."' class='channel channel-{$conversation["channelId"]}' data-channel='{$channel["slug"]}'>{$channel["title"]}</a>";
 ?></div>
 <div class='col-replies'>
-<i class='icon-comment<?php if (!$conversation["replies"]) echo "-alt"; ?>'></i>
+<?php echo toggleReadUnread($conversation["conversationId"], $conversation["unread"], $conversation["replies"]); ?>
 <?php
 echo "<span title='".T("conversations.replies")."'>".sprintf("%s", $conversation["replies"])."</span>";
 
 // Output an "unread indicator", showing the number of unread posts.
-if (ET::$session->user and $conversation["unread"])
-	echo " <a href='".URL("conversation/read/".$conversation["conversationId"]."/read?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
+echo unreadIndicator($conversation);
 
 ?></div>
 <div class='col-lastPost'><?php

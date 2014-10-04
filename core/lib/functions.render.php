@@ -237,6 +237,43 @@ function starButton($conversationId, $starred)
 }
 
 
+if (!function_exists("toggleReadUnread")) {
+
+/**
+ * Return a star for a certain conversation that can be clicked to toggle the read/unread status of that conversation.
+ *
+ * @param int $conversationId The ID of the conversation that this star is for.
+ * @param bool $unread Whether or not the conversation is currently unread.
+ * @return string
+ *
+ * @package esoTalk
+ */
+function toggleReadUnread($conversationId, $unread, $replies)
+{
+	// If the user is not logged in, don't return anything.
+	if (!ET::$session->user) return "<i class='icon-comment".(!$replies ? "-alt" : "")."'></i>";
+
+	// Otherwise, return a clickable toggleReadUnread!
+	else {
+		$conversationId = (int)$conversationId;
+		$url = URL("conversation/read/".$conversationId."?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL));
+		return "<a href='$url' class='unreadButton ".($unread ? "unread" : "")."' title='".T("Unread")."' data-id='$conversationId'><i class='icon-comment".($replies ? "" : "-alt")."'></i></a>";
+	}
+}
+
+}
+
+
+if (!function_exists("unreadIndicator")) {
+function unreadIndicator(&$conversation)
+{
+	if (ET::$session->user and $conversation["unread"]) return " <a href='".URL("conversation/read/".$conversation["conversationId"]."/read?token=".ET::$session->token."&return=".urlencode(ET::$controller->selfURL))."' class='unreadIndicator' title='".T("Mark as read")."'>".$conversation["unread"]." ".T("conversations.newreplies")."</a> ";
+	else return "";
+}
+
+}
+
+
 if (!function_exists("label")) {
 
 /**

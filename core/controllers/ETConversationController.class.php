@@ -1150,7 +1150,12 @@ public function action_read($conversationId = false, $setState = false)
 	
 	// If it's an AJAX request.
 	elseif ($this->responseType === RESPONSE_TYPE_AJAX || $this->responseType === RESPONSE_TYPE_JSON) {
-		$this->json("unread", ($lastRead < $conversation["countPosts"]));
+		$unread = ($lastRead < $conversation["countPosts"]);
+		$replies = ($conversation["countPosts"] ? $conversation["countPosts"] - 1 : 0);
+		$conversation["unread"] = ($unread ? $conversation["countPosts"] : 0);
+		$this->json("unread", $conversation["unread"]);
+		$this->json("replies", $replies);
+		$this->json("unreadIndicator", unreadIndicator($conversation));
 	}
 
 	$this->render();

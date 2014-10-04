@@ -820,6 +820,12 @@ $(function() {
 		e.preventDefault();
 	});
 	
+	// Add click handlers to unread.
+	body.on('click', '.unreadButton', function(e) {
+		toggleUnread($(this).data("id"));
+		e.preventDefault();
+	});
+	
 	var miniQuoteId = ".postReplies .postRef, .postBody .postRef, .postBody .mqPostRef, .postBody a.link-internal, #conversations .conversationList .view-first-post, #hdr .firstPostRef";
 	body.on('mouseenter', miniQuoteId, function(e) {
 		e.preventDefault();
@@ -1073,6 +1079,27 @@ function toggleStarState(conversationId, on)
 	$("#c"+conversationId).toggleClass("starred", on);
 }
 
+// Toggle the read/unread state.
+function toggleUnread(conversationId)
+{
+	$.ETAjax({
+		url: "conversation/read.json/"+conversationId,
+		success: function(data) {
+			var button = $(".unreadButton[data-id="+conversationId+"] i");
+			button.removeClass();
+			if (data.replies) button.addClass("icon-comment"); else button.addClass("icon-comment-alt");
+			button = button.parent(".unreadButton");
+			if (data.unread) {
+				button.addClass("unread");
+				button.siblings(".unreadIndicator").remove();
+				button.siblings("span").after(data.unreadIndicator);
+			} else {
+				button.removeClass("unread");
+				button.siblings(".unreadIndicator").remove();
+			}
+		}
+	});
+}
 
 
 //***** INTERVAL CALLBACK

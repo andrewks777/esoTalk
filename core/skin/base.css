@@ -110,6 +110,15 @@ span.highlight {background:#fdef34; border:1px solid #fcef98; padding:1px 3px; b
 .gambit-starred {color:#efcb00 !important}
 
 
+/* Unread */
+.unreadButton {}
+.unreadButton:hover {text-decoration:none}
+.unreadButton i {color:#ccc !important; font-size:14px}
+/*.unreadButton.unread i {color:#fc0 !important}*/
+.unreadButton:hover i {color:#fc0 !important; text-decoration:none}
+.unreadButton:active i {color:#da0 !important; text-decoration:none}
+
+
 /* Conversation labels */
 .label {font-size:70%; font-weight:bold; white-space:nowrap; text-transform:uppercase}
 .label-locked, .gambit-locked {color:#555 !important}

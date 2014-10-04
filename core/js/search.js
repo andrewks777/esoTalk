@@ -227,6 +227,7 @@ initSearchResults: function() {
 	$("#conversations .label.label-private").css("cursor", "pointer");
 
 	$("#conversations .starButton").tooltip();
+	$("#conversations .unreadButton").tooltip();
 	$("#conversations .unreadIndicator").tooltip();
 	$("#conversations .label").tooltip();
 
