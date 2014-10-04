@@ -181,7 +181,7 @@ public function action_index($conversationId = false, $year = false, $month = fa
 
 		// If we're on the last page, mark any notifications related to this conversation as read.
 		if ($startFrom + $postsPerPage >= $conversation["countPosts"]) {
-			ET::activityModel()->markNotificationsAsRead($conversation["conversationId"]);
+			ET::activityModel()->markNotificationsAsRead(null, $conversation["conversationId"]);
 		}
 
 		// Update the user's last action.
@@ -1146,6 +1146,11 @@ public function action_read($conversationId = false, $setState = false)
 		$nav = ET::$session->getNavigation("conversation/".$conversation["conversationId"]);
 		$return = R("return");
 		redirect($return ? URL($return) : $nav["url"]);
+	}
+	
+	// If it's an AJAX request.
+	elseif ($this->responseType === RESPONSE_TYPE_AJAX || $this->responseType === RESPONSE_TYPE_JSON) {
+		$this->json("unread", ($lastRead < $conversation["countPosts"]));
 	}
 
 	$this->render();
