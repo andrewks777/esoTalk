@@ -132,6 +132,12 @@ public function action_general()
 	$form->setValue("topPanelBehavior", ET::$session->preference("topPanelBehavior"));
 	$form->addField("topPanel", "topPanelBehavior", array($this, "fieldTopPanelBehavior"), array($this, "savePreference"));
 	
+	$form->addSection("rightPanel", T("settings.rightPanel.label"));
+	
+	// Add the "right panel" field.
+	$form->setValue("rightPanelBehavior", ET::$session->preference("rightPanelBehavior", "automovable"));
+	$form->addField("rightPanel", "rightPanelBehavior", array($this, "fieldRightPanelBehavior"), array($this, "savePreference"));
+	
 	$form->addSection("conversationsPerPage", T("settings.conversationsPerPage.label"));
 	
 	// Add the "conversationsPerPage" field.
@@ -372,6 +378,19 @@ public function fieldHideOnline($form)
 public function fieldTopPanelBehavior($form)
 {
 	return "<table><tr><td><label>".$form->radio("topPanelBehavior", "ordinary").T("setting.topPanelBehavior.ordinary")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "movable").T("setting.topPanelBehavior.movable")."</label></td><td style='width:10px'></td><td><label>".$form->radio("topPanelBehavior", "automovable").T("setting.topPanelBehavior.automovable")."</label></td></tr></table>";
+}
+
+
+/**
+ * Return the HTML to render the fieldRightPanelBehavior in the general
+ * settings form.
+ *
+ * @param ETForm $form The form object.
+ * @return string
+ */
+public function fieldRightPanelBehavior($form)
+{
+	return "<table><tr><td><label>".$form->radio("rightPanelBehavior", "ordinary").T("setting.rightPanelBehavior.ordinary")."</label></td><td style='width:10px'></td><td><label>".$form->radio("rightPanelBehavior", "movable").T("setting.rightPanelBehavior.movable")."</label></td><td style='width:10px'></td><td><label>".$form->radio("rightPanelBehavior", "automovable").T("setting.rightPanelBehavior.automovable")."</label></td></tr></table>";
 }
 
 

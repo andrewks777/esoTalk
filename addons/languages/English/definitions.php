@@ -617,6 +617,11 @@ $definitions["setting.topPanelBehavior.ordinary"] = "ordinary";
 $definitions["setting.topPanelBehavior.movable"] = "movable";
 $definitions["setting.topPanelBehavior.automovable"] = "automovable";
 
+$definitions["settings.rightPanel.label"] = "Behavior of right panel";
+$definitions["setting.rightPanelBehavior.ordinary"] = "ordinary";
+$definitions["setting.rightPanelBehavior.movable"] = "movable";
+$definitions["setting.rightPanelBehavior.automovable"] = "automovable";
+
 $definitions["settings.loadConversation.label"] = "Conversation loading";
 $definitions["setting.loadConversationMode.top"] = "go to beginning";
 $definitions["setting.loadConversationMode.unread"] = "go to the unread";

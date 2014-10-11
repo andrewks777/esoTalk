@@ -911,7 +911,7 @@ $(function() {
 	if (ET.topPanelBehavior == 'movable' || ET.topPanelBehavior == 'automovable') {
 		$("#body").css("padding-top", "3px");
 		var hdr = $("#hdr");
-		var hdrHeight = hdr.outerHeight();
+		var hdrHeight = 0;
 		hdr.hide();
 		
 		if (ET.topPanelBehavior == 'movable') {
@@ -920,11 +920,14 @@ $(function() {
 			topPanelButtonHTML = "<div id='topPanelBtn'><i class='" + topPanelBtnMinClass + "'></i></div>";
 			$('body').append(topPanelButtonHTML);
 			$('body').on('click', '#topPanelBtn', function(e) {
-				var hdr = $("#hdr");
 				var topBtn = $("#topPanelBtn");
 				var topBtnIcon = topBtn.children("i");
 				if (topBtnIcon.hasClass(topPanelBtnMinClass)) {
-					hdr.slideDown("fast");
+					if (hdrHeight) hdr.slideDown("fast");
+					else {
+						hdr.show();
+						hdrHeight = hdr.outerHeight();
+					}
 					topBtnIcon.removeClass(topPanelBtnMinClass);
 					topBtnIcon.addClass(topPanelBtnMaxClass);
 					topBtn.css("top", hdrHeight);
@@ -939,54 +942,84 @@ $(function() {
 		
 	}
 	
-	var scrubber = $(".scrubberColumn");
-	scrubber.css("position", "fixed").css("margin", "0").css("right", "0").css("z-index", "100").css("background", "#fff").css("top", "130px");
-	scrubber.children(".scrubberContent").css("background", "#fff");
-	scrubber.hide();
-	$(".hasScrubber").css("margin-right", "0px");
-	
-	$(document).ready( function() {
-		$(document).on("mousemove touchmove",  function(e) {
-			if (e.type == "touchmove") {
-				var touch = e.originalEvent.touches[0];
-				var clientX = touch.clientX;
-				var clientY = touch.clientY;
-				var target = touch.target;
-			} else {
-				var clientX = e.clientX;
-				var clientY = e.clientY;
-				var target = e.target;
-			}
-			if (ET.topPanelBehavior == 'automovable') {
-				var userMenu = false;
-				var userPopupMenu = $("#popup-userMenu");
-				if (userPopupMenu.length > 0) {
-					userMenu = (userPopupMenu.has(target).length !== 0);
-				}
-				if (!userMenu) {
-					var hdr = $("#hdr");
-					if (clientY <= 10) hdr.slideDown("fast");
-					else if (clientY > hdr.height() && !$("#notificationsPopup").is(':visible')) hdr.slideUp("fast");
-				}
-			}
-			
-			var browserWindow = $(window);
-			var width = browserWindow.width();
-			var scrubber = $(".scrubberColumn");
-			
-			if (clientX >= width - 20) {
-				/*if (scrubber.length > 0 && clientX < browserWindow.width()) {
-					ETScrubber.onWindowScroll(browserWindow.scrollTop());
-				}*/
-				scrubber.show("fast");
-			}
-			else {
-				if (clientX < width - scrubber.width() && !$("#popup-conversationControls").is(':visible')) scrubber.hide("fast");
-			}
-			/*else if (scrubber.is(':visible') && clientX < browserWindow.width()) ETScrubber.onWindowScroll(browserWindow.scrollTop());*/
-		});
+	// Change Right pane behavior
+	if (ET.rightPanelBehavior == 'movable' || ET.rightPanelBehavior == 'automovable') {
+		var scrubber = $(".scrubberColumn");
+		var scrubberWidth = 0;
+		scrubber.css("position", "fixed").css("margin", "0").css("right", "0").css("z-index", "100").css("background", "#fff").css("top", "130px");
+		scrubber.children(".scrubberContent").css("background", "#fff");
+		scrubber.hide();
+		$(".hasScrubber").css("margin-right", "0px");
 		
-	});
+		if (ET.rightPanelBehavior == 'movable' && scrubber.length) {
+			var rightPanelBtnMinClass = 'icon-double-angle-left';
+			var rightPanelBtnMaxClass = 'icon-double-angle-right';
+			rightPanelButtonHTML = "<div id='rightPanelBtn'><i class='" + rightPanelBtnMinClass + "'></i></div>";
+			$('body').append(rightPanelButtonHTML);
+			$('body').on('click', '#rightPanelBtn', function(e) {
+				var rightBtn = $("#rightPanelBtn");
+				var rightBtnIcon = rightBtn.children("i");
+				if (rightBtnIcon.hasClass(rightPanelBtnMinClass)) {
+					if (scrubberWidth) scrubber.show("fast");
+					else {
+						scrubber.show();
+						scrubberWidth = scrubber.outerWidth();
+					}
+					rightBtnIcon.removeClass(rightPanelBtnMinClass);
+					rightBtnIcon.addClass(rightPanelBtnMaxClass);
+					rightBtn.css("right", scrubberWidth);
+				} else {
+					scrubber.hide("fast");
+					rightBtnIcon.removeClass(rightPanelBtnMaxClass);
+					rightBtnIcon.addClass(rightPanelBtnMinClass);
+					rightBtn.css("right", "0");
+				}
+			});
+		}
+	}
+	
+	if (ET.topPanelBehavior == 'automovable' || ET.rightPanelBehavior == 'automovable') {
+		$(document).ready( function() {
+			$(document).on("mousemove touchmove",  function(e) {
+				if (e.type == "touchmove") {
+					var touch = e.originalEvent.touches[0];
+					var clientX = touch.clientX;
+					var clientY = touch.clientY;
+					var target = touch.target;
+				} else {
+					var clientX = e.clientX;
+					var clientY = e.clientY;
+					var target = e.target;
+				}
+				if (ET.topPanelBehavior == 'automovable') {
+					var userMenu = false;
+					var userPopupMenu = $("#popup-userMenu");
+					if (userPopupMenu.length > 0) {
+						userMenu = (userPopupMenu.has(target).length !== 0);
+					}
+					if (!userMenu) {
+						var hdr = $("#hdr");
+						if (clientY <= 10) hdr.slideDown("fast");
+						else if (clientY > hdr.height() && !$("#notificationsPopup").is(':visible')) hdr.slideUp("fast");
+					}
+				}
+				
+				if (ET.rightPanelBehavior == 'automovable') {
+					var browserWindow = $(window);
+					var width = browserWindow.width();
+					var scrubber = $(".scrubberColumn");
+					
+					if (clientX >= width - 20) {
+						scrubber.show("fast");
+					}
+					else {
+						if (clientX < width - scrubber.width() && !$("#popup-conversationControls").is(':visible')) scrubber.hide("fast");
+					}
+				}
+			});
+			
+		});
+	}
 	
 
 });

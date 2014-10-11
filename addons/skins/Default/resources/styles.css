@@ -134,6 +134,9 @@ h1#forumSlogan {display:inline-block; font-size:90%; color:#ddd; padding:1px 10p
 #topPanelBtn {position:fixed; top:0; left:50%; margin-left:-12px; opacity:0.3; cursor:pointer; width:24px; height:24px}
 #topPanelBtn:hover {opacity:1;}
 #topPanelBtn > i {font-size:180%}
+#rightPanelBtn {position:fixed; right:0; top:50%; margin-top:-12px; opacity:0.3; cursor:pointer; width:24px; height:24px}
+#rightPanelBtn:hover {opacity:1;}
+#rightPanelBtn > i {font-size:180%}
 
 .postHeader {margin-bottom:1px; padding:2px 2px 2px 12px}
 .postHeader h3 {display:inline; font-size:90%; margin:0}

@@ -665,6 +665,11 @@ $definitions["setting.topPanelBehavior.ordinary"] = "обычная";
 $definitions["setting.topPanelBehavior.movable"] = "выдвигающаяся";
 $definitions["setting.topPanelBehavior.automovable"] = "автоматически выдвигающаяся";
 
+$definitions["settings.rightPanel.label"] = "Правая панель";
+$definitions["setting.rightPanelBehavior.ordinary"] = "обычная";
+$definitions["setting.rightPanelBehavior.movable"] = "выдвигающаяся";
+$definitions["setting.rightPanelBehavior.automovable"] = "автоматически выдвигающаяся";
+
 $definitions["settings.loadConversation.label"] = "Загрузка обсуждения";
 $definitions["setting.loadConversationMode.top"] = "в начало";
 $definitions["setting.loadConversationMode.unread"] = "к непрочитанному";
