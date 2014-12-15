@@ -15,9 +15,9 @@ private $plugin_key_name;
     
 public function GetPluginName()
 {
-    if (!$plugin_key_name)
-        $plugin_key_name = "AdvancedBBCode";
-    return $plugin_key_name;
+    if (!$this->plugin_key_name)
+        $this->plugin_key_name = "AdvancedBBCode";
+    return $this->plugin_key_name;
 }
     
 private function GetBBClass()
