@@ -40,5 +40,5 @@ $definitions["AdvancedBBCode.BBCODE_TAG_TOO_LONG"]		= 'The tag name you selected
 $definitions["AdvancedBBCode.BBCODE_TAG_DEF_TOO_LONG"]	= 'The tag definition that you have entered is too long, please shorten your tag definition.';
 $definitions["AdvancedBBCode.TOO_MANY_BBCODES"]	='You cannot create any more BBCodes. Please remove one or more BBCodes then try again.';
 $definitions["AdvancedBBCode.BBCODE_SAVED"] = 'BBCode saved successfully.';
-
+$definitions["AdvancedBBCode.abbcode"] = 'Advanced BB code';
 

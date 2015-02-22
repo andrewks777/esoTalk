@@ -58,6 +58,14 @@ protected function addResources($sender)
         $sender->addJSLanguage("message.confirmDelete");
 }
 
+protected function addLocalResources($sender)
+{
+	$groupKey = strtolower($this->GetPluginName())."local";
+	$sender->addCSSFile($this->resource($groupKey.".css"), false, $groupKey);
+        $sender->addJSFile($this->resource($groupKey.".js"), false, $groupKey);
+        $sender->addJSLanguage("AdvancedBBCode.abbcode");
+}
+
 public function GetPluginName()
 {
     if (!$this->plugin_key_name)
@@ -79,6 +87,16 @@ public function handler_initAdmin($sender)
 public function handler_advancedbbcodeAdminController_renderBefore($sender)
 {
 	$this->addResources($sender);
+}
+
+public function handler_conversationController_renderBefore($sender)
+{
+	$this->addLocalResources($sender);
+}
+
+public function handler_conversationsController_init($sender)
+{
+	$this->addLocalResources($sender);
 }
 
 public function handler_formatPostForTemplate($sender,&$formatted, $post, $conversation)
@@ -126,6 +144,18 @@ public function uninstall()
     $model = ET::getInstance($this->GetPluginName()."Model");
     $model->uninstall();
     return true;    
+}
+
+public function handler_conversationController_getEditControls($sender, &$controls, $id)
+{
+    $model = ET::getInstance($this->GetPluginName()."Model");
+    $controlhtml = "<span class='abbcode'><ul class='abbcodelist' data-id='$id'>";      
+    $result = $model->getBBcodes()->allRows();
+    foreach ($result as $k => $v){
+        $controlhtml = $controlhtml.'<li><a href="#">'.$v["bbcode_tag"].'</a></li>';
+    }        
+    $controlhtml = $controlhtml."</ul><a href='#' title='".T("AdvancedBBCode.abbcode")."' class='control-advbbcode'><i class='icon-bitcoin'></i></a></span>";
+    addToArrayString($controls, "abbcodes", $controlhtml, 0);
 }
 
 }

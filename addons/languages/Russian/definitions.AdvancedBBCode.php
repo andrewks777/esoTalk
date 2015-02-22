@@ -48,3 +48,4 @@ $definitions["AdvancedBBCode.BBCODE_TAG_TOO_LONG"]		= 'Введённое имя
 $definitions["AdvancedBBCode.BBCODE_TAG_DEF_TOO_LONG"]	= 'Введённое определение тега слишком длинное. Введите более короткое определение.';
 $definitions["AdvancedBBCode.TOO_MANY_BBCODES"]	= 'Вы больше не можете создать BBCodes. Удалите или переместите некоторые BBCodes и попробуйте снова.';
 $definitions["AdvancedBBCode.BBCODE_SAVED"] = 'BBCode успешно сохранен.';
+$definitions["AdvancedBBCode.abbcode"] = 'Расширенные BB коды';
